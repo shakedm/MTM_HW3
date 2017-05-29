@@ -16,6 +16,7 @@ MtmErrorCode roomGetNumppl(Room room, int * num_ppl);
 MtmErrorCode roomGetDifficulty(Room room, int* difficulty);
 MtmErrorCode roomGetWorkingHours(Room room, char** str);
 MtmErrorCode roomGetPrice(Room room , int* price);
+MtmErrorCode roomGetEmail(Room room , char** email);
 
 MtmErrorCode roomGetOrder(Room room , Order order);
 MtmErrorCode setRoomOrder(Room room, Order order);
