@@ -4,6 +4,8 @@
 #include <assert.h>
 
 #define GOOD_AMOUNT 1
+#define MAX_SKILL 10
+#define MIN_SKILL 1
 
 
 struct escaper_t {
@@ -27,7 +29,8 @@ MtmErrorCode initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,
         }
         index++;
     }
-    if (counter != GOOD_AMOUNT ){
+    if (counter != GOOD_AMOUNT || skill_level > MAX_SKILL ||
+            skill_level < MIN_SKILL){
         return MTM_INVALID_PARAMETER;
     }
     char* email_copy = malloc(strlen(email) + 1);

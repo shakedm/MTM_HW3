@@ -17,5 +17,7 @@ MtmErrorCode getEscaperFaculty(Escaper visitor, TechnionFaculty* faculty);
 
 MtmErrorCode getEscaperSkillLevel(Escaper visitor, int* skill_level);
 
+int compareEscaper(Escaper visitor1, Escaper visitor2);
+
 
 #endif //HW3WET_ESCAPER_H

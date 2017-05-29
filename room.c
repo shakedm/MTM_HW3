@@ -5,7 +5,7 @@
 
 struct room_t{
     char** email;
-    unsigned int id;
+    int id;
     char** working_hours; // יכול להשתנות לשדות של אינטג'רים
     int num_ppl;
     int difficulty;

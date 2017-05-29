@@ -14,5 +14,9 @@ MtmErrorCode getCompanyFaculty(Company company, TechnionFaculty* faculty);
 MtmErrorCode getCompanyRevenue(Company company, int* revenue);
 MtmErrorCode addRoomCompany(Company company, Room* room);
 
+int compareCompany(Company company1, Company company2);
+
+Company copyCompany(Company company);
+
 
 #endif //HW3WET_COMPANY_H
