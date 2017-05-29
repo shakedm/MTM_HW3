@@ -46,38 +46,32 @@ MtmErrorCode resetRoom(Room room){
     return MTM_SUCCESS;
 }
 MtmErrorCode roomGetId(Room room, int* id){
-    if(room==NULL)
-        return MTM_NULL_PARAMETER;
+    assert(room != NULL);
     *id = room->id;
     return MTM_SUCCESS;
 }
 MtmErrorCode roomGetNumppl(Room room, int * num_ppl){
-    if(room == NULL)
-        return MTM_NULL_PARAMETER;
+    assert(room != NULL);
     *num_ppl = room->num_ppl;
     return MTM_SUCCESS;
 }
 MtmErrorCode roomGetDifficulty(Room room, int* difficulty){
-    if(room == NULL)
-        return MTM_NULL_PARAMETER;
+    assert(room != NULL);
     *difficulty = room->difficulty;
     return MTM_SUCCESS;
 }
 MtmErrorCode roomGetWorkingHours(Room room, char** str){
-    if(room == NULL)
-        return MTM_NULL_PARAMETER;
+    assert(room != NULL);
     *str = (*room->working_hours);
     return MTM_SUCCESS;
 }
 MtmErrorCode roomGetPrice(Room room , int* price){
-    if(room == NULL)
-        return MTM_NULL_PARAMETER;
+    assert(room != NULL);
     *price = room->price;
     return MTM_SUCCESS;
 }
 MtmErrorCode roomGetEmail(Room room , char** email){
-    if(room == NULL)
-        return MTM_NULL_PARAMETER;
+    assert(room != NULL);
     *email = (*room->email);
     return MTM_SUCCESS;
 }
