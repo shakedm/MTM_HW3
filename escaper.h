@@ -1,8 +1,8 @@
-
+#include "mtm_ex3.h"
 #ifndef HW3WET_ESCAPER_H
 #define HW3WET_ESCAPER_H
 
-#include "mtm_ex3.h"
+
 
 typedef struct escaper_t* Escaper;
 
@@ -16,7 +16,6 @@ MtmErrorCode getEscaperEmail(Escaper visitor, char** email);
 MtmErrorCode getEscaperFaculty(Escaper visitor, TechnionFaculty* faculty);
 
 MtmErrorCode getEscaperSkillLevel(Escaper visitor, int* skill_level);
-
 
 
 #endif //HW3WET_ESCAPER_H
