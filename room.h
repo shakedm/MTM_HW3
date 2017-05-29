@@ -1,7 +1,9 @@
+#include "mtm_ex3.h"
+
 #ifndef HW3WET_ROOM_H
 #define HW3WET_ROOM_H
 
-#include "mtm_ex3.h"
+
 
 typedef struct room_t* Room;
 typedef struct order_t* Order;

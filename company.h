@@ -1,8 +1,10 @@
+#include "mtm_ex3.h"
+
+
 #ifndef HW3WET_COMPANY_H
 #define HW3WET_COMPANY_H
 
 #include "room.h"
-#include "mtm_ex3.h"
 
 typedef struct company_t* Company;
 
