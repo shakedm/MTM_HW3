@@ -23,11 +23,22 @@ MtmErrorCode initRoom(Room room, char** Email ,unsigned int id , int num_ppl ,
     if(!new_string)
         return MTM_OUT_OF_MEMORY;
     strcpy(new_string,working_hours);
-    room->working_hours= &new_string;
-    room->difficulty=difficulty;
-    room->id=id;
-    room->price=price;
-    room->email=Email;
-    room->current_orders=NULL;
+    room->working_hours = &new_string;
+    room->difficulty = difficulty;
+    room->id = id;
+    room->price = price;
+    room->email = Email;
+    room->current_orders = NULL;
+    return MTM_SUCCESS;
+}
+//could change to void function
+MtmErrorCode resetRoom(Room room){
+    assert(room != NULL);
+    free(room->working_hours);
+    room->id = 0;
+    room->price = 0;
+    room->difficulty = 0;
+    room->email = NULL;
+    room->current_orders = NULL; //could handle differenetly if there is an order
     return MTM_SUCCESS;
 }
