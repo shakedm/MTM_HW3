@@ -7,6 +7,7 @@ struct room_t{
     char** email;
     unsigned int id;
     char** working_hours; // יכול להשתנות לשדות של אינטג'רים
+    int num_ppl;
     int difficulty;
     int price;
     Order current_orders;
@@ -23,6 +24,7 @@ MtmErrorCode initRoom(Room room, char** Email ,unsigned int id , int num_ppl ,
     if(!new_string)
         return MTM_OUT_OF_MEMORY;
     strcpy(new_string,working_hours);
+    room->num_ppl = num_ppl;
     room->working_hours = &new_string;
     room->difficulty = difficulty;
     room->id = id;
@@ -35,10 +37,47 @@ MtmErrorCode initRoom(Room room, char** Email ,unsigned int id , int num_ppl ,
 MtmErrorCode resetRoom(Room room){
     assert(room != NULL);
     free(room->working_hours);
+    room->num_ppl = 0;
     room->id = 0;
     room->price = 0;
     room->difficulty = 0;
     room->email = NULL;
     room->current_orders = NULL; //could handle differenetly if there is an order
+    return MTM_SUCCESS;
+}
+MtmErrorCode roomGetId(Room room, int* id){
+    if(room==NULL)
+        return MTM_NULL_PARAMETER;
+    *id = room->id;
+    return MTM_SUCCESS;
+}
+MtmErrorCode roomGetNumppl(Room room, int * num_ppl){
+    if(room == NULL)
+        return MTM_NULL_PARAMETER;
+    *num_ppl = room->num_ppl;
+    return MTM_SUCCESS;
+}
+MtmErrorCode roomGetDifficulty(Room room, int* difficulty){
+    if(room == NULL)
+        return MTM_NULL_PARAMETER;
+    *difficulty = room->difficulty;
+    return MTM_SUCCESS;
+}
+MtmErrorCode roomGetWorkingHours(Room room, char** str){
+    if(room == NULL)
+        return MTM_NULL_PARAMETER;
+    *str = (*room->working_hours);
+    return MTM_SUCCESS;
+}
+MtmErrorCode roomGetPrice(Room room , int* price){
+    if(room == NULL)
+        return MTM_NULL_PARAMETER;
+    *price = room->price;
+    return MTM_SUCCESS;
+}
+MtmErrorCode roomGetEmail(Room room , char** email){
+    if(room == NULL)
+        return MTM_NULL_PARAMETER;
+    *email = (*room->email);
     return MTM_SUCCESS;
 }
