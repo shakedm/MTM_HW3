@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include "usefullFunctions.h"
 
 #define GOOD_AMOUNT 1
 #define MAX_SKILL 10
@@ -21,16 +22,10 @@ MtmErrorCode initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,
     if (email == NULL){
         return MTM_NULL_PARAMETER;
     }
-    int counter = 0;
-    int index = 0;
-    while (email[index] != '/0'){
-        if(email[index] == '@'){
-            counter++;
-        }
-        index++;
+    if (!(emailCheck(email))){
+        return MTM_INVALID_PARAMETER;
     }
-    if (counter != GOOD_AMOUNT || skill_level > MAX_SKILL ||
-            skill_level < MIN_SKILL){
+    if (skill_level > MAX_SKILL || skill_level < MIN_SKILL){
         return MTM_INVALID_PARAMETER;
     }
     char* email_copy = malloc(strlen(email) + 1);

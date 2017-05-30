@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include "usefullFunctions.h"
 
 
 struct company_t {
@@ -19,7 +20,9 @@ MtmErrorCode initCompany(Company company, char* email, TechnionFaculty faculty){
     if (email == NULL){
         return MTM_NULL_PARAMETER;
     }
-
+    if (!(emailCheck(email))){
+        return MTM_INVALID_PARAMETER;
+    }
     char* email_copy = malloc(strlen(email) + 1);
     if (!email_copy){
         return MTM_OUT_OF_MEMORY;
