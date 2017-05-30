@@ -40,10 +40,31 @@ MtmErrorCode initCompany(Company company, char* email, TechnionFaculty faculty){
     return MTM_SUCCESS;
 }
 
-void resetCompany(void* company);
+void resetCompany(void* company){
+    assert(company != NULL);
+    free((*(Company*)company)->email);
+    (*(Company*)company)->revenue = 0;
+    setDestroy((*(Company*)company)->rooms);
+    (*(Company*)company)->faculty = UNKNOWN;
+}
 
-MtmErrorCode getCompanyFaculty(Company company, TechnionFaculty* faculty);
+TechnionFaculty getCompanyFaculty(Company company){
+    return company->faculty;
+}
 
-MtmErrorCode getCompanyRevenue(Company company, int* revenue);
+int getCompanyRevenue(Company company){
+    return company->revenue;
+}
 
-MtmErrorCode addRoomCompany(Company company, Room* room);
+MtmErrorCode addRoomCompany(Company company, Room room){
+    assert(company != NULL);
+    SetResult result = setAdd(company->rooms, (void*)room);
+    if(result != SET_SUCCESS){
+        return errorHandel(HANDEL_SET, (void*)result, COMPANY, (void*)company);
+    }
+    return MTM_SUCCESS;
+}
+
+char* getCompanyEmail(Company company){
+    return company->email;
+}

@@ -35,4 +35,6 @@ MtmErrorCode reportDay();
 
 MtmErrorCode reportBest();
 
+MtmErrorCode resetSystem(EscapeTechnion sys);
+
 #endif //HW3WET_ESCAPETECHNION_H

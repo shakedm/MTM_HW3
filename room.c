@@ -12,7 +12,13 @@ struct room_t{
     int price;
     Order current_orders;
 };
-MtmErrorCode initRoom(Room room, char** Email ,unsigned int id , int num_ppl ,
+
+/*struct roomPointer_t{
+    int id;
+    Room* room;
+};*/
+
+MtmErrorCode initRoom(Room room, char** Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price){
     assert(room != NULL);
     assert(working_hours!=NULL);
@@ -29,6 +35,7 @@ MtmErrorCode initRoom(Room room, char** Email ,unsigned int id , int num_ppl ,
     if(!new_string){
         return MTM_OUT_OF_MEMORY;
     }
+
     strcpy(new_string,working_hours);
     room->num_ppl = num_ppl;
     room->working_hours = new_string;

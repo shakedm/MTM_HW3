@@ -12,15 +12,16 @@ MtmErrorCode initCompany(Company company, char* email, TechnionFaculty faculty);
 
 void resetCompany(void* company);
 
-MtmErrorCode getCompanyFaculty(Company company, TechnionFaculty* faculty);
+TechnionFaculty getCompanyFaculty(Company company);
 
-MtmErrorCode getCompanyRevenue(Company company, int* revenue);
+int getCompanyRevenue(Company company);
 
-MtmErrorCode addRoomCompany(Company company, Room* room);
+MtmErrorCode addRoomCompany(Company company, Room room);
 
 int compareCompany(void* company1, void* company2);
 
 void* copyCompany(void* company);
 
+char* getCompanyEmail(Company company);
 
 #endif //HW3WET_COMPANY_H
