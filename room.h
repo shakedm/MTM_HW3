@@ -10,7 +10,7 @@ typedef struct order_t* Order;
 
 MtmErrorCode initRoom(Room room, char** Email ,unsigned int id , int num_ppl ,
                       char* working_hours, int difficulty, int price);
-MtmErrorCode resetRoom(Room room);
+void resetRoom(void* room);
 MtmErrorCode roomGetId(Room room, int* id);
 MtmErrorCode roomGetNumppl(Room room, int * num_ppl);
 MtmErrorCode roomGetDifficulty(Room room, int* difficulty);
@@ -21,6 +21,10 @@ MtmErrorCode roomGetEmail(Room room , char** email);
 MtmErrorCode roomGetOrder(Room room , Order order);
 MtmErrorCode setRoomOrder(Room room, Order order);
 MtmErrorCode resetRoomOrder(Room room );
+
+int compareRoom(void* room1, void* room2);
+
+void* copyRoom(void* room);
 
 
 #endif //HW3WET_ROOM_H

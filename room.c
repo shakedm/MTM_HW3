@@ -34,17 +34,17 @@ MtmErrorCode initRoom(Room room, char** Email ,unsigned int id , int num_ppl ,
     return MTM_SUCCESS;
 }
 //could change to void function
-MtmErrorCode resetRoom(Room room){
+void resetRoom(void* room){
     assert(room != NULL);
-    free(room->working_hours);
-    room->num_ppl = 0;
-    room->id = 0;
-    room->price = 0;
-    room->difficulty = 0;
-    room->email = NULL;
-    room->current_orders = NULL; //could handle differenetly if there is an order
-    return MTM_SUCCESS;
+    free((*(Room*)room)->working_hours);
+    (*(Room*)room)->num_ppl = 0;
+    (*(Room*)room)->id = 0;
+    (*(Room*)room)->price = 0;
+    (*(Room*)room)->difficulty = 0;
+    (*(Room*)room)->email = NULL;
+    (*(Room*)room)->current_orders = NULL; //could handle differenetly if there is an order
 }
+
 MtmErrorCode roomGetId(Room room, int* id){
     assert(room != NULL);
     *id = room->id;

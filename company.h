@@ -9,14 +9,18 @@
 typedef struct company_t* Company;
 
 MtmErrorCode initCompany(Company company, char* email, TechnionFaculty faculty);
-MtmErrorCode resetCompany(Company company);
+
+void resetCompany(void* company);
+
 MtmErrorCode getCompanyFaculty(Company company, TechnionFaculty* faculty);
+
 MtmErrorCode getCompanyRevenue(Company company, int* revenue);
+
 MtmErrorCode addRoomCompany(Company company, Room* room);
 
-int compareCompany(Company company1, Company company2);
+int compareCompany(void* company1, void* company2);
 
-Company copyCompany(Company company);
+void* copyCompany(void* company);
 
 
 #endif //HW3WET_COMPANY_H
