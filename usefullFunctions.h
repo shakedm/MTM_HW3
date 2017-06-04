@@ -21,6 +21,8 @@
 #define ESCAPE_TECHNION 40
 #define HANDEL_SET 100
 #define HANDEL_LIST 110
+#define MAX_SKILL 10
+#define MIN_SKILL 1
 
 
 /* * This function checks that the given email address is valid AI contines

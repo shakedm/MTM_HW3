@@ -5,8 +5,7 @@
 #include "usefullFunctions.h"
 
 #define GOOD_AMOUNT 1
-#define MAX_SKILL 10
-#define MIN_SKILL 1
+
 
 
 struct escaper_t {
@@ -16,26 +15,29 @@ struct escaper_t {
 };
 
 
-MtmErrorCode initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,
+MtmErrorCode initEscaper(Escaper *visitor, char* email, TechnionFaculty faculty,
                          int skill_level){
     assert( visitor != NULL );
     if (email == NULL){
         return MTM_NULL_PARAMETER;
     }
-    if (!(emailCheck(email))){
+    if (skill_level > MAX_SKILL || skill_level < MIN_SKILL || !emailCheck(email)){
         return MTM_INVALID_PARAMETER;
     }
-    if (skill_level > MAX_SKILL || skill_level < MIN_SKILL){
-        return MTM_INVALID_PARAMETER;
+    Escaper new_escaper = malloc(sizeof(Escaper));
+    if (!new_escaper){
+        return MTM_OUT_OF_MEMORY;
     }
+    *visitor = new_escaper;
     char* email_copy = malloc(strlen(email) + 1);
     if (!email_copy){
+        free(new_escaper);
         return MTM_OUT_OF_MEMORY;
     }
     strcpy(email_copy, email);
-    visitor->email = email_copy;
-    visitor->faculty = faculty;
-    visitor->skill_level = skill_level;
+    (*visitor)->email = email_copy;
+    (*visitor)->faculty = faculty;
+    (*visitor)->skill_level = skill_level;
     return MTM_SUCCESS;
 }
 

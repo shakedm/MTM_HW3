@@ -6,7 +6,7 @@
 
 typedef struct escaper_t* Escaper;
 
-MtmErrorCode initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,
+MtmErrorCode initEscaper(Escaper *visitor, char* email, TechnionFaculty faculty,
                             int skill_level);
 
 MtmErrorCode resetEscaper(Escaper visitor);
