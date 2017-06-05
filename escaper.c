@@ -37,12 +37,12 @@ MtmErrorCode initEscaper(Escaper *visitor, char* email, TechnionFaculty faculty,
     return MTM_SUCCESS;
 }
 
-void resetEscaper(Escaper visitor){
+void resetEscaper(void* visitor){
     if(visitor == NULL )
         return;
-    free(visitor->email);
-    visitor->faculty = UNKNOWN;
-    visitor->skill_level = 0;
+    free((*(Escaper*)visitor)->email);
+    (*(Escaper*)visitor)->faculty = UNKNOWN;
+    (*(Escaper*)visitor)->skill_level = 0;
     free(visitor);
 }
 

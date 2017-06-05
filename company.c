@@ -1,6 +1,5 @@
 #include "company.h"
 #include "set.h"
-#include "room.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
