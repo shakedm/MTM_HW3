@@ -18,14 +18,12 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price){
     assert(room != NULL);
     if ( id <= 0 || num_ppl <= 0 || price <= 0 || price %4 != 0 ||
-            difficulty > MAX_SKILL | difficulty < MIN_SKILL){
+            difficulty > MAX_SKILL | difficulty < MIN_SKILL ||
+            !emailCheck(Email)){
         return MTM_INVALID_PARAMETER;
     }
     if (Email == NULL || working_hours == NULL){
         return MTM_NULL_PARAMETER;
-    }
-    if(!emailCheck(Email)){
-        return MTM_INVALID_PARAMETER;
     }
     Room new_room = malloc(sizeof(Room));
     if(!new_room){

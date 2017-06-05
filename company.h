@@ -8,7 +8,7 @@
 
 typedef struct company_t* Company;
 
-MtmErrorCode initCompany(Company company, char* email, TechnionFaculty faculty);
+MtmErrorCode initCompany(Company *company, char* email, TechnionFaculty faculty);
 
 void resetCompany(void* company);
 

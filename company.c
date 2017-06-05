@@ -15,7 +15,7 @@ struct company_t {
 };
 
 
-MtmErrorCode initCompany(Company company, char* email, TechnionFaculty faculty){
+MtmErrorCode initCompany(Company *company, char* email, TechnionFaculty faculty){
     assert(company != NULL);
     if (email == NULL){
         return MTM_NULL_PARAMETER;
@@ -23,8 +23,14 @@ MtmErrorCode initCompany(Company company, char* email, TechnionFaculty faculty){
     if (!(emailCheck(email))){
         return MTM_INVALID_PARAMETER;
     }
+    Company new_company = malloc(sizeof(Company));
+    if(!new_company){
+        return MTM_OUT_OF_MEMORY;
+    }
+    *company = new_company;
     char* email_copy = malloc(strlen(email) + 1);
     if (!email_copy){
+        free(company);
         return MTM_OUT_OF_MEMORY;
     }
     strcpy(email_copy, email);
@@ -33,10 +39,10 @@ MtmErrorCode initCompany(Company company, char* email, TechnionFaculty faculty){
         free(email_copy);
         return MTM_OUT_OF_MEMORY;
     }
-    company->email = email_copy;
-    company->faculty = faculty;
-    company->rooms = rooms;
-    company->revenue = 0;
+    (*company)->email = email_copy;
+    (*company)->faculty = faculty;
+    (*company)->rooms = rooms;
+    (*company)->revenue = 0;
     return MTM_SUCCESS;
 }
 
