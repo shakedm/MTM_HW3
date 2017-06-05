@@ -73,3 +73,20 @@ MtmErrorCode addRoomCompany(Company company, Room room){
 const char* getCompanyEmail(Company company){
     return company->email;
 }
+
+int compareCompany(void* company1, void* company2){
+    return strcmp(getCompanyEmail((*(Company*)company1)),
+                  getCompanyEmail((*(Company*)company2)));
+}
+
+void* copyCompany(void* company){
+    assert(company != NULL);
+    Company *new_company;
+    MtmErrorCode result = initCompany(new_company,
+                                      getCompanyEmail((*(Company*)company),
+                                      getCompanyFaculty((*(Company*)company));
+    if (result != MTM_SUCCESS){
+        return NULL;
+    }
+    return new_company;
+}

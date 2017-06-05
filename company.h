@@ -51,7 +51,7 @@ int getCompanyRevenue(Company company);
  */
 MtmErrorCode addRoomCompany(Company company, Room room);
 
-bool compareCompany(void* company1, void* company2);
+int compareCompany(void* company1, void* company2);
 
 void* copyCompany(void* company);
 

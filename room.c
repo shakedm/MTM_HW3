@@ -102,21 +102,17 @@ int compareRoom(void* room1, void* room2){
 
 void* copyRoom(void* room){
     assert(room != NULL);
-    Room new_room = malloc(sizeof(Room));
-    if(!new_room){
+    Room *new_room = NULL;
+    MtmErrorCode result = initRoom(new_room, (*(Room*)room)->email,
+                                   roomGetId((*(Room*)room)),
+                                   roomGetNumPpl((*(Room*)room)),
+                                   DUMMY_TIME, roomGetDifficulty((*(Room*)room)),
+                                   roomGetPrice((*(Room*)room)));
+    if(result != MTM_SUCCESS){
         return NULL;
     }
-    char *new_email = malloc(strlen(roomGetEmail((*(Room*)room))));
-    if(!new_email){
-        free(new_room);
-        return NULL;
-    }
-    strcpy(new_room->email, roomGetEmail((*(Room*)room)));
-    new_room->price = (*(Room*)room)->price;
-    new_room->difficulty = (*(Room*)room)->difficulty;
-    new_room->working_hours[OPEN_HOUR] = (*(Room*)room)->working_hours[OPEN_HOUR];
-    new_room->working_hours[CLOSE_HOUR] = (*(Room*)room)->working_hours[CLOSE_HOUR];
-    new_room->num_ppl = (*(Room*)room)->num_ppl;
-    new_room->current_orders = (*(Room*)room)->current_orders;
+    assert(new_room != NULL);
+    (*new_room)->working_hours[OPEN_HOUR] = (*(Room*)room)->working_hours[OPEN_HOUR];
+    (*new_room)->working_hours[CLOSE_HOUR] = (*(Room*)room)->working_hours[CLOSE_HOUR];
     return new_room;
 }
