@@ -13,8 +13,8 @@ MtmErrorCode initOrder(Order* order , Room* room, Escaper* escaper,
                        int time[HOURS_FORMAT], int num_of_visitors, int cost){
     if( order == NULL)
         return MTM_NULL_PARAMETER;
-    if(time[0]<= BAD_HOURS || time[1]<= BAD_HOURS || time[1]> HOURS_PER_DAY
-            || cost < 0 || num_of_visitors <1)
+    if(time[days]<= BAD_HOURS || time[hours]<= BAD_HOURS ||
+            time[hours]> HOURS_PER_DAY || cost < 0 || num_of_visitors <1)
         return MTM_INVALID_PARAMETER;
     Order new_order = malloc(sizeof(Order));
     if(new_order== NULL)
@@ -57,9 +57,13 @@ int getNumOfVisitors(Order order){
 }
 int getDaysOrder(Order order){
     assert(order!= NULL);
-    return order->time_until_order[0];
+    return order->time_until_order[days];
 }
 int getHoursOrder(Order order){
     assert(order!=NULL);
-    return order->time_until_order[1];
+    return order->time_until_order[hours];
+}
+void decreaseDay(Order order){
+    assert(order!= NULL);
+    (order->time_until_order[days])--;
 }
