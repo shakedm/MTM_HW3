@@ -69,10 +69,10 @@ int compareEscaper(Escaper visitor1, Escaper visitor2){
 void* copyEscaper(void* escaper){
     if (escaper == NULL)
         return NULL;
-    Escaper* new_escaper;
+    Escaper* new_escaper = NULL;
     if(initEscaper(new_escaper,((Escaper)escaper)->email,
                 ((Escaper)escaper)->faculty, ((Escaper)escaper)->skill_level)
-            !=MTM_SUCCESS)
+            != MTM_SUCCESS)
         return NULL;
     return new_escaper;
 }
