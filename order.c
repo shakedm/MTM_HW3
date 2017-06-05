@@ -44,3 +44,19 @@ void resetOrder(void* order){
     ((Order)order)->room = NULL;
     free(order);
 }
+int getCost(Order order){
+    assert(order!= NULL);
+    return order->cost;
+}
+int getNumOfVisitors(Order order){
+    assert(order!=NULL);
+    return order->num_of_people;
+}
+int getDaysOrder(Order order){
+    assert(order!= NULL);
+    return order->time_until_order[0];
+}
+int getHoursOrder(Order order){
+    assert(order!=NULL);
+    return order->time_until_order[1];
+}
