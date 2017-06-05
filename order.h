@@ -9,6 +9,9 @@
 
 #include <assert.h>
 
+#define days 0
+#define hours 1
+
 // the type of the ADT
 typedef struct order_t* Order;
 
@@ -47,15 +50,37 @@ void resetOrder(void* order);
 
 /*!
  * function to reach the cost field
- * @param order
- * @return
+ * @param order- that we want to check
+ * @return the cost of this order
  */
 int getCost(Order order);
 
+/*!
+ * function to reach the num_of_ppl field
+ * @param order- that we want to check
+ * @return the number of people in the order
+ */
 int getNumOfVisitors(Order order);
 
+/*!
+ * function to reach the number of days till the order
+ * @param order- the order we want to check
+ * @return the first block in the time array which is a the number of days
+ * until the order
+ */
 int getDaysOrder(Order order);
 
+/*!
+ * function to reach the hour of the order
+ * @param order- the order we want to check
+ * @return the second block of the time array which is the hour of the order
+ */
 int getHoursOrder(Order order);
+
+/*!
+ * function to decrease one day from the time left until the order
+ * @param order- the order we want to do it to
+ */
+void decreaseDay(Order order);
 
 #endif //HW3WET_ORDER_H
