@@ -32,10 +32,24 @@ MtmErrorCode initOrder(Order* order , Room* room, Escaper* escaper,
 
 
 
+/*!
+ * function to copy all the order ADT
+ * @param order- what we want to order
+ * @return the new copy of the order
+ */
 void* copyOrder(void* order);
 
+/*!
+ * function to resert all fields and free the allocated memory
+ * @param order- what we want to free
+ */
 void resetOrder(void* order);
 
+/*!
+ * function to reach the cost field
+ * @param order
+ * @return
+ */
 int getCost(Order order);
 
 int getNumOfVisitors(Order order);
