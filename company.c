@@ -70,6 +70,6 @@ MtmErrorCode addRoomCompany(Company company, Room room){
     return MTM_SUCCESS;
 }
 
-char* getCompanyEmail(Company company){
+const char* getCompanyEmail(Company company){
     return company->email;
 }
