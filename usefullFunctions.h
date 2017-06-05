@@ -5,12 +5,12 @@
 #include "escaper.h"
 #include "company.h"
 #include "EscapeTechnion.h"
-#include <assert.h>
+
 
 #ifndef HW3WET_USEFULLFUNCTIONS_H
 #define HW3WET_USEFULLFUNCTIONS_H
 
-
+#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
