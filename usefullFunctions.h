@@ -5,6 +5,7 @@
 #include "escaper.h"
 #include "company.h"
 #include "EscapeTechnion.h"
+#include <assert.h>
 
 #ifndef HW3WET_USEFULLFUNCTIONS_H
 #define HW3WET_USEFULLFUNCTIONS_H
@@ -23,6 +24,11 @@
 #define HANDEL_LIST 110
 #define MAX_SKILL 10
 #define MIN_SKILL 1
+#define HOURS_FORMAT 2
+#define BAD_HOURS -1
+#define HOURS_PER_DAY 24
+#define OPEN_HOUR 0
+#define CLOSE_HOUR 1
 
 
 /* * This function checks that the given email address is valid AI contines
@@ -69,5 +75,11 @@ MtmErrorCode memoryFaultHandel(int sender_ID, void* ADT);
  */
 MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT);
 
+/*  * This function translate the hours string to int array while checking the
+ * validity of the string.
+ * return true if the string is traslated properly.
+ * false if the string is not to format.
+ */
+bool translateHours(char* working_hours, int *hours);
 
 #endif //HW3WET_USEFULLFUNCTIONS_H

@@ -25,32 +25,75 @@ typedef struct order_t* Order;
 MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price);
 
-/*!
- * This function releases all allocated memory the resets
- * @param room
+/* * This function releases all allocated memory the resets.
+ * @param room - points to the memory to free. if NULL this function does
+ * nothing.
  */
 void resetRoom(void* room);
 
-MtmErrorCode roomGetId(Room room, int* id);
+/* * This function returns the room's ID (the unige identifier)
+ * @param room - points to the ADT
+ * @return the ID field in the ADT.
+ */
+int roomGetId(Room room);
 
-MtmErrorCode roomGetNumPpl(Room room, int * num_ppl);
+/* * This function returns the maximum amount of people allowed in the room ADT
+ * @param room - points to the room ADT
+ * @return the int number of people.
+ */
+int roomGetNumPpl(Room room);
 
-MtmErrorCode roomGetDifficulty(Room room, int* difficulty);
+/* * This function returns the difficulty level of the room
+ * @param room - points to the room ADT
+ * @return int level num
+ */
+int roomGetDifficulty(Room room);
 
-MtmErrorCode roomGetWorkingHours(Room room, char** str);
+/* * This function copies the room's working hours to a given int array
+ * @param room - points to the room ADT
+ * @param hours - return parameter, int array.
+ * @return -.
+ */
+void roomGetWorkingHours(Room room, int* hours);
 
-MtmErrorCode roomGetPrice(Room room , int* price);
+/* * This function returns the price to a given room.
+ * @param room - points to the room ADT
+ * @return - int price.
+ */
+int roomGetPrice(Room room);
 
-MtmErrorCode roomGetEmail(Room room , char* email);
+/* * This function returns a CONST pointer to the room's email string
+ * @param room - points to the room ADT
+ * @return - const pointer to string.
+ */
+const char* roomGetEmail(Room room);
+
 
 MtmErrorCode roomGetOrder(Room room , Order order);
 
+/* *
+ * @param room
+ * @param order
+ * @return
+ */
 MtmErrorCode setRoomOrder(Room room, Order order);
 
 MtmErrorCode resetRoomOrder(Room room );
 
+/* * This function compares two room ADT by theis ID fields
+ * @param room1 - points to the 1st room ADT
+ * @param room2 - points to the 2nd room ADT
+ * @return A positive integer if the first room's ID is greater.
+* 		0 if they're equal;
+*		A negative integer if the second room's ID is greater.
+ */
 int compareRoom(void* room1, void* room2);
 
+/* * This function creates a new room ADT and copies the given ADT fields.
+ * @param room - points to the room to copy
+ * @return - NULL if the allocation failed.
+ * pointer to room type ADT otherwise.
+ */
 void* copyRoom(void* room); //copies the POINTER to the room.
 
 
