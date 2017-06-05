@@ -4,10 +4,6 @@
 #include <assert.h>
 #include "usefullFunctions.h"
 
-#define GOOD_AMOUNT 1
-
-
-
 struct escaper_t {
     char *email;
     TechnionFaculty faculty;
@@ -41,12 +37,13 @@ MtmErrorCode initEscaper(Escaper *visitor, char* email, TechnionFaculty faculty,
     return MTM_SUCCESS;
 }
 
-MtmErrorCode resetEscaper(Escaper visitor){
-    assert(visitor != NULL);
+void resetEscaper(Escaper visitor){
+    if(visitor == NULL )
+        return;
     free(visitor->email);
     visitor->faculty = UNKNOWN;
     visitor->skill_level = 0;
-    return MTM_SUCCESS;
+    free(visitor);
 }
 
 MtmErrorCode getEscaperEmail(Escaper visitor, char** email){
