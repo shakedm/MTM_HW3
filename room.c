@@ -7,7 +7,7 @@
 struct room_t{
     char* email;
     int id;
-    char* working_hours; // יכול להשתנות לשדות של אינטג'רים
+    int working_hours[HOURS_FORMAT];
     int num_ppl;
     int difficulty;
     int price;
@@ -20,6 +20,10 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
     if ( id <= 0 || num_ppl <= 0 || price <= 0 || price %4 != 0 ||
             difficulty > MAX_SKILL | difficulty < MIN_SKILL ||
             !emailCheck(Email)){
+        return MTM_INVALID_PARAMETER;
+    }
+    int hours[HOURS_FORMAT] = {{0}};
+    if(!translateHours(working_hours, hours)){
         return MTM_INVALID_PARAMETER;
     }
     if (Email == NULL || working_hours == NULL){
@@ -37,18 +41,20 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
     }
     strcpy(new_string,working_hours);
     (*room)->num_ppl = num_ppl;
-    (*room)->working_hours = new_string;
     (*room)->difficulty = difficulty;
     (*room)->id = id;
+    (*room)->working_hours[OPEN_HOUR] = hours[OPEN_HOUR];
+    (*room)->working_hours[CLOSE_HOUR] = hours[CLOSE_HOUR];
     (*room)->price = price;
     (*room)->email = Email;
     (*room)->current_orders = NULL;
     return MTM_SUCCESS;
 }
 
-//could change to void function
 void resetRoom(void* room){
-    assert(room != NULL);
+    if(room == NULL){
+        return;
+    }
     free((*(Room*)room)->working_hours);
     (*(Room*)room)->num_ppl = 0;
     (*(Room*)room)->id = 0;
@@ -56,36 +62,61 @@ void resetRoom(void* room){
     (*(Room*)room)->difficulty = 0;
     free((*(Room*)room)->email);
     (*(Room*)room)->current_orders = NULL;
-    free(room);//could handle differenetly if there is an order
+    free(room);
 }
 
-MtmErrorCode roomGetId(Room room, int* id){
+int roomGetId(Room room){
     assert(room != NULL);
-    *id = room->id;
-    return MTM_SUCCESS;
+    return  room->id;
 }
-MtmErrorCode roomGetNumppl(Room room, int * num_ppl){
+
+int roomGetNumPpl(Room room){
     assert(room != NULL);
-    *num_ppl = room->num_ppl;
-    return MTM_SUCCESS;
+    return  room->num_ppl;
 }
-MtmErrorCode roomGetDifficulty(Room room, int* difficulty){
+
+int roomGetDifficulty(Room room){
     assert(room != NULL);
-    *difficulty = room->difficulty;
-    return MTM_SUCCESS;
+    return room->difficulty;
 }
-MtmErrorCode roomGetWorkingHours(Room room, char** str){
+
+void roomGetWorkingHours(Room room, int* hours){
     assert(room != NULL);
-    *str = (room->working_hours);
-    return MTM_SUCCESS;
+    hours[OPEN_HOUR] = room->working_hours[OPEN_HOUR];
+    hours[CLOSE_HOUR] = room->working_hours[CLOSE_HOUR];
 }
-MtmErrorCode roomGetPrice(Room room , int* price){
+
+int roomGetPrice(Room room){
     assert(room != NULL);
-    *price = room->price;
-    return MTM_SUCCESS;
+    return  room->price;
 }
-MtmErrorCode roomGetEmail(Room room , char* email){
+
+const char* roomGetEmail(Room room){
     assert(room != NULL);
-    email = room->email;
-    return MTM_SUCCESS;
+    return room->email;
+}
+
+int compareRoom(void* room1, void* room2){
+    return (((*(Room*)room1)->id) - ((*(Room*)room2)->id));
+}
+
+void* copyRoom(void* room){
+    assert(room != NULL);
+    Room new_room = malloc(sizeof(Room));
+    if(!new_room){
+        return NULL;
+    }
+    char *new_email = malloc(strlen(roomGetEmail((*(Room*)room))));
+    if(!new_email){
+        free(new_room);
+        return NULL;
+    }
+    strcpy(new_room->email, roomGetEmail((*(Room*)room)));
+    new_room->price = (*(Room*)room)->price;
+    new_room->difficulty = (*(Room*)room)->difficulty;
+    new_room->working_hours[OPEN_HOUR] = (*(Room*)room)->working_hours[OPEN_HOUR];
+    new_room->working_hours[CLOSE_HOUR] = (*(Room*)room)->working_hours[CLOSE_HOUR];
+    new_room->num_ppl = (*(Room*)room)->num_ppl;
+    new_room->current_orders = (*(Room*)room)->current_orders;
+    return new_room;
 }

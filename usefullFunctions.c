@@ -78,3 +78,32 @@ MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT){
             return MTM_INVALID_PARAMETER;
     }
 }
+
+bool translateHours(char* working_hours, int *hours){
+    assert(working_hours != NULL);
+    int hours_index = 0;
+    while(*working_hours != '/0'){
+        if(*working_hours < '0' || *working_hours > '9'){
+            if (*working_hours != '-'){
+                hours[0] = BAD_HOURS;
+                hours[1] = BAD_HOURS;
+                return false;
+            }
+            hours_index++;
+            if (hours_index == HOURS_FORMAT) {
+                return false;
+            }
+            working_hours++;
+            continue;
+        }
+        hours[hours_index] = (hours[hours_index] * 10) + (*working_hours - '0');
+        if(hours[hours_index] > HOURS_PER_DAY){
+            return false;
+        }
+        working_hours++;
+    }
+    if (hours[OPEN_HOUR] >= hours[CLOSE_HOUR]){
+        return false;
+    }
+    return true;
+}
