@@ -60,10 +60,10 @@ int getEscaperSkillLevel(Escaper visitor){
     assert(visitor != NULL);
     return visitor->skill_level;
 }
-int compareEscaper(Escaper visitor1, Escaper visitor2){
+int compareEscaper(void* visitor1, void* visitor2){
     if (visitor1 == NULL || visitor2 == NULL)
         return false;
-    return  (strcmp(visitor1->email, visitor2->email));
+    return  (strcmp((*(Escaper*)visitor1)->email, (*(Escaper*)visitor2)->email));
 }
 
 void* copyEscaper(void* escaper){

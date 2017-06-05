@@ -45,6 +45,8 @@ MtmErrorCode reportBest(EscapeTechnion sys);
 
 Company findCompanyInSet(Set companies, char *email);
 
+Escaper findEscaperInSet(Set escapers, char *email);
+
 void resetSystem(EscapeTechnion sys);
 
 #endif //HW3WET_ESCAPETECHNION_H

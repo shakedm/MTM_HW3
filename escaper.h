@@ -56,7 +56,7 @@ int getEscaperSkillLevel(Escaper visitor);
  * @return 0 if the emails are the same >0 if first is smaller <0
  * if second is smaller by lexicography order
  */
-int compareEscaper(Escaper visitor1, Escaper visitor2);
+int compareEscaper(void* visitor1, void* visitor2);
 
 
 void* copyEscaper(void* escaper);

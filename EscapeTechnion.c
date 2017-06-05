@@ -3,7 +3,7 @@
 
 struct escape_technion_t {
     Set companies;
-    List escaperList;
+    Set escapers;
     List orderList;
     int time_log; // counts days
 };
@@ -18,15 +18,15 @@ MtmErrorCode createEscapeTechnion(EscapeTechnion *sys){
         free(new_system);
         return MTM_OUT_OF_MEMORY;
     }
-    new_system->escaperList = listCreate(copyEscaper, resetEscaper);
-    if(new_system->escaperList == NULL){
+    new_system->escapers = setCreate(copyEscaper, resetEscaper, compareEscaper);
+    if(new_system->escapers == NULL){
         setDestroy(new_system->companies);
         free(new_system);
         return MTM_OUT_OF_MEMORY;
     }
-    new_system->orderList = listCreate(copyOder, resetOrder);
+    new_system->orderList = listCreate(copyOrder, resetOrder);
     if(new_system->orderList == NULL){
-        listDestroy(new_system->escaperList);
+        setDestroy(new_system->escapers);
         setDestroy(new_system->companies);
         free(new_system);
         return MTM_OUT_OF_MEMORY;
@@ -67,6 +67,23 @@ Company findCompanyInSet(Set companies, char *email){
     return NULL;
 }
 
+Escaper findEscaperInSet(Set escapers, char *email){
+    int set_size = setGetSize(escapers);
+    Escaper curr_escaper = setGetFirst(escapers);
+    bool found = false;
+    for (int i = 0; i < set_size ; ++i) {
+        if(strcmp(getEscaperEmail(curr_escaper), email) == 0){
+            found = true;
+            break;
+        }
+        curr_escaper = setGetNext(escapers);
+    }
+    if(found){
+        return curr_escaper;
+    }
+    return NULL;
+}
+
 
 MtmErrorCode companyRemove(EscapeTechnion sys, char* email){
     Company company = findCompanyInSet(sys->companies, email);
@@ -95,9 +112,32 @@ MtmErrorCode roomAdd(EscapeTechnion sys, char* email, int id, int price,
 MtmErrorCode roomRemove(EscapeTechnion sys, TechnionFaculty faculty, int id);
 
 MtmErrorCode escaperAdd(EscapeTechnion sys, char* email,
-                        TechnionFaculty faculty, int skill_level);
+                        TechnionFaculty faculty, int skill_level){
+    Escaper *visitor = NULL;
+    MtmErrorCode result = initEscaper(visitor, email, faculty, skill_level);
+    if (result != MTM_SUCCESS){
+        return result;
+    }
+    if(setIsIn(sys->escapers, visitor)){
+        resetEscaper(visitor);
+        return MTM_EMAIL_ALREADY_EXISTS;
+    }
+    SetResult setResult = setAdd(sys->escapers, visitor);
+    if(setResult != SET_SUCCESS){
+        return errorHandel(HANDEL_SET, (void*)setResult, ESCAPER,
+                           (void*)visitor);
+    }
+    return MTM_SUCCESS;
+}
 
-MtmErrorCode escaperRemove(EscapeTechnion sys, char* email);
+MtmErrorCode escaperRemove(EscapeTechnion sys, char* email){
+    Escaper visitor = findEscaperInSet(sys->escapers, email);
+    if(visitor == NULL){
+        return MTM_CLIENT_EMAIL_DOES_NOT_EXIST;
+    }
+    setRemove(sys->escapers, visitor);
+    return MTM_SUCCESS;
+}
 
 MtmErrorCode escaperOrder(EscapeTechnion sys, char* email,
                           TechnionFaculty faculty, int id, int* time,
@@ -110,7 +150,7 @@ MtmErrorCode reportDay(EscapeTechnion sys);
 MtmErrorCode reportBest(EscapeTechnion sys);
 
 void resetSystem(EscapeTechnion sys){
-    listDestroy(sys->escaperList);
+    setDestroy(sys->escapers);
     listDestroy(sys->orderList);
     setDestroy(sys->companies);
     free(sys);
