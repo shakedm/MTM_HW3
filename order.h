@@ -84,11 +84,10 @@ int getHoursOrder(Order order);
 void decreaseDay(Order order);
 
 /*!
- * Function
- * @param order
- * @param room
- * @return
+ * Function reach the pointer to room that is in the order struct
+ * @param order - the order which we check
+ * @return- pointer to room
  */
-Room getOrderRoom(Order order);
+Room* getOrderRoom(Order order);
 
 #endif //HW3WET_ORDER_H

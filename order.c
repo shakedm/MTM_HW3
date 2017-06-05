@@ -67,3 +67,7 @@ void decreaseDay(Order order){
     assert(order!= NULL);
     (order->time_until_order[days])--;
 }
+Room* getOrderRoom(Order order){
+    assert(order!= NULL);
+    return order->room;
+}
