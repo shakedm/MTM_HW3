@@ -58,8 +58,12 @@ MtmErrorCode getEscaperFaculty(Escaper visitor, TechnionFaculty* faculty){
     return MTM_SUCCESS;
 }
 
-MtmErrorCode getEscaperSkillLevel(Escaper visitor, int* skill_level){
+int getEscaperSkillLevel(Escaper visitor){
     assert(visitor != NULL);
-    *skill_level = visitor->skill_level;
-    return MTM_SUCCESS;
+    return visitor->skill_level;
+}
+bool compareEscaper(Escaper visitor1, Escaper visitor2){
+    if (visitor1 == NULL || visitor2 == NULL)
+        return false;
+    return  !(strcmp(visitor1->email, visitor2->email));
 }
