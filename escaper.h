@@ -2,8 +2,7 @@
 #ifndef HW3WET_ESCAPER_H
 #define HW3WET_ESCAPER_H
 
-/* type to define the escaper struct
- */
+/* type to define the escaper struct*/
 typedef struct escaper_t* Escaper;
 
 /*!
