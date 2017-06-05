@@ -46,7 +46,7 @@ void resetEscaper(void* visitor){
     free(visitor);
 }
 
-char* getEscaperEmail(Escaper visitor){
+const char* getEscaperEmail(Escaper visitor){
     assert(visitor != NULL);
     return visitor->email;
 }
@@ -60,8 +60,8 @@ int getEscaperSkillLevel(Escaper visitor){
     assert(visitor != NULL);
     return visitor->skill_level;
 }
-bool compareEscaper(Escaper visitor1, Escaper visitor2){
+int compareEscaper(Escaper visitor1, Escaper visitor2){
     if (visitor1 == NULL || visitor2 == NULL)
         return false;
-    return  !(strcmp(visitor1->email, visitor2->email));
+    return  (strcmp(visitor1->email, visitor2->email));
 }

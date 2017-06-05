@@ -6,7 +6,7 @@
 
 #include <stdbool.h>
 #include "room.h"
-/* type tp define the company struct */
+/* type to define the company struct */
 typedef struct company_t* Company;
 
 /*!
