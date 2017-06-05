@@ -6,6 +6,7 @@
 #include "room.h"
 #include "company.h"
 #include "usefullFunctions.h"
+#include "order.h"
 
 /* type to define the EscapeTechnion struct*/
 typedef struct escape_technion_t* EscapeTechnion;

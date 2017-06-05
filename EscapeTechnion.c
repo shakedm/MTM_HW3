@@ -92,9 +92,7 @@ MtmErrorCode roomAdd(EscapeTechnion sys, char* email, int id, int price,
     return addRoomCompany(company, *new_room);
 }
 
-MtmErrorCode roomRemove(EscapeTechnion sys, TechnionFaculty faculty, int id){
-
-}
+MtmErrorCode roomRemove(EscapeTechnion sys, TechnionFaculty faculty, int id);
 
 MtmErrorCode escaperAdd(EscapeTechnion sys, char* email,
                         TechnionFaculty faculty, int skill_level);
