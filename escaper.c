@@ -46,16 +46,14 @@ void resetEscaper(Escaper visitor){
     free(visitor);
 }
 
-MtmErrorCode getEscaperEmail(Escaper visitor, char** email){
+char* getEscaperEmail(Escaper visitor){
     assert(visitor != NULL);
-    *email = visitor->email;
-    return MTM_SUCCESS;
+    return visitor->email;
 }
 
-MtmErrorCode getEscaperFaculty(Escaper visitor, TechnionFaculty* faculty){
+TechnionFaculty getEscaperFaculty(Escaper visitor){
     assert(visitor != NULL);
-    *faculty = visitor->faculty;
-    return MTM_SUCCESS;
+    return visitor->faculty;
 }
 
 int getEscaperSkillLevel(Escaper visitor){

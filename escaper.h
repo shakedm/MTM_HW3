@@ -11,9 +11,9 @@ MtmErrorCode initEscaper(Escaper *visitor, char* email, TechnionFaculty faculty,
 
 void resetEscaper(Escaper visitor);
 
-MtmErrorCode getEscaperEmail(Escaper visitor, char** email);
+char* getEscaperEmail(Escaper visitor);
 
-MtmErrorCode getEscaperFaculty(Escaper visitor, TechnionFaculty* faculty);
+TechnionFaculty getEscaperFaculty(Escaper visitor);
 
 int getEscaperSkillLevel(Escaper visitor);
 
