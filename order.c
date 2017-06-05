@@ -26,3 +26,21 @@ MtmErrorCode initOrder(Order* order , Room* room, Escaper* visitor,
     *order= new_order;
     return MTM_SUCCESS;
 }
+
+void* copyOrder(void* order){
+    if(order == NULL)
+        return NULL;
+    Order *copy_order;
+    if(initOrder(copy_order, ((Order)order)->room,((Order)order)->escaper,
+              ((Order)order)->time_until_order, ((Order)order)->num_of_people,
+              ((Order)order)->cost) != MTM_SUCCESS)
+        return NULL;
+    return copy_order;
+}
+void resetOrder(void* order){
+    if (order == NULL)
+        return;
+    ((Order)order)->escaper = NULL;
+    ((Order)order)->room = NULL;
+    free(order);
+}
