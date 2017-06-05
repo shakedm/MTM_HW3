@@ -1,5 +1,5 @@
 #include "company.h"
-#include "set.h"
+
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -70,6 +70,15 @@ MtmErrorCode addRoomCompany(Company company, Room room){
     return MTM_SUCCESS;
 }
 
+MtmErrorCode removeRoomCompany(Company company, Room room){
+    assert(company != NULL);
+    SetResult result = setRemove(company->rooms, room);
+    if(result != SET_SUCCESS){
+        return errorHandel(HANDEL_SET, (void*)result, ROOM, (void*)company);
+    }
+    return MTM_SUCCESS;
+}
+
 const char* getCompanyEmail(Company company){
     return company->email;
 }
@@ -89,4 +98,21 @@ void* copyCompany(void* company){
         return NULL;
     }
     return new_company;
+}
+
+Room findRoomInCompany(Company company, int Id){
+    int set_size = setGetSize(company->rooms);
+    bool found = false;
+    Room curr_room = setGetFirst(company->rooms);
+    for (int i = 0; i < set_size ; ++i) {
+        if(roomGetId(curr_room) == Id){
+            found = true;
+            break;
+        }
+        curr_room = setGetNext(company->rooms);
+    }
+    if(found){
+        return curr_room;
+    }
+    return NULL;
 }

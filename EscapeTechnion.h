@@ -43,9 +43,13 @@ MtmErrorCode reportDay(EscapeTechnion sys);
 
 MtmErrorCode reportBest(EscapeTechnion sys);
 
-Company findCompanyInSet(Set companies, char *email);
+Company findCompanyByEmail(Set companies, char *email);
+
+Company findCompanyByFaculty(Set companies, TechnionFaculty faculty);
 
 Escaper findEscaperInSet(Set escapers, char *email);
+
+bool orderExistForRoom(List orders, Room room);
 
 void resetSystem(EscapeTechnion sys);
 

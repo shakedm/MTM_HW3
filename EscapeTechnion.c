@@ -50,12 +50,29 @@ MtmErrorCode companyAdd(EscapeTechnion sys, char* email,
     return MTM_SUCCESS;
 }
 
-Company findCompanyInSet(Set companies, char *email){
+Company findCompanyByEmail(Set companies, char *email){
     int set_size = setGetSize(companies);
     Company curr_company = setGetFirst(companies);
     bool found = false;
     for (int i = 0; i < set_size ; ++i) {
         if(strcmp(getCompanyEmail(curr_company), email) == 0){
+            found = true;
+            break;
+        }
+        curr_company = setGetNext(companies);
+    }
+    if(found){
+        return curr_company;
+    }
+    return NULL;
+}
+
+Company findCompanyByFaculty(Set companies, TechnionFaculty faculty){
+    int set_size = setGetSize(companies);
+    Company curr_company = setGetFirst(companies);
+    bool found = false;
+    for (int i = 0; i < set_size ; ++i) {
+        if(getCompanyFaculty(curr_company) == faculty){
             found = true;
             break;
         }
@@ -86,7 +103,7 @@ Escaper findEscaperInSet(Set escapers, char *email){
 
 
 MtmErrorCode companyRemove(EscapeTechnion sys, char* email){
-    Company company = findCompanyInSet(sys->companies, email);
+    Company company = findCompanyByEmail(sys->companies, email);
     if(company != NULL){
         setRemove(sys->companies, company);
         return MTM_SUCCESS;
@@ -96,7 +113,7 @@ MtmErrorCode companyRemove(EscapeTechnion sys, char* email){
 
 MtmErrorCode roomAdd(EscapeTechnion sys, char* email, int id, int price,
                      int num_ppl, char* working_hrs, int difficulty){
-    Company company = findCompanyInSet(sys->companies, email);
+    Company company = findCompanyByEmail(sys->companies, email);
     if(company == NULL){
         return MTM_COMPANY_EMAIL_DOES_NOT_EXIST;
     }
@@ -109,7 +126,20 @@ MtmErrorCode roomAdd(EscapeTechnion sys, char* email, int id, int price,
     return addRoomCompany(company, *new_room);
 }
 
-MtmErrorCode roomRemove(EscapeTechnion sys, TechnionFaculty faculty, int id);
+MtmErrorCode roomRemove(EscapeTechnion sys, TechnionFaculty faculty, int id){
+    Company company = findCompanyByFaculty(sys->companies, faculty);
+    if(company == NULL){
+        return MTM_INVALID_PARAMETER;
+    }
+    Room room = findRoomInCompany(company, id);
+    if(room == NULL){
+        return MTM_ID_DOES_NOT_EXIST;
+    }
+    if(orderExistForRoom(sys->orderList, room)){
+        return MTM_RESERVATION_EXISTS;
+    }
+    return removeRoomCompany(company, room);
+}
 
 MtmErrorCode escaperAdd(EscapeTechnion sys, char* email,
                         TechnionFaculty faculty, int skill_level){
@@ -141,13 +171,33 @@ MtmErrorCode escaperRemove(EscapeTechnion sys, char* email){
 
 MtmErrorCode escaperOrder(EscapeTechnion sys, char* email,
                           TechnionFaculty faculty, int id, int* time,
-                          int num_ppl);
+                          int num_ppl){
+    Escaper visitor = findEscaperInSet(sys->escapers, email);
+    if(visitor == NULL){
+        return MTM_CLIENT_EMAIL_DOES_NOT_EXIST;
+    }
+
+}
 
 MtmErrorCode escaperRecommend(EscapeTechnion sys, char* email, int num_ppl);
 
 MtmErrorCode reportDay(EscapeTechnion sys);
 
 MtmErrorCode reportBest(EscapeTechnion sys);
+
+bool orderExistForRoom(List orders, Room room){
+    int size = listGetSize(orders);
+    Order curr_order = listGetFirst(orders);
+    Room orderRoom;
+    for (int i = 0; i < size; ++i) {
+        orderRoom = getOrderRoom(curr_order);
+        if(roomGetId(orderRoom) == roomGetId(room)){
+            return true;
+        }
+        curr_order = listGetNext(orders);
+    }
+    return false;
+}
 
 void resetSystem(EscapeTechnion sys){
     setDestroy(sys->escapers);

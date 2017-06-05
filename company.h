@@ -6,6 +6,7 @@
 
 #include <stdbool.h>
 #include "room.h"
+#include "set.h"
 /* type to define the company struct */
 typedef struct company_t* Company;
 
@@ -51,6 +52,8 @@ int getCompanyRevenue(Company company);
  */
 MtmErrorCode addRoomCompany(Company company, Room room);
 
+MtmErrorCode removeRoomCompany(Company company, Room room);
+
 int compareCompany(void* company1, void* company2);
 
 void* copyCompany(void* company);
@@ -62,5 +65,8 @@ void* copyCompany(void* company);
  * @return the string that is the company email
  */
 const char* getCompanyEmail(Company company);
+
+Room findRoomInCompany(Company company, int Id);
+
 
 #endif //HW3WET_COMPANY_H

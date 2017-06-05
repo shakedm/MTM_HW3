@@ -83,4 +83,12 @@ int getHoursOrder(Order order);
  */
 void decreaseDay(Order order);
 
+/*!
+ * Function
+ * @param order
+ * @param room
+ * @return
+ */
+Room getOrderRoom(Order order);
+
 #endif //HW3WET_ORDER_H
