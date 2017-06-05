@@ -4,10 +4,6 @@
 #include <assert.h>
 #include "usefullFunctions.h"
 
-#define GOOD_AMOUNT 1
-
-
-
 struct escaper_t {
     char *email;
     TechnionFaculty faculty;
@@ -41,28 +37,31 @@ MtmErrorCode initEscaper(Escaper *visitor, char* email, TechnionFaculty faculty,
     return MTM_SUCCESS;
 }
 
-MtmErrorCode resetEscaper(Escaper visitor){
-    assert(visitor != NULL);
-    free(visitor->email);
-    visitor->faculty = UNKNOWN;
-    visitor->skill_level = 0;
-    return MTM_SUCCESS;
+void resetEscaper(void* visitor){
+    if(visitor == NULL )
+        return;
+    free((*(Escaper*)visitor)->email);
+    (*(Escaper*)visitor)->faculty = UNKNOWN;
+    (*(Escaper*)visitor)->skill_level = 0;
+    free(visitor);
 }
 
-MtmErrorCode getEscaperEmail(Escaper visitor, char** email){
+const char* getEscaperEmail(Escaper visitor){
     assert(visitor != NULL);
-    *email = visitor->email;
-    return MTM_SUCCESS;
+    return visitor->email;
 }
 
-MtmErrorCode getEscaperFaculty(Escaper visitor, TechnionFaculty* faculty){
+TechnionFaculty getEscaperFaculty(Escaper visitor){
     assert(visitor != NULL);
-    *faculty = visitor->faculty;
-    return MTM_SUCCESS;
+    return visitor->faculty;
 }
 
-MtmErrorCode getEscaperSkillLevel(Escaper visitor, int* skill_level){
+int getEscaperSkillLevel(Escaper visitor){
     assert(visitor != NULL);
-    *skill_level = visitor->skill_level;
-    return MTM_SUCCESS;
+    return visitor->skill_level;
+}
+int compareEscaper(Escaper visitor1, Escaper visitor2){
+    if (visitor1 == NULL || visitor2 == NULL)
+        return false;
+    return  (strcmp(visitor1->email, visitor2->email));
 }

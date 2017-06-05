@@ -12,7 +12,7 @@ typedef struct order_t* Order;
  * This function creates & initiates to given value a room type ADT
  * @param room - points to the memory space given to the ADT
  * @param Email - a string the sigenfies the room's company email
- * @param id - unige identifier of a room.
+ * @param id - unique identifier of a room.
  * @param num_ppl - the maximum amount of people that can enter the room
  * @param working_hours - string to repesent the working hours in which the room
  * is active
