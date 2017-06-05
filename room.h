@@ -3,6 +3,7 @@
 #ifndef HW3WET_ROOM_H
 #define HW3WET_ROOM_H
 
+#define DUMMY_TIME "00-01"
 
 /** Type for defining the room */
 typedef struct room_t* Room;
