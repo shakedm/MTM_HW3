@@ -60,4 +60,6 @@ int getEscaperSkillLevel(Escaper visitor);
 int compareEscaper(Escaper visitor1, Escaper visitor2);
 
 
+void* copyEscaper(void* escaper);
+
 #endif //HW3WET_ESCAPER_H

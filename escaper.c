@@ -65,3 +65,15 @@ int compareEscaper(Escaper visitor1, Escaper visitor2){
         return false;
     return  (strcmp(visitor1->email, visitor2->email));
 }
+
+void* copyEscaper(void* escaper){
+    if (escaper == NULL)
+        return NULL;
+    Escaper* new_escaper;
+    if(initEscaper(new_escaper,((Escaper)escaper)->email,
+                ((Escaper)escaper)->faculty, ((Escaper)escaper)->skill_level)
+            !=MTM_SUCCESS)
+        return NULL;
+    return new_escaper;
+}
+
