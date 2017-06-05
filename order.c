@@ -9,14 +9,17 @@ typedef struct order_t {
     int cost;
 };
 
-MtmErrorCode initOrder(Order* order , Room* room, Escaper* visitor,
+MtmErrorCode initOrder(Order* order , Room* room, Escaper* escaper,
                        int time[HOURS_FORMAT], int num_of_visitors, int cost){
     if( order == NULL)
         return MTM_NULL_PARAMETER;
+    if(time[0]<= BAD_HOURS || time[1]<= BAD_HOURS || time[1]> HOURS_PER_DAY
+            || cost < 0 || num_of_visitors <1)
+        return MTM_INVALID_PARAMETER;
     Order new_order = malloc(sizeof(Order));
     if(new_order== NULL)
         return MTM_OUT_OF_MEMORY;
-    new_order->escaper= visitor;
+    new_order->escaper= escaper;
     new_order->room = room;
     new_order->cost = cost;
     new_order->num_of_people = num_of_visitors;
