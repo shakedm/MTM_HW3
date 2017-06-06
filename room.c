@@ -21,24 +21,24 @@ void destroyRoom(void* room){
     free(*(Room*)room);
 }
 
-MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
+RoomError initRoom(Room *room, char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price){
     assert(room != NULL);
     if ( id <= 0 || num_ppl <= 0 || price <= 0 || price %4 != 0 ||
             difficulty > MAX_SKILL || difficulty < MIN_SKILL ||
             !emailCheck(Email)){
-        return MTM_INVALID_PARAMETER;
+        return ROOM_INVALID_PARAMETER;
     }
     int time[HOURS_FORMAT] = {0};
     if(!translateHours(working_hours, time)){
-        return MTM_INVALID_PARAMETER;
+        return ROOM_INVALID_PARAMETER;
     }
     if (Email == NULL || working_hours == NULL){
-        return MTM_NULL_PARAMETER;
+        return ROOM_NULL_PARAMETER;
     }
     char* new_email = (char*)malloc((strlen(Email)+1) *sizeof(char));
     if  (!new_email){
-        return MTM_OUT_OF_MEMORY;
+        return ROOM_OUT_OF_MEMORY;
     }
     strcpy(new_email,Email);
     (*room)->num_ppl = num_ppl;
@@ -49,7 +49,7 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
     (*room)->price = price;
     (*room)->email = new_email;
     //(*room)->current_orders = NULL;
-    return MTM_SUCCESS;
+    return ROOM_SUCCESS;
 }
 
 void resetRoom(Room room){
@@ -108,12 +108,12 @@ int compareRoom(void* room1, void* room2){
 void* copyRoom(void* room){
     assert(room != NULL);
     Room new_room = createRoom();
-    MtmErrorCode result = initRoom(&new_room, ((Room)room)->email,
+    RoomError result = initRoom(&new_room, ((Room)room)->email,
                                    roomGetId(((Room)room)),
                                    roomGetNumPpl(((Room)room)),
                                    DUMMY_TIME, roomGetDifficulty(((Room)room)),
                                    roomGetPrice(((Room)room)));
-    if(result != MTM_SUCCESS){
+    if(result != ROOM_SUCCESS){
         return NULL;
     }
     assert(new_room != NULL);

@@ -5,6 +5,28 @@
 /* type to define the escaper struct*/
 typedef struct escaper_t* Escaper;
 
+/**
+ * This type defines all errors for the Order ADT
+ */
+typedef enum {
+    ESCAPER_OUT_OF_MEMORY,
+    ESCAPER_NULL_PARAMETER,
+    ESCAPER_INVALID_PARAMETER,
+    ESCAPER_SUCCESS,
+} EscaperError;
+
+/*!
+ * allocates the needed memory space for an Escaper ADT
+ * @return NULL if allocation failed
+ */
+Escaper createEscaper();
+
+/*!
+ * release all memory allocated for this ADT
+ * @param order - the ADT to realse
+ */
+void destroyEscaper(void* escaper);
+
 /*!
  * function to initialize the struct and its fields
  * @param visitor recieves a pointer to the struct and alllocates space for it
@@ -17,7 +39,7 @@ typedef struct escaper_t* Escaper;
  * @return MTM_OUT_OF_MEMORY if one of the allocations failed
  * @return MTM_SUCCESS if all went well
  */
-MtmErrorCode initEscaper(Escaper *visitor, char* email, TechnionFaculty faculty,
+EscaperError initEscaper(Escaper visitor, const char* email, TechnionFaculty faculty,
                             int skill_level);
 
 

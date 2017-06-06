@@ -10,10 +10,28 @@
 /** Type for defining the room */
 typedef struct room_t* Room;
 
+/**
+ * This type defines all errors for the Order ADT
+ */
+typedef enum {
+    ROOM_OUT_OF_MEMORY,
+    ROOM_NULL_PARAMETER,
+    ROOM_INVALID_PARAMETER,
+    ROOM_SUCCESS,
+} RoomError;
 
+/*!
+ * allocates the needed memory space for an Room ADT
+ * @return NULL if allocation failed
+ */
 Room createRoom();
 
+/*!
+ * release all memory allocated for this ADT
+ * @param order - the ADT to realse
+ */
 void destroyRoom(void* room);
+
 /*!
  * This function creates & initiates to given value a room type ADT
  * @param room - points to the memory space given to the ADT
@@ -28,7 +46,7 @@ void destroyRoom(void* room);
  * MTM_NULL_PARAMETER - id email points to NULL
  * MTM_OUT_OF_MEMORY - if unable to allocate memory
  */
-MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
+RoomError initRoom(Room *room, char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price);
 
 /* * This function releases all allocated memory the resets.
@@ -73,6 +91,8 @@ int roomGetPrice(Room room);
  * @return - const pointer to string.
  */
 const char* roomGetEmail(Room room);
+
+int* roomGetTime(Room room);
 
 /* * This function compares two room ADT by theis ID fields
  * @param room1 - points to the 1st room ADT

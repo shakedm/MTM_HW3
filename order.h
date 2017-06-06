@@ -54,7 +54,7 @@ Order createOrder();
  * release all memory allocated for this ADT
  * @param order - the ADT to realse
  */
-void destroyOrder(Order order);
+void destroyOrder(void* order);
 
 /*!
  * function to copy all the order ADT

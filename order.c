@@ -51,9 +51,9 @@ Order createOrder(){
     return malloc(sizeof(Order));
 }
 
-void destroyOrder(Order order){
+void destroyOrder(void* order){
     resetOrder(order);
-    free(order);
+    free(*(Order*)order);
 }
 
 void* copyOrder(void* order){

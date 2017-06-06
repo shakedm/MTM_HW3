@@ -13,8 +13,26 @@ struct company_t {
     int revenue;
 };
 
+/*!
+ * This function translate the general error the ADT specific error
+ * @param result - the general error code
+ * @return the specific error code
+ */
+static CompanyError reverse(MtmErrorCode result);
 
-CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
+Company createCompany(){
+    return malloc(sizeof(Company));
+}
+
+void destroyCompany(void* company){
+    if(company == NULL){
+        return;
+    }
+    resetCompany(company);
+    free(*(Company*)company);
+}
+
+CompanyError initCompany(Company company, const char* email, TechnionFaculty faculty){
     assert(company != NULL);
     if (email == NULL){
         return COMPANY_NULL_ARGUMENT;
@@ -28,7 +46,7 @@ CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
         return COMPANY_OUT_OF_MEMORY;
     }
     strcpy(email_copy, email);
-    Set rooms = setCreate(copyRoom, resetRoom, compareRoom);
+    Set rooms = setCreate(copyRoom, destroyRoom, compareRoom);
     if (!rooms){
         free(email_copy);
         return COMPANY_OUT_OF_MEMORY;
@@ -42,8 +60,12 @@ CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
 
 void resetCompany(void* company){
     assert(company != NULL);
-    free((*(Company*)company)->email);
+    if ((*(Company*)company)->email != NULL){
+        free((*(Company*)company)->email);
+        (*(Company*)company)->email = NULL;
+    }
     (*(Company*)company)->revenue = 0;
+    setClear((*(Company*)company)->rooms);
     setDestroy((*(Company*)company)->rooms);
     (*(Company*)company)->faculty = UNKNOWN;
 }
@@ -60,7 +82,9 @@ CompanyError addRoomCompany(Company company, Room room){
     assert(company != NULL);
     SetResult result = setAdd(company->rooms, (void*)room);
     if(result != SET_SUCCESS){
-        return errorHandel(HANDEL_SET, (void*)result, ROOM, (void*)room);
+        MtmErrorCode code = errorHandel(HANDEL_SET, (void*)result, ROOM,
+                                        (void*)room);
+        return reverse(code);
     }
     return COMPANY_SUCCESS;
 }
@@ -69,7 +93,9 @@ CompanyError removeRoomCompany(Company company, Room room){
     assert(company != NULL);
     SetResult result = setRemove(company->rooms, room);
     if(result != SET_SUCCESS){
-        return errorHandel(HANDEL_SET, (void*)result, ROOM, (void*)room);
+        MtmErrorCode code =  errorHandel(HANDEL_SET, (void*)result, ROOM,
+                                         (void*)room);
+        return reverse(code);
     }
     return COMPANY_SUCCESS;
 }
@@ -85,10 +111,13 @@ int compareCompany(void* company1, void* company2){
 
 void* copyCompany(void* company){
     assert(company != NULL);
-    Company *new_company;
-    MtmErrorCode result = initCompany(new_company,
-                                      getCompanyEmail((*(Company*)company),
-                                      getCompanyFaculty((*(Company*)company));
+    Company new_company = createCompany();
+    if(!new_company){
+        return NULL;
+    }
+    CompanyError result = initCompany(new_company,
+                                      getCompanyEmail(*(Company*)company),
+                                      getCompanyFaculty((*(Company*)company)));
     if (result != MTM_SUCCESS){
         return NULL;
     }
@@ -110,4 +139,24 @@ Room findRoomInCompany(Company company, int Id){
         return curr_room;
     }
     return NULL;
+}
+
+/*!
+ * This function translate the general error the ADT specific error
+ * @param result - the general error code
+ * @return the specific error code
+ */
+static CompanyError reverse(MtmErrorCode result){
+    switch (result){
+        case MTM_OUT_OF_MEMORY :
+            return COMPANY_OUT_OF_MEMORY;
+        case MTM_NULL_PARAMETER:
+            return COMPANY_NULL_ARGUMENT;
+        case MTM_ID_ALREADY_EXIST:
+            return COMPANY_ID_ALREADY_EXIST;
+        case MTM_ID_DOES_NOT_EXIST:
+            return COMPANY_ID_DOES_NOT_EXIST;
+        default:
+            return COMPANY_INVALID_ARGUMENT;
+    }
 }

@@ -16,6 +16,7 @@ typedef enum  {
     COMPANY_OUT_OF_MEMORY,
     COMPANY_INVALID_ARGUMENT,
     COMPANY_ID_ALREADY_EXIST,
+    COMPANY_ID_DOES_NOT_EXIST,
 } CompanyError;
 
 /*!
@@ -30,7 +31,7 @@ typedef enum  {
  * @return MTM_OUT_OF_MEMORY if one of the mallocs failed
  * @return MTM_SUCCESS if all went well
  */
-CompanyError initCompany(Company company, char* email, TechnionFaculty faculty);
+CompanyError initCompany(Company company, const char* email, TechnionFaculty faculty);
 
 /*!
  * this function reset and free all the ADT fields and the ADT itself
@@ -38,9 +39,17 @@ CompanyError initCompany(Company company, char* email, TechnionFaculty faculty);
  */
 void resetCompany(void* company);
 
+/*!
+ * allocates the needed memory space for an Company ADT
+ * @return NULL if allocation failed
+ */
 Company createCompany();
 
-void destroyCompany(Company company);
+/*!
+ * release all memory allocated for this ADT
+ * @param order - the ADT to realse
+ */
+void destroyCompany(void* company);
 
 /*!
  * function returns the faculty of the company

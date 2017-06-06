@@ -2,11 +2,11 @@
 #include "room.h"
 #include "set.h"
 #include "list.h"
-//#include "order.h"
-/*#include "escaper.h"
+#include "order.h"
+#include "escaper.h"
 #include "company.h"
 #include "EscapeTechnion.h"
-*/
+
 
 #ifndef HW3WET_USEFULLFUNCTIONS_H
 #define HW3WET_USEFULLFUNCTIONS_H
@@ -65,13 +65,13 @@ MtmErrorCode setErrorHandel(SetResult result, int sender_ID, void* ADT);
  */
 MtmErrorCode listErrorHandel(ListResult result, int sender_ID, void* ADT);
 
-/*MtmErrorCode orderErrorHandel(OrderError result, int sender_ID, void* ADT);
+MtmErrorCode orderErrorHandel(OrderError result, int sender_ID, void* ADT);
 
-MtmErrorCode escaperErrorHandel(SetResult result, int sender_ID);
+MtmErrorCode escaperErrorHandel(EscaperError result, int sender_ID, void* ADT);
 
-MtmErrorCode roomErrorHandel(SetResult result, int sender_ID);
+MtmErrorCode roomErrorHandel(RoomError result, int sender_ID, void* ADT);
 
-MtmErrorCode companyErrorHandel(SetResult result, int sender_ID);*/
+MtmErrorCode companyErrorHandel(CompanyError result, int sender_ID, void* ADT);
 
 /* * This Function handels a memory fault in allocation. frees all priviously
  * allocated space
