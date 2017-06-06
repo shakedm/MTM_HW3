@@ -13,7 +13,7 @@ typedef struct room_t* Room;
 
 Room createRoom();
 
-void destroyRoom(Room room);
+void destroyRoom(void* room);
 /*!
  * This function creates & initiates to given value a room type ADT
  * @param room - points to the memory space given to the ADT
@@ -35,7 +35,7 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
  * @param room - points to the memory to free. if NULL this function does
  * nothing.
  */
-void resetRoom(void* room);
+void resetRoom(Room room);
 
 /* * This function returns the room's ID (the unige identifier)
  * @param room - points to the ADT
