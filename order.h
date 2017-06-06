@@ -33,11 +33,18 @@ typedef struct order_t* Order;
  */
 MtmErrorCode initOrder(Order order , int room_id, const char* company_email,
                        const char* escaper_email, int time[HOURS_FORMAT],
-                       int num_of_visitors, int room_price));
+                       int num_of_visitors, int room_price);
 
-
+/*!
+ * allocates the needed memory space for an Order ADT
+ * @return NULL if allocation failed
+ */
 Order createOrder();
 
+/*!
+ * release all memory allocated for this ADT
+ * @param order - the ADT to realse
+ */
 void destroyOrder(Order order);
 
 /*!
