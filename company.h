@@ -10,6 +10,14 @@
 /* type to define the company struct */
 typedef struct company_t* Company;
 
+typedef enum  {
+    COMPANY_SUCCESS,
+    COMPANY_NULL_ARGUMENT,
+    COMPANY_OUT_OF_MEMORY,
+    COMPANY_INVALID_ARGUMENT,
+    COMPANY_ID_ALREADY_EXIST,
+} CompanyError;
+
 /*!
  * this function init and create the Company ADT from a given pointer
  * @param company points to the memory space given to the ADT
@@ -22,13 +30,17 @@ typedef struct company_t* Company;
  * @return MTM_OUT_OF_MEMORY if one of the mallocs failed
  * @return MTM_SUCCESS if all went well
  */
-MtmErrorCode initCompany(Company *company, char* email, TechnionFaculty faculty);
+CompanyError initCompany(Company company, char* email, TechnionFaculty faculty);
 
 /*!
  * this function reset and free all the ADT fields and the ADT itself
  * @param company void pointer to the ADT for generic use in set and list
  */
 void resetCompany(void* company);
+
+Company createCompany();
+
+void destroyCompany(Company company);
 
 /*!
  * function returns the faculty of the company
@@ -50,9 +62,9 @@ int getCompanyRevenue(Company company);
  * @param room
  * @return
  */
-MtmErrorCode addRoomCompany(Company company, Room room);
+CompanyError addRoomCompany(Company company, Room room);
 
-MtmErrorCode removeRoomCompany(Company company, Room room);
+CompanyError removeRoomCompany(Company company, Room room);
 
 int compareCompany(void* company1, void* company2);
 

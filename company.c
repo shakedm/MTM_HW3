@@ -14,35 +14,30 @@ struct company_t {
 };
 
 
-MtmErrorCode initCompany(Company *company, char* email, TechnionFaculty faculty){
+CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
     assert(company != NULL);
     if (email == NULL){
-        return MTM_NULL_PARAMETER;
+        return COMPANY_NULL_ARGUMENT;
     }
     if (!(emailCheck(email))){
-        return MTM_INVALID_PARAMETER;
+        return COMPANY_INVALID_ARGUMENT;
     }
-    Company new_company = malloc(sizeof(Company));
-    if(!new_company){
-        return MTM_OUT_OF_MEMORY;
-    }
-    *company = new_company;
     char* email_copy = malloc(strlen(email) + 1);
     if (!email_copy){
         free(company);
-        return MTM_OUT_OF_MEMORY;
+        return COMPANY_OUT_OF_MEMORY;
     }
     strcpy(email_copy, email);
     Set rooms = setCreate(copyRoom, resetRoom, compareRoom);
     if (!rooms){
         free(email_copy);
-        return MTM_OUT_OF_MEMORY;
+        return COMPANY_OUT_OF_MEMORY;
     }
-    (*company)->email = email_copy;
-    (*company)->faculty = faculty;
-    (*company)->rooms = rooms;
-    (*company)->revenue = 0;
-    return MTM_SUCCESS;
+    company->email = email_copy;
+    company->faculty = faculty;
+    company->rooms = rooms;
+    company->revenue = 0;
+    return COMPANY_SUCCESS;
 }
 
 void resetCompany(void* company){
@@ -61,22 +56,22 @@ int getCompanyRevenue(Company company){
     return company->revenue;
 }
 
-MtmErrorCode addRoomCompany(Company company, Room room){
+CompanyError addRoomCompany(Company company, Room room){
     assert(company != NULL);
     SetResult result = setAdd(company->rooms, (void*)room);
     if(result != SET_SUCCESS){
-        return errorHandel(HANDEL_SET, (void*)result, COMPANY, (void*)company);
+        return errorHandel(HANDEL_SET, (void*)result, ROOM, (void*)room);
     }
-    return MTM_SUCCESS;
+    return COMPANY_SUCCESS;
 }
 
-MtmErrorCode removeRoomCompany(Company company, Room room){
+CompanyError removeRoomCompany(Company company, Room room){
     assert(company != NULL);
     SetResult result = setRemove(company->rooms, room);
     if(result != SET_SUCCESS){
-        return errorHandel(HANDEL_SET, (void*)result, ROOM, (void*)company);
+        return errorHandel(HANDEL_SET, (void*)result, ROOM, (void*)room);
     }
-    return MTM_SUCCESS;
+    return COMPANY_SUCCESS;
 }
 
 const char* getCompanyEmail(Company company){

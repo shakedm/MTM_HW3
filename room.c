@@ -13,10 +13,12 @@ Room createRoom(){
     Room new_room = malloc(sizeof(new_room));
     return new_room; //if malloc failed it returns NULL
 }
+
 void destroyRoom(void* room){
     if(!room)
         return;
-    free(room);
+    resetRoom((Room)room);
+    free(*(Room*)room);
 }
 
 MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
@@ -54,14 +56,17 @@ void resetRoom(Room room){
     if(room == NULL){
         return;
     }
-    (((Room)room)->working_hours[0])=0;
-    (((Room)room)->working_hours[1])=0;
-    ((Room)room)->num_ppl = 0;
-    ((Room)room)->id = 0;
-    ((Room)room)->price = 0;
-    ((Room)room)->difficulty = 0;
-    char* emailptr= ((Room)room)->email;
-    free(emailptr);
+    room->working_hours[0]=0;
+    room->working_hours[1]=0;
+    room->num_ppl = 0;
+    room->id = 0;
+    room->price = 0;
+    room->difficulty = 0;
+    char* email_ptr= room->email;
+    if (email_ptr != NULL){
+        free(email_ptr);
+    }
+    room->email = NULL;
     //(*(Room*)room)->current_orders = NULL;
 }
 

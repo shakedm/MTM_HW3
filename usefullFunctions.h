@@ -2,6 +2,7 @@
 #include "room.h"
 #include "set.h"
 #include "list.h"
+//#include "order.h"
 /*#include "escaper.h"
 #include "company.h"
 #include "EscapeTechnion.h"
@@ -25,6 +26,10 @@
 #define ESCAPE_TECHNION 40
 #define HANDEL_SET 100
 #define HANDEL_LIST 110
+#define HANDEL_ORDER 120
+#define HANDEL_ESCAPER 130
+#define HANDEL_ROOM 140
+#define HANDEL_COMPANY 150
 #define MAX_SKILL 10
 #define MIN_SKILL 1
 #define HOURS_FORMAT 2
@@ -59,6 +64,14 @@ MtmErrorCode setErrorHandel(SetResult result, int sender_ID, void* ADT);
  * @return the correct error massege after handeling the fault.
  */
 MtmErrorCode listErrorHandel(ListResult result, int sender_ID, void* ADT);
+
+/*MtmErrorCode orderErrorHandel(OrderError result, int sender_ID, void* ADT);
+
+MtmErrorCode escaperErrorHandel(SetResult result, int sender_ID);
+
+MtmErrorCode roomErrorHandel(SetResult result, int sender_ID);
+
+MtmErrorCode companyErrorHandel(SetResult result, int sender_ID);*/
 
 /* * This Function handels a memory fault in allocation. frees all priviously
  * allocated space

@@ -74,6 +74,8 @@ MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT){
             return setErrorHandel((SetResult)result, sender_ID, ADT);
         case HANDEL_LIST:
             return listErrorHandel((ListResult)result, sender_ID, ADT);
+        /*case HANDEL_ORDER:
+            return orderErrorHandel((OrderError)result, sender_ID, ADT);*/
         default:
             return MTM_INVALID_PARAMETER;
     }
@@ -121,3 +123,16 @@ MtmErrorCode listErrorHandel(ListResult result, int sender_ID, void* ADT){
             return MTM_INVALID_PARAMETER;
     }
 }
+
+/*MtmErrorCode orderErrorHandel(OrderError result, int sender_ID, void* ADT){
+    switch (result){
+        case ORDER_OUT_OF_MEMORY :
+            return memoryFaultHandel(sender_ID, ADT);
+        case ORDER_NULL_PARAMETER:
+            return MTM_NULL_PARAMETER;
+        case ORDER_INVALID_PARAMETER:
+            return MTM_INVALID_PARAMETER;
+        default:
+            return MTM_INVALID_PARAMETER;
+    }
+}*/
