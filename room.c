@@ -13,6 +13,13 @@ struct room_t{
     int price;
     Order current_orders;
 };
+Room createRoom(){
+    Room new_room = malloc(sizeof(new_room));
+    return new_room; //if malloc failed it returns NULL
+}
+void destroyRoom(Room room){
+    free(room);
+}
 
 MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price){
