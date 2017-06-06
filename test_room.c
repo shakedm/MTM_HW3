@@ -1,6 +1,5 @@
 #include "test_utilities.h"
 #include "room.h"
-#include "usefullFunctions.h"
 
 
 static bool testInitRoom(){
@@ -15,6 +14,7 @@ static bool testInitRoom(){
     ASSERT_TEST(initRoom(&room,"sha@s",23,2 ,"10-20",2,20)==MTM_SUCCESS);
     resetRoom(room);
     destroyRoom(room);
+    return true;
 }
 static bool testResetRoom(){
     /*will be checked with valgrind, assuming "free" works as expected
