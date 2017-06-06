@@ -15,6 +15,15 @@
 // the type of the ADT
 typedef struct order_t* Order;
 
+/**
+ * This type defines all errors for the Order ADT
+ */
+typedef enum {
+    ORDER_OUT_OF_MEMORY,
+    ORDER_NULL_PARAMETER,
+    ORDER_INVALID_PARAMETER,
+    ORDER_SUCCESS,
+} OrderError;
 
 /*!
  * function initialize a order from a a pointer to order and allocates the memory
@@ -31,13 +40,20 @@ typedef struct order_t* Order;
  * @return MTM_NULL_PARAMETER if order is null
  * @return MTM_SUCCESS if all went well
  */
-MtmErrorCode initOrder(Order order , int room_id, const char* company_email,
+OrderError initOrder(Order order , int room_id, const char* company_email,
                        const char* escaper_email, int time[HOURS_FORMAT],
-                       int num_of_visitors, int room_price));
+                       int num_of_visitors, int room_price);
 
-
+/*!
+ * allocates the needed memory space for an Order ADT
+ * @return NULL if allocation failed
+ */
 Order createOrder();
 
+/*!
+ * release all memory allocated for this ADT
+ * @param order - the ADT to realse
+ */
 void destroyOrder(Order order);
 
 /*!
@@ -88,11 +104,25 @@ int getHoursOrder(Order order);
  */
 void decreaseDay(Order order);
 
-/
+/*!
+ * Function returns the order room's ID
+ * @param order - points to the room ADT
+ * @return room ID
+ */
 int getOrderRoomID(Order order);
 
+/*!
+ * Function returns the email of the escaper that made the oder
+ * @param order - points to the order ADT
+ * @return email string
+ */
 const char* getOrderEscaperEmail(Order order);
 
+/*!
+ * Function returns the email of the company that owns the ordered room
+ * @param order - points to the order ADT
+ * @return email string
+ */
 const char* getOrderCompanyEmail(Order order);
 
 //Filter functions:

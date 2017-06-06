@@ -1,6 +1,6 @@
 #include "usefullFunctions.h"
 
-bool emailCheck(char* email){
+bool emailCheck(const char* email){
     int counter = 0;
     int index = 0;
     while (email[index] != '\0'){

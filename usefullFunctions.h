@@ -40,7 +40,7 @@
  * @return false if the email address has more than one @ or none at all
  * true if the email address is valid
  */
-bool emailCheck(char* email);
+bool emailCheck(const char* email);
 
 /* * This Function handels cases in which a set action fails according to the
  * error masseges
