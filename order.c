@@ -67,7 +67,21 @@ void decreaseDay(Order order){
     assert(order!= NULL);
     (order->time_until_order[days])--;
 }
-Room* getOrderRoom(Order order){
+Room getOrderRoom(Order order){
     assert(order!= NULL);
-    return order->room;
+    return (*order->room);
+}
+
+bool orderForEscaper(Order order, Escaper visitor){
+    assert( order != NULL && visitor != NULL);
+    int compare = strcmp(getEscaperEmail((*order->escaper)),
+                         getEscaperEmail(visitor));
+    if (compare == 0){
+        return true;
+    }
+    return false;
+}
+
+bool orderAtTime(Order order, int time[HOURS_FORMAT]){
+
 }

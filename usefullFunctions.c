@@ -79,7 +79,7 @@ MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT){
     }
 }
 
-bool translateHours(char* working_hours, int *hours){
+bool translateHours(char* working_hours, int *time){
     assert(working_hours != NULL);
     int hours_index = 0;
     while(*working_hours != '/0'){

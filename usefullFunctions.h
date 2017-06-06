@@ -1,11 +1,3 @@
-#include "mtm_ex3.h"
-#include "room.h"
-#include "set.h"
-#include "list.h"
-#include "escaper.h"
-#include "company.h"
-#include "EscapeTechnion.h"
-
 
 #ifndef HW3WET_USEFULLFUNCTIONS_H
 #define HW3WET_USEFULLFUNCTIONS_H
@@ -14,6 +6,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+
+#include "mtm_ex3.h"
+#include "room.h"
+#include "set.h"
+#include "list.h"
+#include "escaper.h"
+#include "company.h"
+#include "EscapeTechnion.h"
+
 
 #define GOOD_AMOUNT 1
 #define COMPANY 10
@@ -80,6 +81,6 @@ MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT);
  * return true if the string is traslated properly.
  * false if the string is not to format.
  */
-bool translateHours(char* working_hours, int *hours);
+bool translateHours(char* working_hours, int* time);
 
 #endif //HW3WET_USEFULLFUNCTIONS_H
