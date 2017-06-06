@@ -85,8 +85,8 @@ bool translateHours(char* working_hours, int *time){
     while(*working_hours != '/0'){
         if(*working_hours < '0' || *working_hours > '9'){
             if (*working_hours != '-'){
-                hours[0] = BAD_HOURS;
-                hours[1] = BAD_HOURS;
+                time[0] = BAD_HOURS;
+                time[1] = BAD_HOURS;
                 return false;
             }
             hours_index++;
@@ -96,13 +96,13 @@ bool translateHours(char* working_hours, int *time){
             working_hours++;
             continue;
         }
-        hours[hours_index] = (hours[hours_index] * 10) + (*working_hours - '0');
-        if(hours[hours_index] > HOURS_PER_DAY){
+        time[hours_index] = (time[hours_index] * 10) + (*working_hours - '0');
+        if(time[hours_index] > HOURS_PER_DAY){
             return false;
         }
         working_hours++;
     }
-    if (hours[OPEN_HOUR] >= hours[CLOSE_HOUR]){
+    if (time[OPEN_HOUR] >= time[CLOSE_HOUR]){
         return false;
     }
     return true;
