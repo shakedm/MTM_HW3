@@ -36,14 +36,8 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
     if (Email == NULL || working_hours == NULL){
         return MTM_NULL_PARAMETER;
     }
-    Room new_room = malloc(sizeof(Room));
-    if(!new_room){
-        return MTM_OUT_OF_MEMORY;
-    }
-    *room = new_room;
     char *new_string = malloc(strlen(working_hours)+1);
     if(!new_string){
-        free(room);
         return MTM_OUT_OF_MEMORY;
     }
     strcpy(new_string,working_hours);
@@ -109,8 +103,8 @@ int compareRoom(void* room1, void* room2){
 
 void* copyRoom(void* room){
     assert(room != NULL);
-    Room *new_room = NULL;
-    MtmErrorCode result = initRoom(new_room, (*(Room*)room)->email,
+    Room new_room = createRoom();
+    MtmErrorCode result = initRoom(&new_room, (*(Room*)room)->email,
                                    roomGetId((*(Room*)room)),
                                    roomGetNumPpl((*(Room*)room)),
                                    DUMMY_TIME, roomGetDifficulty((*(Room*)room)),
@@ -119,7 +113,7 @@ void* copyRoom(void* room){
         return NULL;
     }
     assert(new_room != NULL);
-    (*new_room)->working_hours[OPEN_HOUR] = (*(Room*)room)->working_hours[OPEN_HOUR];
-    (*new_room)->working_hours[CLOSE_HOUR] = (*(Room*)room)->working_hours[CLOSE_HOUR];
-    return new_room;
+    new_room->working_hours[OPEN_HOUR] = (*(Room*)room)->working_hours[OPEN_HOUR];
+    new_room->working_hours[CLOSE_HOUR] = (*(Room*)room)->working_hours[CLOSE_HOUR];
+    return &new_room;
 }
