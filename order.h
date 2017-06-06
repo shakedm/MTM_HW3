@@ -9,8 +9,8 @@
 
 #include <assert.h>
 
-#define days 0
-#define hours 1
+#define DAYS 0
+#define HOURS 1
 
 // the type of the ADT
 typedef struct order_t* Order;
@@ -31,13 +31,14 @@ typedef struct order_t* Order;
  * @return MTM_NULL_PARAMETER if order is null
  * @return MTM_SUCCESS if all went well
  */
-MtmErrorCode initOrder(Order order , int room_id, char* company_email,
-                       char* escaper_email, int time[HOURS_FORMAT],
-                       int num_of_visitors, int room_price);
+MtmErrorCode initOrder(Order order , int room_id, const char* company_email,
+                       const char* escaper_email, int time[HOURS_FORMAT],
+                       int num_of_visitors, int room_price));
 
 
 Order createOrder();
 
+void destroyOrder(Order order);
 
 /*!
  * function to copy all the order ADT
