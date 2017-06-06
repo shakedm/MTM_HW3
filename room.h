@@ -7,7 +7,6 @@
 
 /** Type for defining the room */
 typedef struct room_t* Room;
-typedef struct order_t* Order;
 
 /*!
  * This function creates & initiates to given value a room type ADT
@@ -55,7 +54,7 @@ int roomGetDifficulty(Room room);
  * @param hours - return parameter, int array.
  * @return -.
  */
-void roomGetWorkingHours(Room room, int* hours);
+void roomGetWorkingHours(Room room, int* time);
 
 /* * This function returns the price to a given room.
  * @param room - points to the room ADT

@@ -22,8 +22,8 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
             !emailCheck(Email)){
         return MTM_INVALID_PARAMETER;
     }
-    int hours[HOURS_FORMAT] = {{0}};
-    if(!translateHours(working_hours, hours)){
+    int time[HOURS_FORMAT] = {{0}};
+    if(!translateHours(working_hours, time)){
         return MTM_INVALID_PARAMETER;
     }
     if (Email == NULL || working_hours == NULL){
@@ -43,8 +43,8 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
     (*room)->num_ppl = num_ppl;
     (*room)->difficulty = difficulty;
     (*room)->id = id;
-    (*room)->working_hours[OPEN_HOUR] = hours[OPEN_HOUR];
-    (*room)->working_hours[CLOSE_HOUR] = hours[CLOSE_HOUR];
+    (*room)->working_hours[OPEN_HOUR] = time[OPEN_HOUR];
+    (*room)->working_hours[CLOSE_HOUR] = time[CLOSE_HOUR];
     (*room)->price = price;
     (*room)->email = Email;
     (*room)->current_orders = NULL;
@@ -80,10 +80,10 @@ int roomGetDifficulty(Room room){
     return room->difficulty;
 }
 
-void roomGetWorkingHours(Room room, int* hours){
+void roomGetWorkingHours(Room room, int* time){
     assert(room != NULL);
-    hours[OPEN_HOUR] = room->working_hours[OPEN_HOUR];
-    hours[CLOSE_HOUR] = room->working_hours[CLOSE_HOUR];
+    time[OPEN_HOUR] = room->working_hours[OPEN_HOUR];
+    time[CLOSE_HOUR] = room->working_hours[CLOSE_HOUR];
 }
 
 int roomGetPrice(Room room){
