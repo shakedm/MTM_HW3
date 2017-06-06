@@ -88,6 +88,12 @@ void decreaseDay(Order order);
  * @param order - the order which we check
  * @return- pointer to room
  */
-Room* getOrderRoom(Order order);
+Room getOrderRoom(Order order);
+
+//Filter functions:
+
+bool orderForEscaper(Order order, Escaper visitor);
+
+bool orderAtTime(Order order, int time[HOURS_FORMAT]);
 
 #endif //HW3WET_ORDER_H
