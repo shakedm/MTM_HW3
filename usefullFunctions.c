@@ -3,7 +3,7 @@
 bool emailCheck(char* email){
     int counter = 0;
     int index = 0;
-    while (email[index] != '/0'){
+    while (email[index] != '\0'){
         if(email[index] == '@'){
             counter++;
         }
@@ -52,7 +52,7 @@ MtmErrorCode memoryFaultHandel(int sender_ID, void* ADT){
         case ROOM:
             resetRoom(*(Room*)ADT);
             break;
-        case ESCAPER:
+        /*case ESCAPER:
             resetEscaper(*(Escaper*)ADT);
             break;
         case COMPANY:
@@ -60,7 +60,7 @@ MtmErrorCode memoryFaultHandel(int sender_ID, void* ADT){
             break;
         case ESCAPE_TECHNION:
             resetSystem(*(EscapeTechnion*)ADT);
-            break;
+            break;*/
         default:
             return MTM_OUT_OF_MEMORY;
     }
@@ -82,7 +82,7 @@ MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT){
 bool translateHours(char* working_hours, int *time){
     assert(working_hours != NULL);
     int hours_index = 0;
-    while(*working_hours != '/0'){
+    while(*working_hours != '\0'){
         if(*working_hours < '0' || *working_hours > '9'){
             if (*working_hours != '-'){
                 time[0] = BAD_HOURS;
