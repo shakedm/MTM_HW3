@@ -4,8 +4,6 @@
 #ifndef HW3WET_ROOM_H
 #define HW3WET_ROOM_H
 
-#include "order.h"
-
 #define DUMMY_TIME "00-01"
 
 /** Type for defining the room */
@@ -74,18 +72,6 @@ int roomGetPrice(Room room);
  * @return - const pointer to string.
  */
 const char* roomGetEmail(Room room);
-
-
-MtmErrorCode roomGetOrder(Room room , Order order);
-
-/* *
- * @param room
- * @param order
- * @return
- */
-MtmErrorCode setRoomOrder(Room room, Order order);
-
-MtmErrorCode resetRoomOrder(Room room );
 
 /* * This function compares two room ADT by theis ID fields
  * @param room1 - points to the 1st room ADT
