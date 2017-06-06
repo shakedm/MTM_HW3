@@ -1,8 +1,4 @@
 #include "room.h"
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include "usefullFunctions.h"
 
 struct room_t{
     char* email;
@@ -11,7 +7,7 @@ struct room_t{
     int num_ppl;
     int difficulty;
     int price;
-    Order current_orders;
+    //Order current_orders;
 };
 Room createRoom(){
     Room new_room = malloc(sizeof(new_room));
@@ -25,7 +21,7 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price){
     assert(room != NULL);
     if ( id <= 0 || num_ppl <= 0 || price <= 0 || price %4 != 0 ||
-            difficulty > MAX_SKILL | difficulty < MIN_SKILL ||
+            difficulty > MAX_SKILL || difficulty < MIN_SKILL ||
             !emailCheck(Email)){
         return MTM_INVALID_PARAMETER;
     }
@@ -40,6 +36,12 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
     if(!new_string){
         return MTM_OUT_OF_MEMORY;
     }
+    char* new_email = malloc(strlen(Email)+1);
+    if  (!new_email){
+        free(new_string);
+        return MTM_OUT_OF_MEMORY;
+    }
+    strcpy(new_email,Email);
     strcpy(new_string,working_hours);
     (*room)->num_ppl = num_ppl;
     (*room)->difficulty = difficulty;
@@ -47,8 +49,8 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
     (*room)->working_hours[OPEN_HOUR] = time[OPEN_HOUR];
     (*room)->working_hours[CLOSE_HOUR] = time[CLOSE_HOUR];
     (*room)->price = price;
-    (*room)->email = Email;
-    (*room)->current_orders = NULL;
+    (*room)->email = new_email;
+    //(*room)->current_orders = NULL;
     return MTM_SUCCESS;
 }
 
@@ -56,14 +58,14 @@ void resetRoom(void* room){
     if(room == NULL){
         return;
     }
-    free((*(Room*)room)->working_hours);
-    (*(Room*)room)->num_ppl = 0;
-    (*(Room*)room)->id = 0;
-    (*(Room*)room)->price = 0;
-    (*(Room*)room)->difficulty = 0;
-    free((*(Room*)room)->email);
-    (*(Room*)room)->current_orders = NULL;
-    free(room);
+    (((Room)room)->working_hours[0])=0;
+    (((Room)room)->working_hours[1])=0;
+    ((Room)room)->num_ppl = 0;
+    ((Room)room)->id = 0;
+    ((Room)room)->price = 0;
+    ((Room)room)->difficulty = 0;
+    free(((Room)room)->email);
+    //(*(Room*)room)->current_orders = NULL;
 }
 
 int roomGetId(Room room){
@@ -115,5 +117,5 @@ void* copyRoom(void* room){
     assert(new_room != NULL);
     new_room->working_hours[OPEN_HOUR] = (*(Room*)room)->working_hours[OPEN_HOUR];
     new_room->working_hours[CLOSE_HOUR] = (*(Room*)room)->working_hours[CLOSE_HOUR];
-    return &new_room;
+    return new_room;
 }

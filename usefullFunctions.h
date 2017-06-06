@@ -1,3 +1,11 @@
+#include "mtm_ex3.h"
+#include "room.h"
+#include "set.h"
+#include "list.h"
+/*#include "escaper.h"
+#include "company.h"
+#include "EscapeTechnion.h"
+*/
 
 #ifndef HW3WET_USEFULLFUNCTIONS_H
 #define HW3WET_USEFULLFUNCTIONS_H
@@ -7,13 +15,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "mtm_ex3.h"
-#include "room.h"
-#include "set.h"
-#include "list.h"
-#include "escaper.h"
-#include "company.h"
-#include "EscapeTechnion.h"
+
 
 
 #define GOOD_AMOUNT 1

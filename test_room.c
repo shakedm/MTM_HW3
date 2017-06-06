@@ -4,7 +4,7 @@
 
 static bool testInitRoom(){
     Room room= createRoom();
-    ASSERT_TEST(initRoom(NULL,NULL,NULL,NULL,NULL,NULL,NULL)
+    ASSERT_TEST(initRoom(NULL,NULL,0,0,NULL,0,0)
                 == MTM_INVALID_PARAMETER);
     ASSERT_TEST(initRoom(&room,"asd",22,23,"10-23",3,40)==MTM_INVALID_PARAMETER);
     ASSERT_TEST(initRoom(&room,"sha@s",23,2 ,"100-20",2,20)
