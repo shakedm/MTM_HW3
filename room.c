@@ -22,7 +22,7 @@ MtmErrorCode initRoom(Room *room, char* Email , int id , int num_ppl ,
             !emailCheck(Email)){
         return MTM_INVALID_PARAMETER;
     }
-    int time[HOURS_FORMAT] = {{0}};
+    int time[HOURS_FORMAT] = {0};
     if(!translateHours(working_hours, time)){
         return MTM_INVALID_PARAMETER;
     }
