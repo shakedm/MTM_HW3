@@ -107,3 +107,17 @@ bool translateHours(char* working_hours, int *time){
     }
     return true;
 }
+
+
+MtmErrorCode listErrorHandel(ListResult result, int sender_ID, void* ADT){
+    switch (result){
+        case LIST_OUT_OF_MEMORY :
+            return memoryFaultHandel(sender_ID, ADT);
+        case LIST_NULL_ARGUMENT:
+            return MTM_NULL_PARAMETER;
+        case LIST_INVALID_CURRENT:
+            return MTM_INVALID_PARAMETER;
+        default:
+            return MTM_INVALID_PARAMETER;
+    }
+}

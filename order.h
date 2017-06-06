@@ -20,19 +20,23 @@ typedef struct order_t* Order;
  * function initialize a order from a a pointer to order and allocates the memory
  * needed for the ADT
  * @param order- the pointer that it recieves
- * @param room- pointer to the room of the order
- * @param escaper- pointer to the escaper that made the order
+ * @param room_id - the ID of the desired room
+ * @param company_email - string to signefy the company's email
+ * @param escaper_email- pointer to the escaper that made the order
  * @param time- an array with 2 blocks first for the days and second for hours
  * @param num_of_visitors- the number of people in this order
- * @param cost - the total cost of the order, already calculated
+ * @param room_price - the cost of the desired room.
  * @return MTM_OUT_OF_MEMORY if malloc failed
  * @return MTM_INVALID_PARAMETERS if one of the parameters is not legal
  * @return MTM_NULL_PARAMETER if order is null
  * @return MTM_SUCCESS if all went well
  */
-MtmErrorCode initOrder(Order* order , Room* room, Escaper* escaper,
-                       int time[HOURS_FORMAT], int num_of_visitors, int cost);
+MtmErrorCode initOrder(Order order , int room_id, char* company_email,
+                       char* escaper_email, int time[HOURS_FORMAT],
+                       int num_of_visitors, int room_price);
 
+
+Order createOrder();
 
 
 /*!
@@ -83,16 +87,16 @@ int getHoursOrder(Order order);
  */
 void decreaseDay(Order order);
 
-/*!
- * Function reach the pointer to room that is in the order struct
- * @param order - the order which we check
- * @return- pointer to room
- */
-Room getOrderRoom(Order order);
+/
+int getOrderRoomID(Order order);
+
+const char* getOrderEscaperEmail(Order order);
+
+const char* getOrderCompanyEmail(Order order);
 
 //Filter functions:
 
-bool orderForEscaper(Order order, Escaper visitor);
+bool orderForEscaper(Order order, char* visitor_email);
 
 bool orderAtTime(Order order, int time[HOURS_FORMAT]);
 

@@ -2,31 +2,43 @@
 
 
 typedef struct order_t {
-    Room* room;
-    Escaper* escaper;
+    int room_id;
+    char* company_email;
+    char* escaper_email;
     int time_until_order [HOURS_FORMAT];
     int num_of_people;
     int cost;
 };
 
-MtmErrorCode initOrder(Order* order , Room* room, Escaper* escaper,
-                       int time[HOURS_FORMAT], int num_of_visitors, int cost){
-    if( order == NULL)
+MtmErrorCode initOrder(Order order , int room_id, char* company_email,
+                       char* escaper_email, int time[HOURS_FORMAT],
+                       int num_of_visitors, int room_price){
+    assert(Order != NULL);
+    if( escaper_email == NULL || company_email == NULL)
         return MTM_NULL_PARAMETER;
-    if(time[days]<= BAD_HOURS || time[hours]<= BAD_HOURS ||
-            time[hours]> HOURS_PER_DAY || cost < 0 || num_of_visitors <1)
+    if(time[days] <= OPEN_HOUR || time[hours] < OPEN_HOUR ||
+            time[hours]> HOURS_PER_DAY || room_id < 0 || num_of_visitors < 1 ||
+            room_price < 0 || room_price %4 != 0)
         return MTM_INVALID_PARAMETER;
-    Order new_order = malloc(sizeof(Order));
-    if(new_order== NULL)
+    char* company_copy = malloc(strlen(company_email) + 1);
+    if(company_copy== NULL){
         return MTM_OUT_OF_MEMORY;
-    new_order->escaper= escaper;
-    new_order->room = room;
-    new_order->cost = cost;
-    new_order->num_of_people = num_of_visitors;
-    for (int i = 0; i <HOURS_FORMAT ; ++i) {
-        new_order->time_until_order[i] = time[i];
     }
-    *order= new_order;
+    char* escaper_copy = malloc(strlen(escaper_email) + 1);
+    if(escaper_copy== NULL){
+        free(company_email);
+        return MTM_OUT_OF_MEMORY;
+    }
+    strcpy(company_copy, company_email);
+    strcpy(escaper_copy, escaper_email);
+    order->room_id = room_id;
+    order->escaper_email= escaper_copy;
+    order->company_email = company_copy;
+    order->num_of_people = num_of_visitors;
+    order->cost = num_of_visitors * room_price;
+    for (int i = 0; i < HOURS_FORMAT ; ++i) {
+        order->time_until_order[i] = time[i];
+    }
     return MTM_SUCCESS;
 }
 
