@@ -11,6 +11,7 @@
 
 #define DAYS 0
 #define HOURS 1
+#define DISCOUNT 0.75
 
 // the type of the ADT
 typedef struct order_t* Order;
@@ -41,8 +42,9 @@ typedef enum {
  * @return MTM_SUCCESS if all went well
  */
 OrderError initOrder(Order order , int room_id, const char* company_email,
-                       const char* escaper_email, int time[HOURS_FORMAT],
-                       int num_of_visitors, int room_price);
+                     const char* escaper_email, int time[HOURS_FORMAT],
+                     int num_of_visitors, int room_price,
+                     TechnionFaculty faculty);
 
 /*!
  * allocates the needed memory space for an Order ADT
@@ -125,10 +127,27 @@ const char* getOrderEscaperEmail(Order order);
  */
 const char* getOrderCompanyEmail(Order order);
 
+/*!
+ * Function returns the faculty of the desired order
+ * @param order points to Order ADT
+ * @return the faculy
+ * UNKNOWN if order is NULL
+ */
+TechnionFaculty getOderFaculty(Order order);
+
+/*!
+ * This function resets the order price to a dicounted figure;
+ * @param order - points to the Order to reset
+ * @return ORDER_NULL_PARAMETER if Order is NULL
+ */
+OrderError setDiscountOrder(Order order);
+
 //Filter functions:
 
-bool orderForEscaper(Order order, char* visitor_email);
+bool orderForEscaper(void* order, void* visitor_email);
 
-bool orderAtTime(Order order, int time[HOURS_FORMAT]);
+bool orderAtTime(void* order, void* time[HOURS_FORMAT]);
+
+bool orderForFaculty(void* order, void* faculty);
 
 #endif //HW3WET_ORDER_H

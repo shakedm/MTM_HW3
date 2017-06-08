@@ -30,7 +30,7 @@ RoomError initRoom(Room room, const char* Email , int id , int num_ppl ,
         return ROOM_INVALID_PARAMETER;
     }
     int time[HOURS_FORMAT] = {0};
-    if(!translateHours(working_hours, time)){
+    if(!translateHours(working_hours, time, false)){
         return ROOM_INVALID_PARAMETER;
     }
     if (Email == NULL || working_hours == NULL){
@@ -108,7 +108,7 @@ int compareRoom(void* room1, void* room2){
 void* copyRoom(void* room){
     assert(room != NULL);
     Room new_room = createRoom();
-    RoomError result = initRoom(&new_room, ((Room)room)->email,
+    RoomError result = initRoom(new_room, ((Room)room)->email,
                                    roomGetId(((Room)room)),
                                    roomGetNumPpl(((Room)room)),
                                    DUMMY_TIME, roomGetDifficulty(((Room)room)),

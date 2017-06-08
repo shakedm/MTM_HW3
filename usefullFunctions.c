@@ -87,7 +87,7 @@ MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT){
     }
 }
 
-bool translateHours(char* working_hours, int *time){
+bool translateHours(char* working_hours, int *time, bool order){
     assert(working_hours != NULL);
     int hours_index = 0;
     while(*working_hours != '\0'){
@@ -105,13 +105,17 @@ bool translateHours(char* working_hours, int *time){
             continue;
         }
         time[hours_index] = (time[hours_index] * 10) + (*working_hours - '0');
-        if(time[hours_index] > HOURS_PER_DAY){
-            return false;
+        if(!order || hours_index == HOURS_FORMAT - 1){
+            if(time[hours_index] > HOURS_PER_DAY){
+                return false;
+            }
         }
         working_hours++;
     }
-    if (time[OPEN_HOUR] >= time[CLOSE_HOUR]){
-        return false;
+    if(!order){
+        if (time[OPEN_HOUR] >= time[CLOSE_HOUR]){
+            return false;
+        }
     }
     return true;
 }

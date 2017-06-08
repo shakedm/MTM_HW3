@@ -26,7 +26,7 @@ MtmErrorCode createEscapeTechnion(EscapeTechnion *sys){
         free(new_system);
         return MTM_OUT_OF_MEMORY;
     }
-    new_system->orderList = listCreate(copyOrder, resetOrder);
+    new_system->orderList = listCreate(copyOrder, destroyOrder);
     if(new_system->orderList == NULL){
         setDestroy(new_system->escapers);
         setDestroy(new_system->companies);
@@ -185,23 +185,54 @@ MtmErrorCode escaperRemove(EscapeTechnion sys, char* email){
 }
 
 MtmErrorCode escaperOrder(EscapeTechnion sys, char* email,
-                          TechnionFaculty faculty, int id, int* time,
-                          int num_ppl){
-    Escaper visitor = findEscaperInSet(sys->escapers, email);
-    if(visitor == NULL){
-        return MTM_CLIENT_EMAIL_DOES_NOT_EXIST;
+                          TechnionFaculty faculty, int id, char* time,
+                          int num_ppl) {
+    int due_in[HOURS_FORMAT];
+    Order new_order = createOrder();
+    if (!new_order) {
+        return MTM_OUT_OF_MEMORY;
     }
-
+    OrderError order_result = initOrder(new_order, id, getCompanyEmail(company),
+                                        email, due_in, num_ppl,
+                                        roomGetPrice(room), faculty);
+    if (order_result != ORDER_SUCCESS) {
+        return errorHandel(HANDEL_ORDER, (void *) order_result, ORDER,
+                           new_order);
+    }
+    order_result = setDiscountOrder(new_order);
+    if (order_result != ORDER_SUCCESS) {
+        return errorHandel(HANDEL_ORDER, (void *) order_result, ORDER,
+                           new_order);
+    }
+    ListResult list_result = listInsertLast(sys->orderList, new_order);
+    if (list_result != LIST_SUCCESS) {
+        return errorHandel(HANDEL_LIST, (void *) list_result, ESCAPE_TECHNION,
+                           sys->orderList);
+    }
+    return MTM_SUCCESS;
 }
 
+MtmErrorCode isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
+                         TechnionFaculty faculty, int id, char* time,
+                         int due_in[HOURS_FORMAT], Room room, Company company){
+    Escaper visitor = findEscaperInSet(sys->escapers, email);
+    if (visitor == NULL) {
+        return MTM_CLIENT_EMAIL_DOES_NOT_EXIST;
+    }
+    *discount = false;
+    if (faculty == getEscaperFaculty(visitor)) {
+        *discount = true;
+    }
+    bool good_time = translateHours(time, due_in, true);
+    if (!good_time) {
+        return MTM_INVALID_PARAMETER;
+    }
+    List faculty_order_list = listCreate(copyOrder, destroyOrder);
+    faculty_order_list = listFilter(sys->orderList, orderForFaculty, (void*)faculty);
+    for (List i = 0; i < ; ++i) {
 
-
-
-
-
-
-
-
+    }
+}
 
 MtmErrorCode escaperRecommend(EscapeTechnion sys, char* email, int num_ppl);
 
@@ -209,13 +240,11 @@ MtmErrorCode reportDay(EscapeTechnion sys);
 
 MtmErrorCode reportBest(EscapeTechnion sys);
 
-bool orderExistForRoom(List orders, Room room){
+bool orderExistForRoom(List orders, int room_id){
     int size = listGetSize(orders);
     Order curr_order = listGetFirst(orders);
-    Room orderRoom;
     for (int i = 0; i < size; ++i) {
-        orderRoom = getOrderRoom(curr_order);
-        if(roomGetId(orderRoom) == roomGetId(room)){
+        if(getOrderRoomID(curr_order) == room_id){
             return true;
         }
         curr_order = listGetNext(orders);

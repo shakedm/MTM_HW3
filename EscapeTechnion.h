@@ -34,7 +34,7 @@ MtmErrorCode escaperAdd(EscapeTechnion sys, char* email,
 MtmErrorCode escaperRemove(EscapeTechnion sys, char* email);
 
 MtmErrorCode escaperOrder(EscapeTechnion sys, char* email,
-                          TechnionFaculty faculty, int id, int* time,
+                          TechnionFaculty faculty, int id, char* time,
                           int num_ppl);
 
 MtmErrorCode escaperRecommend(EscapeTechnion sys, char* email, int num_ppl);
@@ -43,13 +43,17 @@ MtmErrorCode reportDay(EscapeTechnion sys);
 
 MtmErrorCode reportBest(EscapeTechnion sys);
 
+MtmErrorCode isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
+                         TechnionFaculty faculty, int id, char* time,
+                         int due_in[HOURS_FORMAT], Room room, Company company);
+
 Company findCompanyByEmail(Set companies, char *email);
 
 Company findCompanyByFaculty(Set companies, TechnionFaculty faculty);
 
 Escaper findEscaperInSet(Set escapers, char *email);
 
-bool orderExistForRoom(List orders, Room room);
+bool orderExistForRoom(List orders, int room_id);
 
 void resetSystem(EscapeTechnion sys);
 

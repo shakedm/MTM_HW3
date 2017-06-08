@@ -24,6 +24,7 @@
 #define ESCAPER 20
 #define ROOM 30
 #define ESCAPE_TECHNION 40
+#define ORDER 50
 #define HANDEL_SET 100
 #define HANDEL_LIST 110
 #define HANDEL_ORDER 120
@@ -96,6 +97,6 @@ MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT);
  * return true if the string is traslated properly.
  * false if the string is not to format.
  */
-bool translateHours(char* working_hours, int* time);
+bool translateHours(char* working_hours, int *time, bool order);
 
 #endif //HW3WET_USEFULLFUNCTIONS_H

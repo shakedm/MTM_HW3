@@ -3,6 +3,7 @@
 
 typedef struct order_t {
     int room_id;
+    TechnionFaculty faculty;
     char* company_email;
     char* escaper_email;
     int time_until_order [HOURS_FORMAT];
@@ -12,14 +13,15 @@ typedef struct order_t {
 
 OrderError initOrder(Order order , int room_id, const char* company_email,
                        const char* escaper_email, int time[HOURS_FORMAT],
-                       int num_of_visitors, int room_price){
+                       int num_of_visitors, int room_price,
+                     TechnionFaculty faculty){
     assert(Order != NULL);
     if( escaper_email == NULL || company_email == NULL){
         return ORDER_NULL_PARAMETER;
     }
     if(time[DAYS] <= OPEN_HOUR || time[HOURS] < OPEN_HOUR ||
             time[HOURS]> HOURS_PER_DAY || room_id < 0 || num_of_visitors < 1 ||
-            room_price < 0 || room_price %4 != 0){
+            room_price < 0 || room_price %4 != 0 || faculty == UNKNOWN){
         return ORDER_INVALID_PARAMETER;
     }
     if (!emailCheck(company_email) || !emailCheck(escaper_email)){
@@ -44,6 +46,7 @@ OrderError initOrder(Order order , int room_id, const char* company_email,
     for (int i = 0; i < HOURS_FORMAT ; ++i) {
         order->time_until_order[i] = time[i];
     }
+    order->faculty = faculty;
     return ORDER_SUCCESS;
 }
 
@@ -69,8 +72,11 @@ void* copyOrder(void* order){
     int room_price = getCost(order) / getNumOfVisitors(order);
     if(initOrder(copy_order, getOrderRoomID(order), getOrderCompanyEmail(order),
                  getEscaperEmail(order), time_copy,
-                 getNumOfVisitors(order), room_price) != MTM_SUCCESS)
+                 getNumOfVisitors(order), room_price, getOderFaculty(order))
+                != ORDER_SUCCESS){
+        errorHandel(HANDEL_ORDER, (void*)ORDER_OUT_OF_MEMORY, ORDER, copy_order);
         return NULL;
+    }
     return copy_order;
 }
 
@@ -115,15 +121,39 @@ int getOrderRoomId(Order order){
     return (order->room_id);
 }
 
-bool orderForEscaper(Order order, char* visitor_email){
+TechnionFaculty getOderFaculty(Order order){
+    if(order == NULL){
+        return UNKNOWN;
+    }
+    return order->faculty;
+}
+
+OrderError setDiscountOrder(Order order){
+    if (order == NULL){
+        return ORDER_NULL_PARAMETER;
+    }
+    order->cost = (int)(order->cost * DISCOUNT + 0.5);
+    return ORDER_SUCCESS;
+}
+
+bool orderForEscaper(void* order, void* visitor_email){
     assert( order != NULL && visitor != NULL);
-    int compare = strcmp(visitor_email, order->escaper_email);
+    int compare = strcmp((char*)visitor_email, ((Order)order)->escaper_email);
     if (compare == 0){
         return true;
     }
     return false;
 }
 
-bool orderAtTime(Order order, int time[HOURS_FORMAT]){
+bool orderAtTime(void* order, void* time[HOURS_FORMAT]){
+    for (int i = 0; i < HOURS_FORMAT ; ++i) {
+        if( ((Order)order)->time_until_order[i] != *(int*)time[i]){
+            return false;
+        }
+    }
+    return true;
+}
 
+bool orderForFaculty(void* order, void* faculty){
+    return (((Order)order)->faculty == (TechnionFaculty)faculty);
 }
