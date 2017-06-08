@@ -47,7 +47,7 @@ MtmErrorCode isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
                          TechnionFaculty faculty, int id, char* time,
                          int due_in[HOURS_FORMAT], Room room, Company company);
 
-Company findCompanyByEmail(Set companies, char *email);
+Company findCompanyByEmail(Set companies, const char *email);
 
 Company findCompanyByFaculty(Set companies, TechnionFaculty faculty);
 

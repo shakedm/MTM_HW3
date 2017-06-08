@@ -54,7 +54,7 @@ MtmErrorCode companyAdd(EscapeTechnion sys, char* email,
     return MTM_SUCCESS;
 }
 
-Company findCompanyByEmail(Set companies, char *email){
+Company findCompanyByEmail(Set companies, const char *email){
     int set_size = setGetSize(companies);
     Company curr_company = setGetFirst(companies);
     bool found = false;
@@ -227,11 +227,30 @@ MtmErrorCode isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
     if (!good_time) {
         return MTM_INVALID_PARAMETER;
     }
+    bool found = false;
     List faculty_order_list = listCreate(copyOrder, destroyOrder);
-    faculty_order_list = listFilter(sys->orderList, orderForFaculty, (void*)faculty);
-    for (List i = 0; i < ; ++i) {
-
+    if(!faculty_order_list){
+        return MTM_OUT_OF_MEMORY;
     }
+    faculty_order_list = listFilter(sys->orderList, orderForFaculty,
+                                    (void*)faculty);
+    for (List i = listGetFirst(faculty_order_list) ; i != NULL;
+         i = listGetNext(faculty_order_list)) {
+        if(getOrderRoomID(listGetCurrent(i)) == id){
+            company = findCompanyByEmail(sys->companies,
+                                         getOrderCompanyEmail(listGetCurrent(i)));
+            room = findRoomInCompany(company, id);
+            found = true;
+            if(getDaysOrder(listGetCurrent(i)) == due_in[DAYS] &&
+                    getHoursOrder(listGetCurrent(i)) == due_in[HOURS]){
+                return MTM_ROOM_NOT_AVAILABLE;
+            }
+        }
+    }
+    if(!found){
+        return MTM_ID_DOES_NOT_EXIST;
+    }
+    //STILL NEED TO FINISH
 }
 
 MtmErrorCode escaperRecommend(EscapeTechnion sys, char* email, int num_ppl);
