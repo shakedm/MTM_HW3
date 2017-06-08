@@ -21,7 +21,7 @@ void destroyRoom(void* room){
     free(*(Room*)room);
 }
 
-RoomError initRoom(Room *room, char* Email , int id , int num_ppl ,
+RoomError initRoom(Room room, const char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price){
     assert(room != NULL);
     if ( id <= 0 || num_ppl <= 0 || price <= 0 || price %4 != 0 ||
@@ -41,13 +41,13 @@ RoomError initRoom(Room *room, char* Email , int id , int num_ppl ,
         return ROOM_OUT_OF_MEMORY;
     }
     strcpy(new_email,Email);
-    (*room)->num_ppl = num_ppl;
-    (*room)->difficulty = difficulty;
-    (*room)->id = id;
-    (*room)->working_hours[OPEN_HOUR] = time[OPEN_HOUR];
-    (*room)->working_hours[CLOSE_HOUR] = time[CLOSE_HOUR];
-    (*room)->price = price;
-    (*room)->email = new_email;
+    room->num_ppl = num_ppl;
+    room->difficulty = difficulty;
+    room->id = id;
+    room->working_hours[OPEN_HOUR] = time[OPEN_HOUR];
+    room->working_hours[CLOSE_HOUR] = time[CLOSE_HOUR];
+    room->price = price;
+    room->email = new_email;
     //(*room)->current_orders = NULL;
     return ROOM_SUCCESS;
 }

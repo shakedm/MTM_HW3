@@ -13,12 +13,14 @@ MtmErrorCode createEscapeTechnion(EscapeTechnion *sys){
     if(!new_system ){
         return MTM_OUT_OF_MEMORY;
     }
-    new_system->companies = setCreate(copyCompany, resetCompany, compareCompany);
+    new_system->companies = setCreate(copyCompany, destroyCompany,
+                                      compareCompany);
     if(new_system->companies == NULL){
         free(new_system);
         return MTM_OUT_OF_MEMORY;
     }
-    new_system->escapers = setCreate(copyEscaper, resetEscaper, compareEscaper);
+    new_system->escapers = setCreate(copyEscaper, destroyEscaper,
+                                     compareEscaper);
     if(new_system->escapers == NULL){
         setDestroy(new_system->companies);
         free(new_system);
@@ -37,15 +39,17 @@ MtmErrorCode createEscapeTechnion(EscapeTechnion *sys){
 
 MtmErrorCode companyAdd(EscapeTechnion sys, char* email,
                         TechnionFaculty faculty){
-    Company *new_company = NULL;
-    MtmErrorCode result = initCompany(new_company, email, faculty);
-    if(result != MTM_SUCCESS){
-        return result;
+    Company new_company = createCompany();
+    if(!new_company){
+        return MTM_OUT_OF_MEMORY;
+    }
+    CompanyError result = initCompany(new_company, email, faculty);
+    if(result != COMPANY_SUCCESS){
+        return errorHandel(HANDEL_COMPANY, (void*)result, COMPANY, new_company);
     }
     SetResult setResult = setAdd(sys->companies, (void*)new_company);
     if(setResult != SET_SUCCESS){
-        return errorHandel(HANDEL_SET, (void*)setResult, COMPANY,
-                           (void*)new_company);
+        return errorHandel(HANDEL_SET, (void*)setResult, COMPANY, new_company);
     }
     return MTM_SUCCESS;
 }
@@ -117,13 +121,18 @@ MtmErrorCode roomAdd(EscapeTechnion sys, char* email, int id, int price,
     if(company == NULL){
         return MTM_COMPANY_EMAIL_DOES_NOT_EXIST;
     }
-    Room *new_room = NULL;
-    MtmErrorCode result = initRoom(new_room, getCompanyEmail(company), id,
+    Room new_room = createRoom();
+    RoomError result = initRoom(new_room, getCompanyEmail(company), id,
                                    num_ppl, working_hrs, difficulty, price);
-    if(result != MTM_SUCCESS){
-        return result;
+    if(result != ROOM_SUCCESS){
+        return errorHandel(HANDEL_ROOM, (void*)result, ROOM, new_room);
     }
-    return addRoomCompany(company, *new_room);
+    CompanyError company_result = addRoomCompany(company, new_room);
+    if(company_result != COMPANY_SUCCESS){
+        return errorHandel(HANDEL_COMPANY, (void*)company_result,
+                           ESCAPE_TECHNION, sys);
+    }
+    return MTM_SUCCESS;
 }
 
 MtmErrorCode roomRemove(EscapeTechnion sys, TechnionFaculty faculty, int id){
@@ -138,24 +147,30 @@ MtmErrorCode roomRemove(EscapeTechnion sys, TechnionFaculty faculty, int id){
     if(orderExistForRoom(sys->orderList, room)){
         return MTM_RESERVATION_EXISTS;
     }
-    return removeRoomCompany(company, room);
+    CompanyError result =  removeRoomCompany(company, room);
+    if(result != COMPANY_SUCCESS){
+        return errorHandel(HANDEL_COMPANY, (void*)result, ESCAPE_TECHNION, sys);
+    }
+    return MTM_SUCCESS;
 }
 
 MtmErrorCode escaperAdd(EscapeTechnion sys, char* email,
                         TechnionFaculty faculty, int skill_level){
-    Escaper *visitor = NULL;
-    MtmErrorCode result = initEscaper(visitor, email, faculty, skill_level);
-    if (result != MTM_SUCCESS){
-        return result;
+    Escaper visitor = createEscaper();
+    if (!visitor){
+        return MTM_OUT_OF_MEMORY;
+    }
+    EscaperError result = initEscaper(visitor, email, faculty, skill_level);
+    if (result != ESCAPER_SUCCESS){
+        return errorHandel(HANDEL_ESCAPER, (void*)result, ESCAPER, visitor);
     }
     if(setIsIn(sys->escapers, visitor)){
-        resetEscaper(visitor);
+        destroyEscaper(visitor);
         return MTM_EMAIL_ALREADY_EXISTS;
     }
     SetResult setResult = setAdd(sys->escapers, visitor);
     if(setResult != SET_SUCCESS){
-        return errorHandel(HANDEL_SET, (void*)setResult, ESCAPER,
-                           (void*)visitor);
+        return errorHandel(HANDEL_SET, (void*)setResult, ESCAPER, visitor);
     }
     return MTM_SUCCESS;
 }
@@ -179,6 +194,15 @@ MtmErrorCode escaperOrder(EscapeTechnion sys, char* email,
 
 }
 
+
+
+
+
+
+
+
+
+
 MtmErrorCode escaperRecommend(EscapeTechnion sys, char* email, int num_ppl);
 
 MtmErrorCode reportDay(EscapeTechnion sys);
@@ -200,8 +224,11 @@ bool orderExistForRoom(List orders, Room room){
 }
 
 void resetSystem(EscapeTechnion sys){
+    setClear(sys->escapers);
     setDestroy(sys->escapers);
+    listClear(sys->orderList);
     listDestroy(sys->orderList);
+    setClear(sys->companies);
     setDestroy(sys->companies);
     free(sys);
 }
