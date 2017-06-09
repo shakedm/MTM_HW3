@@ -478,9 +478,16 @@ MtmErrorCode reportBest(EscapeTechnion sys, FILE* outputChannel){
             }
         }
     }
-    for (int i = 0; i < companies_counted; i++){
-        mtmPrintFaculty(outputChannel, getCompanyFaculty(top_companies[i]),
-                        getCompanyRevenue(top_companies[i]));
+    if(companies_counted < TOP){
+        for (int i = 0; i < companies_counted; i++){
+            mtmPrintFaculty(outputChannel, getCompanyFaculty(top_companies[i]),
+                            getCompanyRevenue(top_companies[i]));
+        }
+    } else {
+        for (int i = 0; i < TOP; i++){
+            mtmPrintFaculty(outputChannel, getCompanyFaculty(top_companies[i]),
+                            getCompanyRevenue(top_companies[i]));
+        }
     }
     mtmPrintFacultiesFooter(outputChannel);
     return MTM_SUCCESS;
