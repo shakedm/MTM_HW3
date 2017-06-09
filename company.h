@@ -82,6 +82,8 @@ CompanyError addRoomCompany(Company company, Room room);
 
 CompanyError removeRoomCompany(Company company, Room room);
 
+void addCompanyRevenue(Company company, int revenue);
+
 int compareCompany(void* company1, void* company2);
 
 void* copyCompany(void* company);

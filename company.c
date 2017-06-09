@@ -148,6 +148,11 @@ Set getCompanyRooms(Company company){
     return company->rooms;
 }
 
+void addCompanyRevenue(Company company, int revenue){
+    assert(company != NULL);
+    company->revenue += revenue;
+}
+
 /*!
  * This function translate the general error the ADT specific error
  * @param result - the general error code

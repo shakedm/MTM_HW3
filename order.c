@@ -121,7 +121,7 @@ int getOrderRoomId(Order order){
     return (order->room_id);
 }
 
-TechnionFaculty getOderFaculty(Order order){
+TechnionFaculty getOrderFaculty(Order order){
     if(order == NULL){
         return UNKNOWN;
     }
@@ -134,6 +134,18 @@ OrderError setDiscountOrder(Order order){
     }
     order->cost = (int)(order->cost * DISCOUNT + 0.5);
     return ORDER_SUCCESS;
+}
+
+int compareOrderByTime(void* order1, void* order2){
+    return (getHoursOrder((Order)order1) - getHoursOrder((Order)order2));
+}
+
+int compareOrderByFaculty(void* order1, void* order2){
+    return (getOrderFaculty((Order)order1) - getOrderFaculty((Order)order2));
+}
+
+int compareOrderByRoomId(void* order1, void* order2){
+    return (getOrderRoomID((Order)order1) - getOrderRoomID((Order)order2));
 }
 
 bool orderForEscaper(void* order, void* visitor_email){

@@ -6,6 +6,7 @@ struct escape_technion_t {
     Set escapers;
     List orderList;
     int time_log; // counts days
+    int total_revenue;
 };
 
 /*!
@@ -41,6 +42,9 @@ static void update(EscapeTechnion sys, Company company, Room room,
                    Room *recommanded_room, Escaper visitor, int num_ppl,
                    int *best_score);
 
+static void chainReaction(Company *top_companies, int *top_revenue,
+                          Company curr_company, int iterator);
+
 MtmErrorCode createEscapeTechnion(EscapeTechnion *sys){
     EscapeTechnion new_system = malloc(sizeof(EscapeTechnion));
     if(!new_system ){
@@ -67,6 +71,7 @@ MtmErrorCode createEscapeTechnion(EscapeTechnion *sys){
         return MTM_OUT_OF_MEMORY;
     }
     new_system->time_log = 0;
+    new_system->total_revenue = 0;
     *sys = new_system;
     return MTM_SUCCESS;
 }
@@ -398,16 +403,132 @@ MtmErrorCode searchRecommended(EscapeTechnion sys, int num_ppl,
     return MTM_SUCCESS;
 }
 
-MtmErrorCode reportDay(EscapeTechnion sys, FILE* errorChannel,
-                       FILE* outputChannel){
+MtmErrorCode reportDay(EscapeTechnion sys, FILE* outputChannel){
     List today_events = listCreate(copyOrder, destroyOrder);
-    today_events = listFilter(sys->orderList, orderAtDay, 0);
+    if(!today_events){
+        return MTM_OUT_OF_MEMORY; ////////////////////////////////////////////////////////
+    }
+    MtmErrorCode result = getTodayList(sys, &today_events);
+    if(result != MTM_SUCCESS){
+        return result;
+    }
     int events = listGetSize(today_events);
     mtmPrintDayHeader(outputChannel, sys->time_log, events);
+    Escaper order_visitor = NULL;
+    Company order_company = NULL;
+    Room order_room = NULL;
+    LIST_FOREACH(Order, curr_order, sys->orderList){
+        order_visitor = findEscaperInSet(sys->escapers,
+                                         (char*)getOrderEscaperEmail(curr_order));
+        order_company = findCompanyByEmail(sys->companies,
+                                           (char*)getOrderCompanyEmail(curr_order));
+        order_room = findRoomInCompany(order_company, getOrderRoomID(curr_order));
+        mtmPrintOrder(outputChannel, (char*)getOrderEscaperEmail(curr_order),
+                      getEscaperSkillLevel(order_visitor),
+                      getEscaperFaculty(order_visitor),
+                      (char*)getOrderCompanyEmail(curr_order),
+                      getOrderFaculty(curr_order), getOrderRoomID(curr_order),
+                      getHoursOrder(curr_order), roomGetDifficulty(order_room),
+                      getNumOfVisitors(curr_order), getCost(curr_order));
+        addCompanyRevenue(order_company, getCost(curr_order));
+        sys->total_revenue += getCost(curr_order);
+    }
+    mtmPrintDayFooter(outputChannel, sys->time_log);
+    endDayProtocol(sys);
+    listClear(today_events);
+    listDestroy(today_events);
+    return MTM_SUCCESS;
 }
 
-MtmErrorCode reportBest(EscapeTechnion sys, FILE* errorChannel,
-                        FILE* outputChannel);
+void endDayProtocol(EscapeTechnion sys){
+    LIST_FOREACH(Order, curr_order, sys->orderList){
+        if(getDaysOrder(curr_order) != TODAY){
+            decreaseDay(curr_order);
+        } else {
+            listRemoveCurrent(sys->orderList);
+        }
+    }
+    sys->time_log = (sys->time_log + 1);
+}
+
+MtmErrorCode reportBest(EscapeTechnion sys, FILE* outputChannel){
+    mtmPrintFacultiesHeader(outputChannel, setGetSize(sys->companies),
+                            sys->time_log, sys->total_revenue);
+    Company top_companies[TOP] = {NULL};
+    int top_revenue[TOP] = {0};
+    int companies_counted = 0;
+    SET_FOREACH(Company, curr_company, sys->companies){
+        for (int i = 0; i < TOP; i++){
+            if(getCompanyRevenue(curr_company) >= top_revenue[i]){
+                if(getCompanyRevenue(curr_company) > top_revenue[i]){
+                    chainReaction(top_companies, top_revenue, curr_company, i);
+                    companies_counted++;
+                } else if (top_companies[i] != NULL){
+                    if((getCompanyFaculty(curr_company) -
+                            getCompanyFaculty(top_companies[i])) < 0){
+                        chainReaction(top_companies, top_revenue,
+                                      curr_company, i);
+                        companies_counted++;
+                    }
+                } else {
+                    chainReaction(top_companies, top_revenue, curr_company, i);
+                    companies_counted++;
+                }
+                break;
+            }
+        }
+    }
+    for (int i = 0; i < companies_counted; i++){
+        mtmPrintFaculty(outputChannel, getCompanyFaculty(top_companies[i]),
+                        getCompanyRevenue(top_companies[i]));
+    }
+    mtmPrintFacultiesFooter(outputChannel);
+    return MTM_SUCCESS;
+}
+
+MtmErrorCode getTodayList(EscapeTechnion sys, List* sorted){
+    List list = listCreate(copyOrder, destroyOrder);
+    if(!list){
+        return MTM_OUT_OF_MEMORY;
+    }
+    list = listFilter(sys->orderList, orderAtDay, TODAY);
+    ListResult result = listSort(list, compareOrderByTime);
+    if(result != LIST_SUCCESS){
+        return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION, list);
+    }
+    LIST_FOREACH(Order, curr_order, list){
+        result = listInsertAfterCurrent(*sorted, curr_order);
+        if(result != LIST_SUCCESS){
+            return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION, list);
+        }
+        if(getHoursOrder(curr_order) == getHoursOrder(listGetNext(list))){
+            int compare = compareOrderByFaculty(curr_order, listGetNext(list));
+            if(compare >= 0){
+                if(compare > 0){
+                    result = listInsertBeforeCurrent(*sorted, listGetNext(list));
+                    if(result != LIST_SUCCESS){
+                        return errorHandel(HANDEL_LIST, (void*)result,
+                                           ESCAPE_TECHNION, list);
+                    }
+                    listGetNext(list);
+                } else {
+                    if (compareOrderByRoomId(curr_order, listGetNext(list)) > 0){
+                        result = listInsertBeforeCurrent(*sorted,
+                                                         listGetNext(list));
+                        if(result != LIST_SUCCESS){
+                            return errorHandel(HANDEL_LIST, (void*)result,
+                                               ESCAPE_TECHNION, list);
+                        }
+                        listGetNext(list);
+                    }
+                }
+            }
+        }
+    }
+    listClear(list);
+    listDestroy(list);
+    return MTM_SUCCESS;
+}
 
 bool orderExistForRoom(List orders, int room_id){
     int size = listGetSize(orders);
@@ -474,5 +595,21 @@ static void update(EscapeTechnion sys, Company company, Room room,
                 }
             }
         }
+    }
+}
+
+static void chainReaction(Company *top_companies, int *top_revenue,
+                          Company curr_company, int iterator){
+    int temp_revenue[TOP] = {0};
+    Company temp_top[TOP] = {NULL};
+    for (int i = iterator; i < TOP; ++i) {
+        temp_top[i] = top_companies[i];
+        temp_revenue[i] = top_revenue[i];
+    }
+    top_companies[iterator] = curr_company;
+    top_revenue[iterator] = getCompanyRevenue(curr_company);
+    for (int j = iterator + 1; j < TOP; ++j) {
+        top_companies[j] = temp_top[j - 1];
+        top_revenue[j] = temp_revenue[j - 1];
     }
 }

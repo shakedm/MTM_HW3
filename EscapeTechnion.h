@@ -11,6 +11,8 @@
 #define SMALLER 1
 #define EQUAL 2
 #define BIGGER 3
+#define TODAY 0
+#define TOP 3
 
 /* type to define the EscapeTechnion struct*/
 typedef struct escape_technion_t* EscapeTechnion;
@@ -50,11 +52,9 @@ MtmErrorCode escaperRecommend(EscapeTechnion sys, char* email, int num_ppl);
 MtmErrorCode searchRecommended(EscapeTechnion sys, int num_ppl,
                                Room *recommended_room, Escaper visitor);
 
-MtmErrorCode reportDay(EscapeTechnion sys, FILE* errorChannel,
-                       FILE* outputChannel);
+MtmErrorCode reportDay(EscapeTechnion sys, FILE* outputChannel);
 
-MtmErrorCode reportBest(EscapeTechnion sys, FILE* errorChannel,
-                        FILE* outputChannel);
+MtmErrorCode reportBest(EscapeTechnion sys, FILE* outputChannel);
 
 MtmErrorCode isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
                          TechnionFaculty faculty, int id,
@@ -69,9 +69,13 @@ MtmErrorCode isClientAvailable(EscapeTechnion sys, Escaper visitor,
 
 Company findCompanyByEmail(Set companies, const char *email);
 
+void endDayProtocol(EscapeTechnion sys);
+
 Company findCompanyByFaculty(Set companies, TechnionFaculty faculty);
 
 Escaper findEscaperInSet(Set escapers, char *email);
+
+MtmErrorCode getTodayList(EscapeTechnion sys, List* list);
 
 bool orderExistForRoom(List orders, int room_id);
 
