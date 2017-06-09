@@ -105,6 +105,16 @@ int compareRoom(void* room1, void* room2){
     return ((((Room)room1)->id) - (((Room)room2)->id));
 }
 
+int roomGetOpenTime(Room room){
+    assert(room != NULL);
+    return room->working_hours[OPEN_HOUR];
+}
+
+int roomGetCloseTime(Room room){
+    assert(room != NULL);
+    return room->working_hours[CLOSE_HOUR];
+}
+
 void* copyRoom(void* room){
     assert(room != NULL);
     Room new_room = createRoom();

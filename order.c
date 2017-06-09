@@ -145,13 +145,8 @@ bool orderForEscaper(void* order, void* visitor_email){
     return false;
 }
 
-bool orderAtTime(void* order, void* time[HOURS_FORMAT]){
-    for (int i = 0; i < HOURS_FORMAT ; ++i) {
-        if( ((Order)order)->time_until_order[i] != *(int*)time[i]){
-            return false;
-        }
-    }
-    return true;
+bool orderAtDay(void* order, void* day){
+    return (getDaysOrder((Order)order) == (int)day);
 }
 
 bool orderForFaculty(void* order, void* faculty){

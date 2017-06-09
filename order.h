@@ -146,7 +146,7 @@ OrderError setDiscountOrder(Order order);
 
 bool orderForEscaper(void* order, void* visitor_email);
 
-bool orderAtTime(void* order, void* time[HOURS_FORMAT]);
+bool orderAtDay(void* order, void* day);
 
 bool orderForFaculty(void* order, void* faculty);
 

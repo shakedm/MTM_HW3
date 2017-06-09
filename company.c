@@ -141,6 +141,13 @@ Room findRoomInCompany(Company company, int Id){
     return NULL;
 }
 
+Set getCompanyRooms(Company company){
+    if(company == NULL){
+        return NULL;
+    }
+    return company->rooms;
+}
+
 /*!
  * This function translate the general error the ADT specific error
  * @param result - the general error code

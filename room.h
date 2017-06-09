@@ -92,7 +92,19 @@ int roomGetPrice(Room room);
  */
 const char* roomGetEmail(Room room);
 
-int* roomGetTime(Room room);
+/*!
+ * function returns the int open hour time for a room
+ * @param room points to the ADT
+ * @return int open hour
+ */
+int roomGetOpenTime(Room room);
+
+/*!
+ * function returns the int close hour time for a room
+ * @param room points to the ADT
+ * @return int close hour
+ */
+int roomGetCloseTime(Room room);
 
 /* * This function compares two room ADT by theis ID fields
  * @param room1 - points to the 1st room ADT
