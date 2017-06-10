@@ -35,6 +35,7 @@ MtmErrorCode createEscapeTechnion(EscapeTechnion *sys){
     }
     new_system->time_log = 0;
     *sys = new_system;
+    return MTM_SUCCESS;
 }
 
 MtmErrorCode companyAdd(EscapeTechnion sys, char* email,
