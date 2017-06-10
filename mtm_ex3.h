@@ -100,8 +100,9 @@ void mtmPrintDayHeader(FILE* outputChannel, int day, int numberOfEvents);
  * @param num_ppl - The number of people who went to the room
  * @param totalPrice - The total price of the order
  */
-void mtmPrintOrder(FILE* outputChannel, char* email, int skill, TechnionFaculty client_faculty, char* company_email,
-                   TechnionFaculty room_faculty, int id, int hour, int difficulty, int num_ppl, int totalPrice);
+void mtmPrintOrder(FILE* outputChannel, char* email, int skill, TechnionFaculty client_faculty,
+                   char* company_email, TechnionFaculty room_faculty, int id, int hour,
+                   int difficulty, int num_ppl, int totalPrice);
 
 /**
  * mtmPrintDayFooter - prints the proper footer designed to end the printing of a day's info
