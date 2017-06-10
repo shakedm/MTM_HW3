@@ -3,7 +3,8 @@
 #include "usefullFunctions.h"
 #include "mtm_ex3.h"
 
-static MtmErrorCode passArgument(int argc , char** argv);
+static MtmErrorCode passArgument(int argc , char** argv, FILE* F_input ,
+                                FILE* F_output);
 static MtmErrorCode passTwoArguments(char** argv, FILE* F_input,
                                      FILE* F_output);
 
@@ -15,7 +16,7 @@ int main(int argc, char** argv) {
         case(1):
                 break;
         case(3):
-                result = passArgument(argc,argv);
+                result = passArgument(argc,argv,input, output);
                 if(result!=MTM_SUCCESS){
                     mtmPrintErrorMessage(stdout,result);
                     return 0;
@@ -29,20 +30,30 @@ int main(int argc, char** argv) {
         default:
             mtmPrintErrorMessage(stdout,MTM_INVALID_COMMAND_LINE_PARAMETERS);
         }
+    while( !=EOF){
+        
+    }
 }
-static MtmErrorCode passArgument(int argc , char** argv){
+static MtmErrorCode passArgument(int argc , char** argv,FILE* F_input,
+                                 FILE* F_output){
     if(strcmp(argv[argc-1],"-o")!=0 && strcmp(argv[argc-1],"-i")!=0)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+    FILE* input = stdin;
+    FILE* output = stdout;
     if (!strcmp(argv[argc-1],"-i")){
-        FILE* input= fopen(argv[argc-1],"r");
+        input= fopen(argv[argc-1],"r");
         if (input==NULL)
             return MTM_CANNOT_OPEN_FILE;
     }
+    else{
     assert(strcmp(argv[argc-1],"-o")==0);
-    FILE* output= fopen(argv[argc-1],"w");
+    output= fopen(argv[argc-1],"w");
     if (output==NULL)
         return MTM_CANNOT_OPEN_FILE;
-
+    }
+    F_input= input;
+    F_output= output;
+    return  MTM_SUCCESS;
 }
 static MtmErrorCode passTwoArguments(char** argv,FILE* F_input,
                                      FILE* F_output){
