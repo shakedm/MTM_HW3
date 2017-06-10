@@ -121,7 +121,7 @@ int getOrderRoomId(Order order){
     return (order->room_id);
 }
 
-TechnionFaculty getOderFaculty(Order order){
+TechnionFaculty getOrderFaculty(Order order){
     if(order == NULL){
         return UNKNOWN;
     }
@@ -136,6 +136,18 @@ OrderError setDiscountOrder(Order order){
     return ORDER_SUCCESS;
 }
 
+int compareOrderByTime(void* order1, void* order2){
+    return (getHoursOrder((Order)order1) - getHoursOrder((Order)order2));
+}
+
+int compareOrderByFaculty(void* order1, void* order2){
+    return (getOrderFaculty((Order)order1) - getOrderFaculty((Order)order2));
+}
+
+int compareOrderByRoomId(void* order1, void* order2){
+    return (getOrderRoomID((Order)order1) - getOrderRoomID((Order)order2));
+}
+
 bool orderForEscaper(void* order, void* visitor_email){
     assert( order != NULL && visitor != NULL);
     int compare = strcmp((char*)visitor_email, ((Order)order)->escaper_email);
@@ -145,13 +157,8 @@ bool orderForEscaper(void* order, void* visitor_email){
     return false;
 }
 
-bool orderAtTime(void* order, void* time[HOURS_FORMAT]){
-    for (int i = 0; i < HOURS_FORMAT ; ++i) {
-        if( ((Order)order)->time_until_order[i] != *(int*)time[i]){
-            return false;
-        }
-    }
-    return true;
+bool orderAtDay(void* order, void* day){
+    return (getDaysOrder((Order)order) == (int)day);
 }
 
 bool orderForFaculty(void* order, void* faculty){

@@ -8,6 +8,12 @@
 #include "usefullFunctions.h"
 #include "order.h"
 
+#define SMALLER 1
+#define EQUAL 2
+#define BIGGER 3
+#define TODAY 0
+#define TOP 3
+
 /* type to define the EscapeTechnion struct*/
 typedef struct escape_technion_t* EscapeTechnion;
 
@@ -37,21 +43,39 @@ MtmErrorCode escaperOrder(EscapeTechnion sys, char* email,
                           TechnionFaculty faculty, int id, char* time,
                           int num_ppl);
 
+MtmErrorCode escaperOrderAux(EscapeTechnion sys, char* email,
+                             TechnionFaculty faculty, int id,
+                             int due_in[HOURS_FORMAT], int num_ppl);
+
 MtmErrorCode escaperRecommend(EscapeTechnion sys, char* email, int num_ppl);
 
-MtmErrorCode reportDay(EscapeTechnion sys);
+MtmErrorCode searchRecommended(EscapeTechnion sys, int num_ppl,
+                               Room *recommended_room, Escaper visitor);
 
-MtmErrorCode reportBest(EscapeTechnion sys);
+MtmErrorCode reportDay(EscapeTechnion sys, FILE* outputChannel);
+
+MtmErrorCode reportBest(EscapeTechnion sys, FILE* outputChannel);
 
 MtmErrorCode isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
-                         TechnionFaculty faculty, int id, char* time,
-                         int due_in[HOURS_FORMAT], Room room, Company company);
+                         TechnionFaculty faculty, int id,
+                         int due_in[HOURS_FORMAT], Room *room, Company *company);
+
+MtmErrorCode isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty, int id,
+                             int due_in[HOURS_FORMAT], Room *room,
+                             Company *company);
+
+MtmErrorCode isClientAvailable(EscapeTechnion sys, Escaper visitor,
+                               int due_in[HOURS_FORMAT]);
 
 Company findCompanyByEmail(Set companies, const char *email);
+
+void endDayProtocol(EscapeTechnion sys);
 
 Company findCompanyByFaculty(Set companies, TechnionFaculty faculty);
 
 Escaper findEscaperInSet(Set escapers, char *email);
+
+MtmErrorCode getTodayList(EscapeTechnion sys, List* list);
 
 bool orderExistForRoom(List orders, int room_id);
 

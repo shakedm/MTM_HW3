@@ -66,6 +66,13 @@ TechnionFaculty getCompanyFaculty(Company company);
 int getCompanyRevenue(Company company);
 
 /*!
+ * Functun returns the Company's room set pointer
+ * @param company - points to company ADT
+ * @return NULL is company is NULL;
+ */
+Set getCompanyRooms(Company company);
+
+/*!
  *
  * @param company
  * @param room
@@ -74,6 +81,8 @@ int getCompanyRevenue(Company company);
 CompanyError addRoomCompany(Company company, Room room);
 
 CompanyError removeRoomCompany(Company company, Room room);
+
+void addCompanyRevenue(Company company, int revenue);
 
 int compareCompany(void* company1, void* company2);
 

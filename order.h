@@ -133,7 +133,7 @@ const char* getOrderCompanyEmail(Order order);
  * @return the faculy
  * UNKNOWN if order is NULL
  */
-TechnionFaculty getOderFaculty(Order order);
+TechnionFaculty getOrderFaculty(Order order);
 
 /*!
  * This function resets the order price to a dicounted figure;
@@ -142,11 +142,17 @@ TechnionFaculty getOderFaculty(Order order);
  */
 OrderError setDiscountOrder(Order order);
 
+int compareOrderByTime(void* order1, void* order2);
+
+int compareOrderByFaculty(void* order1, void* order2);
+
+int compareOrderByRoomId(void* order1, void* order2);
+
 //Filter functions:
 
 bool orderForEscaper(void* order, void* visitor_email);
 
-bool orderAtTime(void* order, void* time[HOURS_FORMAT]);
+bool orderAtDay(void* order, void* day);
 
 bool orderForFaculty(void* order, void* faculty);
 
