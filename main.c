@@ -61,13 +61,26 @@ int main(int argc, char** argv) {
         result = readBuffer(system,buffer, first_word,output);
         if(result!=MTM_SUCCESS){
             if (result==MTM_OUT_OF_MEMORY){
-
+                mtmPrintErrorMessage(output,MTM_OUT_OF_MEMORY);
+                if(output!=stdout)
+                    fclose(output);
+                if (input!=stdin)
+                    fclose(input);
+                //destroySystem;
+                return 0;
             }
-
-            //what to do on mistake?
+            mtmPrintErrorMessage(output,result);
+            continue;
         }
 
     }
+    if(output!= stdout)
+        fclose(output);
+    if(input!= stdin)
+        fclose(input);
+    destroySystem;
+    free(system);
+    return 0;
 }
 static MtmErrorCode passArgument(int argc , char** argv,FILE* F_input,
                                  FILE* F_output){
@@ -126,23 +139,19 @@ static MtmErrorCode passTwoArguments(char** argv,FILE* F_input,
 
 static MtmErrorCode readBuffer(EscapeTechnion sys,char* buffer, char* first_word,
                                FILE* output_channel){
-    MtmErrorCode res;
     if(first_word[0]=='#')
         return MTM_SUCCESS; //just continue to the next line
     if (!strcmp(first_word,"room")){
-        res= readRoom(sys,buffer);
-        return res;
+        return readRoom(sys,buffer);
     }
     if(!strcmp(first_word,"company")){
-        res=readCompany(sys,buffer);
-        return res;
+        return readCompany(sys,buffer);
     }
     if(!strcmp(first_word,"escaper")){
-        res=readEscaper(sys,buffer);
-
+        return readEscaper(sys,buffer);
     }
     if(!strcmp(first_word,"report")){
-        res= readReport(sys,buffer,output_channel);
+        return readReport(sys,buffer,output_channel);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 
@@ -158,8 +167,7 @@ static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
         int faculty = atoi(current);
         current= strtok(NULL," \t");
         int id= atoi(current);
-        MtmErrorCode res= roomRemove(sys,faculty,id);
-        return res;
+        return roomRemove(sys,faculty,id);
     }
     else if(!strcmp(current,"add")){
         current=strtok(NULL," \t");
@@ -174,9 +182,8 @@ static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
         char* working_hours=current;
         current=strtok(NULL," \t");
         int difficulty= atoi(current);
-        MtmErrorCode result= roomAdd(sys,email,id,price,num_ppl,working_hours,
+        return roomAdd(sys,email,id,price,num_ppl,working_hours,
                                      difficulty);
-        return result;
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
@@ -188,15 +195,15 @@ static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if(!strcmp(current,"remove")){
         current=strtok(NULL," \t");
-        MtmErrorCode res= companyRemove(sys,current);
-        return res;
+        return companyRemove(sys,current);
+
     }
     else if(!strcmp(current,"add")){
         current=strtok(NULL," \t");
         char* email=current;
         current=strtok(NULL," \t");
         int faculty= atoi(current);
-        MtmErrorCode res= companyAdd(sys, email,faculty);
+        return companyAdd(sys, email,faculty);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
