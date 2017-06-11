@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
                     fclose(output);
                 if (input!=stdin)
                     fclose(input);
-                //destroySystem;
+                resetSystem(system);
                 return 0;
             }
             mtmPrintErrorMessage(output,result);
@@ -78,8 +78,7 @@ int main(int argc, char** argv) {
         fclose(output);
     if(input!= stdin)
         fclose(input);
-    destroySystem;
-    free(system);
+    resetSystem(system);
     return 0;
 }
 static MtmErrorCode passArgument(int argc , char** argv,FILE* F_input,
