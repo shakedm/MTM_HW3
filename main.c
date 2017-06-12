@@ -22,6 +22,8 @@ static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer);
 
 static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output);
 
+static MtmErrorCode reverse(EscapeTechnionError result);
+
 int main(int argc, char** argv) {
     MtmErrorCode result;
     FILE* input= stdin;
@@ -45,7 +47,8 @@ int main(int argc, char** argv) {
             mtmPrintErrorMessage(stdout,MTM_INVALID_COMMAND_LINE_PARAMETERS);
         }
     EscapeTechnion system;
-    result=createEscapeTechnion(&system);
+    EscapeTechnionError result2=createEscapeTechnion(&system);
+    result = reverse(result2);
     if (result!=MTM_SUCCESS){
         mtmPrintErrorMessage(output,result);
         if (output!=stdout)
@@ -166,7 +169,8 @@ static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
         int faculty = atoi(current);
         current= strtok(NULL," \t");
         int id= atoi(current);
-        return roomRemove(sys,faculty,id);
+        EscapeTechnionError result = roomRemove(sys,faculty,id);
+        return reverse(result);
     }
     else if(!strcmp(current,"add")){
         current=strtok(NULL," \t");
@@ -181,8 +185,9 @@ static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
         char* working_hours=current;
         current=strtok(NULL," \t");
         int difficulty= atoi(current);
-        return roomAdd(sys,email,id,price,num_ppl,working_hours,
-                                     difficulty);
+        EscapeTechnionError result = roomAdd(sys,email,id,price,num_ppl,
+                                             working_hours, difficulty);
+        return reverse(result);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
@@ -194,7 +199,8 @@ static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if(!strcmp(current,"remove")){
         current=strtok(NULL," \t");
-        return companyRemove(sys,current);
+        EscapeTechnionError result = companyRemove(sys,current);
+        return reverse(result);
 
     }
     else if(!strcmp(current,"add")){
@@ -202,7 +208,8 @@ static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
         char* email=current;
         current=strtok(NULL," \t");
         int faculty= atoi(current);
-        return companyAdd(sys, email,faculty);
+        EscapeTechnionError result = companyAdd(sys, email,faculty);
+        return reverse(result);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
@@ -211,10 +218,13 @@ static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output){
     current=strtok(NULL," \t");
     if(!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
-    if(!strcmp(current,"day"))
-        return reportDay(sys,output);
+    if(!strcmp(current,"day")){
+        EscapeTechnionError result = reportDay(sys,output);
+        return reverse(result);
+    }
     else if(!strcmp(current, "best")){
-        return reportBest(sys,output);
+        EscapeTechnionError result = reportBest(sys,output);
+        return reverse(result);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
@@ -230,11 +240,13 @@ static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
         int faculty= atoi(current);
         current=strtok(NULL," \t");
         int skill=atoi(current);
-        return escaperAdd(sys,email,faculty,skill);
+        EscapeTechnionError result = escaperAdd(sys,email,faculty,skill);
+        return reverse(result);
     }
     else if(!strcmp(current,"remove")){
         current=strtok(NULL," \t");
-        return escaperRemove(sys,current);
+        EscapeTechnionError result = escaperRemove(sys,current);
+        return reverse(result);
     }
     else if(!strcmp(current, "order")){
         current=strtok(NULL," \t");
@@ -247,14 +259,48 @@ static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
         char* time=current;
         current=strtok(NULL," \t");
         int num_ppl=atoi(current);
-        return escaperOrder(sys,email,faculty,id,time,num_ppl);
+        EscapeTechnionError result = escaperOrder(sys,email,faculty,id,time,
+                                                  num_ppl);
+        return reverse(result);
     }
     else if(!strcmp(current,"recommend")){
         current=strtok(NULL," \t");
         char* email=current;
         current=strtok(NULL," \t");
         int num_ppl=atoi(current);
-        return escaperRecommend(sys,email,num_ppl);
+        EscapeTechnionError result = escaperRecommend(sys,email,num_ppl);
+        return reverse(result);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
+}
+
+static MtmErrorCode reverse(EscapeTechnionError result){
+    switch (result){
+        case ESCAPE_OUT_OF_MEMORY:
+            return MTM_OUT_OF_MEMORY;
+        case ESCAPE_NULL_PARAMETER:
+            return MTM_NULL_PARAMETER;
+        case ESCAPE_INVALID_PARAMETER:
+            return MTM_INVALID_PARAMETER;
+        case ESCAPE_EMAIL_ALREADY_EXISTS:
+            return MTM_EMAIL_ALREADY_EXISTS;
+        case ESCAPE_COMPANY_EMAIL_DOES_NOT_EXIST:
+            return MTM_COMPANY_EMAIL_DOES_NOT_EXIST;
+        case ESCAPE_CLIENT_EMAIL_DOES_NOT_EXIST:
+            return MTM_CLIENT_EMAIL_DOES_NOT_EXIST;
+        case ESCAPE_ID_ALREADY_EXIST:
+            return MTM_ID_ALREADY_EXIST;
+        case ESCAPE_ID_DOES_NOT_EXIST:
+            return MTM_ID_DOES_NOT_EXIST;
+        case ESCAPE_CLIENT_IN_ROOM:
+            return MTM_CLIENT_IN_ROOM;
+        case ESCAPE_ROOM_NOT_AVAILABLE:
+            return MTM_ROOM_NOT_AVAILABLE;
+        case ESCAPE_RESERVATION_EXISTS:
+            return MTM_RESERVATION_EXISTS;
+        case ESCAPE_NO_ROOMS_AVAILABLE:
+            return MTM_NO_ROOMS_AVAILABLE;
+        case ESCAPE_SUCCESS:
+            return MTM_SUCCESS;
+    }
 }

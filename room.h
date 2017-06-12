@@ -49,44 +49,51 @@ void destroyRoom(void* room);
 RoomError initRoom(Room room, const char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price);
 
-/* * This function releases all allocated memory the resets.
+/*!
+ * This function releases all allocated memory the resets.
  * @param room - points to the memory to free. if NULL this function does
  * nothing.
  */
 void resetRoom(Room room);
 
-/* * This function returns the room's ID (the unige identifier)
+/*!
+ * This function returns the room's ID (the unige identifier)
  * @param room - points to the ADT
  * @return the ID field in the ADT.
  */
 int roomGetId(Room room);
 
-/* * This function returns the maximum amount of people allowed in the room ADT
+/*!
+ * This function returns the maximum amount of people allowed in the room ADT
  * @param room - points to the room ADT
  * @return the int number of people.
  */
 int roomGetNumPpl(Room room);
 
-/* * This function returns the difficulty level of the room
+/*!
+ * This function returns the difficulty level of the room
  * @param room - points to the room ADT
  * @return int level num
  */
 int roomGetDifficulty(Room room);
 
-/* * This function copies the room's working hours to a given int array
+/*!
+ * This function copies the room's working hours to a given int array
  * @param room - points to the room ADT
  * @param hours - return parameter, int array.
  * @return -.
  */
 void roomGetWorkingHours(Room room, int* time);
 
-/* * This function returns the price to a given room.
+/*!
+ * This function returns the price to a given room.
  * @param room - points to the room ADT
  * @return - int price.
  */
 int roomGetPrice(Room room);
 
-/* * This function returns a CONST pointer to the room's email string
+/*!
+ * This function returns a CONST pointer to the room's email string
  * @param room - points to the room ADT
  * @return - const pointer to string.
  */
@@ -106,7 +113,8 @@ int roomGetOpenTime(Room room);
  */
 int roomGetCloseTime(Room room);
 
-/* * This function compares two room ADT by theis ID fields
+/*!
+ *  This function compares two room ADT by theis ID fields
  * @param room1 - points to the 1st room ADT
  * @param room2 - points to the 2nd room ADT
  * @return A positive integer if the first room's ID is greater.
@@ -115,7 +123,8 @@ int roomGetCloseTime(Room room);
  */
 int compareRoom(void* room1, void* room2);
 
-/* * This function creates a new room ADT and copies the given ADT fields.
+/*!
+ * This function creates a new room ADT and copies the given ADT fields.
  * @param room - points to the room to copy
  * @return - NULL if the allocation failed.
  * pointer to room type ADT otherwise.

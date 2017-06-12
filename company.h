@@ -26,12 +26,13 @@ typedef enum  {
  * @param faculty-  a ENUM of the faculties in Technion
  * also initiate a set of rooms for the company that is empty in the start
  * revenue of the company is 0
- * @return MTM_NULL_PARAMETER if the email is NULL
- * @return MTM_INVALID_PARAMETER if the email adrress is not legal (no @)
- * @return MTM_OUT_OF_MEMORY if one of the mallocs failed
- * @return MTM_SUCCESS if all went well
+ * @return COMPANY_NULL_ARGUMENT if the email is NULL
+ * @return COMPANY_INVALID_ARGUMENT if the email adrress is not legal (no @)
+ * @return COMPANY_OUT_OF_MEMORY if one of the mallocs failed
+ * @return COMPANY_SUCCESS if all went well
  */
-CompanyError initCompany(Company company, const char* email, TechnionFaculty faculty);
+CompanyError initCompany(Company company, const char* email,
+                         TechnionFaculty faculty);
 
 /*!
  * this function reset and free all the ADT fields and the ADT itself
@@ -73,19 +74,44 @@ int getCompanyRevenue(Company company);
 Set getCompanyRooms(Company company);
 
 /*!
- *
- * @param company
- * @param room
- * @return
+ *function addes room to the company
+ * @param company - points to the company ADT
+ * @param room - the ADT room to add
+ * @return COMPANY_ID_ALREADY_EXIST - if there is a room with that ID
+ *          COMPANY_NULL_ARGUMENT - if company / room is NULL
+ *          COMPANY_OUT_OF_MEMORY - if allocation failed.
  */
 CompanyError addRoomCompany(Company company, Room room);
 
+/*!
+ * function removes a room from company set
+ * @param company - points to the company
+ * @param room - the room to remove.
+ * @return COMPANY_ID_DOES NOT_EXIST - if there is no room with that ID
+ *          COMPANY_NULL_ARGUMENT - if company / room is NULL
+ */
 CompanyError removeRoomCompany(Company company, Room room);
 
+/*
+ * function adds a day's revenue to company's revenue.
+ */
 void addCompanyRevenue(Company company, int revenue);
 
+/*!
+ * function compares to companies by their email
+ * @param company1 - points to the 1st company ADT
+ * @param company2 - points to the 2nd comopany's ADT
+ * @return positive int if 1st company is before 2sd
+ *          negative int if 2nd company is before first
+ *          0 if the same
+ */
 int compareCompany(void* company1, void* company2);
 
+/*!
+ * function copies a company ADT
+ * @param company - points to the company to copy
+ * @return NULL if allocation fails
+ */
 void* copyCompany(void* company);
 
 /*!
@@ -96,6 +122,12 @@ void* copyCompany(void* company);
  */
 const char* getCompanyEmail(Company company);
 
+/*!
+ * function fins room in company set, and returns a pointer to it.
+ * @param company - the company's ADT
+ * @param Id - the desired room's ID
+ * @return NULL if room is not in set.
+ */
 Room findRoomInCompany(Company company, int Id);
 
 

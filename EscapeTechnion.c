@@ -1,6 +1,6 @@
 #include "EscapeTechnion.h"
 
-
+//struct implentation:
 struct escape_technion_t {
     Set companies;
     Set escapers;
@@ -82,9 +82,10 @@ static EscapeTechnionError searchRecommended(EscapeTechnion sys, int num_ppl,
  *          ESCAPE_ROOM_NOT_AVAILABLE - if there is an exiting order for the
  *          room at the time
  */
-static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
-                                TechnionFaculty faculty, int id,
-                                int due_in[HOURS_FORMAT], Room *room, Company *company);
+static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys,
+                                       char* email, TechnionFaculty faculty,
+                                       int id, int due_in[HOURS_FORMAT],
+                                       Room *room, Company *company);
 
 /*!
  * Function checks if the given room doesnt have an existing order at the time
@@ -93,9 +94,10 @@ static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char*
  *          ESCAPE_ROOM_NOT_AVAILABLE - if there is an exiting order for the
  *          room at the time
  */
-static EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty,
-                                    int id, int due_in[HOURS_FORMAT],
-                                    Room *room, Company *company);
+static EscapeTechnionError isRoomAvailable(EscapeTechnion sys,
+                                           TechnionFaculty faculty, int id,
+                                           int due_in[HOURS_FORMAT], Room *room,
+                                           Company *company);
 
 /*!
  * Function checks if the given room doesnt have an existing order at the time
@@ -262,7 +264,8 @@ EscapeTechnionError roomAdd(EscapeTechnion sys, char* email, int id, int price,
     return ESCAPE_SUCCESS;
 }
 
-EscapeTechnionError roomRemove(EscapeTechnion sys, TechnionFaculty faculty, int id){
+EscapeTechnionError roomRemove(EscapeTechnion sys, TechnionFaculty faculty,
+                               int id){
     Company company = findCompanyByFaculty(sys->companies, faculty);
     if(company == NULL){
         return ESCAPE_INVALID_PARAMETER;
@@ -332,8 +335,8 @@ EscapeTechnionError escaperOrderAux(EscapeTechnion sys, char* email,
     Room *order_room = NULL;
     Company *order_company = NULL;
     bool discount = false;
-    EscapeTechnionError result = isGoodOrder(&discount, sys, email, faculty, id, due_in,
-                                      order_room, order_company);
+    EscapeTechnionError result = isGoodOrder(&discount, sys, email, faculty, id,
+                                             due_in, order_room, order_company);
     if(result != ESCAPE_SUCCESS){
         destroyOrder(new_order);
         return result;
@@ -371,8 +374,8 @@ EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
     if (faculty == getEscaperFaculty(visitor)) {
         *discount = true;
     }
-    EscapeTechnionError room_result = isRoomAvailable(sys, faculty, id, due_in, room,
-                                               company);
+    EscapeTechnionError room_result = isRoomAvailable(sys, faculty, id, due_in,
+                                                      room, company);
     if(room_result != ESCAPE_SUCCESS){
         return room_result;
     }
@@ -383,9 +386,9 @@ EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
     return ESCAPE_SUCCESS;
 }
 
-EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty, int id,
-                             int due_in[HOURS_FORMAT], Room *room,
-                             Company *company){
+EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty,
+                                    int id, int due_in[HOURS_FORMAT], Room *room,
+                                    Company *company){
     bool found = false;
     List faculty_order_list = listCreate(copyOrder, destroyOrder);
     if(!faculty_order_list){
@@ -444,8 +447,8 @@ EscapeTechnionError escaperRecommend(EscapeTechnion sys, char* email, int num_pp
         return ESCAPE_CLIENT_EMAIL_DOES_NOT_EXIST;
     }
     Room recommended_room = NULL;
-    EscapeTechnionError result = searchRecommended(sys, num_ppl, &recommended_room,
-                                            visitor);
+    EscapeTechnionError result = searchRecommended(sys, num_ppl,
+                                                   &recommended_room, visitor);
     if(result != ESCAPE_SUCCESS){
         return result;
     }
@@ -494,7 +497,7 @@ EscapeTechnionError searchRecommended(EscapeTechnion sys, int num_ppl,
 EscapeTechnionError reportDay(EscapeTechnion sys, FILE* outputChannel){
     List today_events = listCreate(copyOrder, destroyOrder);
     if(!today_events){
-        return ESCAPE_OUT_OF_MEMORY; ////////////////////////////////////////////////////////
+        return ESCAPE_OUT_OF_MEMORY;
     }
     EscapeTechnionError result = getTodayList(sys, &today_events);
     if(result != MTM_SUCCESS){

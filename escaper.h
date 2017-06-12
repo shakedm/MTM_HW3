@@ -33,11 +33,11 @@ void destroyEscaper(void* escaper);
  * @param email a string that is the identifier of the escaper
  * @param faculty- the faculty of the visitor
  * @param skill_level - integer of 1-10 for the skill of the visitor
- * @return MTM_NULL_PARAMETER if the visitor is NULL
- * @return MTM_INVALID_PARAMETER if the skill level or the email are not legal
+ * @return ESCAPER_NULL_PARAMETER if the visitor is NULL
+ * @return ESCAPER_INVALID_PARAMETER if the skill level or the email are not legal
  * parameters or not in range
- * @return MTM_OUT_OF_MEMORY if one of the allocations failed
- * @return MTM_SUCCESS if all went well
+ * @return ESCAPER_OUT_OF_MEMORY if one of the allocations failed
+ * @return ESCAPER_SUCCESS if all went well
  */
 EscaperError initEscaper(Escaper visitor, const char* email, TechnionFaculty faculty,
                             int skill_level);
@@ -80,7 +80,11 @@ int getEscaperSkillLevel(Escaper visitor);
  */
 int compareEscaper(void* visitor1, void* visitor2);
 
-
+/*!
+ * functions copies the Escaper ADT
+ * @param escaper - points to the ADT to copy
+ * @return NULL if aloocation failes.
+ */
 void* copyEscaper(void* escaper);
 
 #endif //HW3WET_ESCAPER_H

@@ -27,8 +27,8 @@ typedef enum {
 } OrderError;
 
 /*!
- * function initialize a order from a a pointer to order and allocates the memory
- * needed for the ADT
+ * function initialize a order from a a pointer to order and allocates the
+ * memory needed for the ADT
  * @param order- the pointer that it recieves
  * @param room_id - the ID of the desired room
  * @param company_email - string to signefy the company's email
@@ -142,18 +142,65 @@ TechnionFaculty getOrderFaculty(Order order);
  */
 OrderError setDiscountOrder(Order order);
 
+//compare functions:
+
+/*!
+ * functins compare two orders by the standing time.
+ * @param order1 - points the Order ADT
+ * @param order2 - points to the second Order ADT
+ * @return positive int if 1st order is before 2sd
+ *          negative int if 2nd order is before first
+ *          0 if at the same time
+ */
 int compareOrderByTime(void* order1, void* order2);
 
+/*!
+ * functins compare two orders by thier faculty
+ * @param order1 - points the Order ADT
+ * @param order2 - points to the second Order ADT
+ * @return positive int if 1st order is before 2sd
+ *          negative int if 2nd order is before first
+ *          0 if the same
+ */
 int compareOrderByFaculty(void* order1, void* order2);
 
+/*!
+ * functins compare two orders by thier room ID
+ * @param order1 - points the Order ADT
+ * @param order2 - points to the second Order ADT
+ * @return positive int if 1st order has greater ID than 2sd
+ *          negative int if 2nd order has greater ID than first
+ *          0 if the same
+ */
 int compareOrderByRoomId(void* order1, void* order2);
 
 //Filter functions:
 
+/*!
+ * function checks if an order is for a specific escaper
+ * @param order - points to the Order to check
+ * @param visitor_email - the client's email
+ * @return TRUE if the order is for the client
+ *          FALSE otherwise
+ */
 bool orderForEscaper(void* order, void* visitor_email);
 
+/*!
+ * function checks if an order is for a specific day
+ * @param order - points to the Order to check
+ * @param day - the day to compare to.
+ * @return TRUE if the order is for the day
+ *          FALSE otherwise
+ */
 bool orderAtDay(void* order, void* day);
 
+/*!
+ * function checks if an order is for a specific faculty
+ * @param order - points to the Order to check
+ * @param faculty - the faculty to compare to
+ * @return TRUE if the order is for the faculty
+ *          FALSE otherwise
+ */
 bool orderForFaculty(void* order, void* faculty);
 
 #endif //HW3WET_ORDER_H

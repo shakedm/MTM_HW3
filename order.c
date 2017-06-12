@@ -137,7 +137,7 @@ OrderError setDiscountOrder(Order order){
 }
 
 int compareOrderByTime(void* order1, void* order2){
-    return (getHoursOrder((Order)order1) - getHoursOrder((Order)order2));
+    return (getHoursOrder((Order)order2) - getHoursOrder((Order)order1));
 }
 
 int compareOrderByFaculty(void* order1, void* order2){

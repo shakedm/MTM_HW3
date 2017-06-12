@@ -18,7 +18,7 @@ struct company_t {
  * @param result - the general error code
  * @return the specific error code
  */
-static CompanyError reverse(MtmErrorCode result);
+static CompanyError reverse(EscapeTechnionError result);
 
 Company createCompany(){
     return malloc(sizeof(Company));
@@ -82,7 +82,7 @@ CompanyError addRoomCompany(Company company, Room room){
     assert(company != NULL);
     SetResult result = setAdd(company->rooms, (void*)room);
     if(result != SET_SUCCESS){
-        MtmErrorCode code = errorHandel(HANDEL_SET, (void*)result, ROOM,
+        EscapeTechnionError code = errorHandel(HANDEL_SET, (void*)result, ROOM,
                                         (void*)room);
         return reverse(code);
     }
@@ -93,7 +93,7 @@ CompanyError removeRoomCompany(Company company, Room room){
     assert(company != NULL);
     SetResult result = setRemove(company->rooms, room);
     if(result != SET_SUCCESS){
-        MtmErrorCode code =  errorHandel(HANDEL_SET, (void*)result, ROOM,
+        EscapeTechnionError code =  errorHandel(HANDEL_SET, (void*)result, ROOM,
                                          (void*)room);
         return reverse(code);
     }
@@ -158,15 +158,15 @@ void addCompanyRevenue(Company company, int revenue){
  * @param result - the general error code
  * @return the specific error code
  */
-static CompanyError reverse(MtmErrorCode result){
+static CompanyError reverse(EscapeTechnionError result){
     switch (result){
-        case MTM_OUT_OF_MEMORY :
+        case ESCAPE_OUT_OF_MEMORY :
             return COMPANY_OUT_OF_MEMORY;
-        case MTM_NULL_PARAMETER:
+        case ESCAPE_NULL_PARAMETER:
             return COMPANY_NULL_ARGUMENT;
-        case MTM_ID_ALREADY_EXIST:
+        case ESCAPE_ID_ALREADY_EXIST:
             return COMPANY_ID_ALREADY_EXIST;
-        case MTM_ID_DOES_NOT_EXIST:
+        case ESCAPE_ID_DOES_NOT_EXIST:
             return COMPANY_ID_DOES_NOT_EXIST;
         default:
             return COMPANY_INVALID_ARGUMENT;
