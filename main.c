@@ -4,24 +4,40 @@
 #include "usefullFunctions.h"
 #include "mtm_ex3.h"
 
+
 #define FREE_CLOSE{}
 
+/* in case of one flag use this function determine the flag and returns the
+ * input and output channels accordingly after opening file*/
+static MtmErrorCode passArgument(int argc , char** argv, FILE** F_input ,
+                                FILE** F_output);
 
-static MtmErrorCode passArgument(int argc , char** argv, FILE* F_input ,
-                                FILE* F_output);
-static MtmErrorCode passTwoArguments(char** argv, FILE* F_input,
-                                     FILE* F_output);
+/*this function is called in case of use in both flags, open the  input and
+ * output files and update the pointer to them*/
+static MtmErrorCode passTwoArguments(char** argv, FILE** F_input,
+                                     FILE** F_output);
+/*function reads from the input channels and calles functions according to the
+ * first word in the caommand*/
 static MtmErrorCode readBuffer(EscapeTechnion sys,char * buffer, char* first_word,
 FILE* output_channel);
 
+/* in case of the first command being "room" this function continue to read
+ * from the input and calls the functions of the ADT*/
 static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer);
 
+/* in case of the first command being "company" this function continue to read
+ * from the input and calls the functions of the ADT*/
 static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer);
 
+/* in case of the first command being "escaper" this function continue to read
+ * from the input and calls the functions of the ADT*/
 static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer);
 
+/* in case of the first command being "report" this function continue to read
+ * from the input and calls the functions of the ADT*/
 static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output);
 
+//function translate the escapeTechnion enum of erorcode to those of MTM
 static MtmErrorCode reverse(EscapeTechnionError result);
 
 int main(int argc, char** argv) {
@@ -32,13 +48,13 @@ int main(int argc, char** argv) {
         case(1):
                 break;
         case(3):
-                result = passArgument(argc,argv,input, output);
+                result = passArgument(argc,argv,&input, &output);
                 if(result!=MTM_SUCCESS){
                     mtmPrintErrorMessage(stdout,result);
                     return 0;
                 }
         case(5):
-                result = passTwoArguments(argv,input, output);
+                result = passTwoArguments(argv,&input, &output);
                 if(result!=MTM_SUCCESS){
                     mtmPrintErrorMessage(stdout,result);
                     return 0;
@@ -84,8 +100,8 @@ int main(int argc, char** argv) {
     resetSystem(system);
     return 0;
 }
-static MtmErrorCode passArgument(int argc , char** argv,FILE* F_input,
-                                 FILE* F_output){
+static MtmErrorCode passArgument(int argc , char** argv,FILE** F_input,
+                                 FILE** F_output){
     if(strcmp(argv[argc-1],"-o")!=0 && strcmp(argv[argc-1],"-i")!=0)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     FILE* input = stdin;
@@ -101,12 +117,12 @@ static MtmErrorCode passArgument(int argc , char** argv,FILE* F_input,
     if (output==NULL)
         return MTM_CANNOT_OPEN_FILE;
     }
-    F_input= input;
-    F_output= output;
+    *F_input= input;
+    *F_output= output;
     return  MTM_SUCCESS;
 }
-static MtmErrorCode passTwoArguments(char** argv,FILE* F_input,
-                                     FILE* F_output){
+static MtmErrorCode passTwoArguments(char** argv,FILE** F_input,
+                                     FILE** F_output){
     FILE* input;
     FILE* output;
     if(strcmp(argv[1],"-o")!=0 && strcmp(argv[1],"-i")!=0 &&
@@ -134,8 +150,8 @@ static MtmErrorCode passTwoArguments(char** argv,FILE* F_input,
             return MTM_CANNOT_OPEN_FILE;
         }
     }
-    F_input = input;
-    F_output = output;
+    *F_input = input;
+    *F_output = output;
     return MTM_SUCCESS;
 }
 
