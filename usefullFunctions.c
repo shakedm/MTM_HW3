@@ -15,60 +15,60 @@ bool emailCheck(const char* email){
     return true;
 }
 
-MtmErrorCode setErrorHandel(SetResult result, int sender_ID, void* ADT){
+EscapeTechnionError setErrorHandel(SetResult result, int sender_ID, void* ADT){
     switch (result){
         case SET_OUT_OF_MEMORY :
             return memoryFaultHandel(sender_ID, ADT);
         case SET_NULL_ARGUMENT:
-            return MTM_NULL_PARAMETER;
+            return ESCAPE_NULL_PARAMETER;
         case SET_ITEM_ALREADY_EXISTS:
             switch (sender_ID){
                 case COMPANY:
-                    return MTM_ID_ALREADY_EXIST;
-                case ESCAPE_TECHNION:
-                    return MTM_EMAIL_ALREADY_EXISTS;
+                    return ESCAPE_EMAIL_ALREADY_EXISTS;
+                case ROOM:
+                    return ESCAPE_ID_ALREADY_EXIST;
                 default:
-                    return MTM_INVALID_PARAMETER;
+                    return ESCAPE_INVALID_PARAMETER;
             }
         case SET_ITEM_DOES_NOT_EXIST:
             switch (sender_ID){
                 case COMPANY:
-                    return MTM_COMPANY_EMAIL_DOES_NOT_EXIST;
+                    return ESCAPE_COMPANY_EMAIL_DOES_NOT_EXIST;
                 case ROOM:
-                    return MTM_ID_DOES_NOT_EXIST;
+                    return ESCAPE_ID_DOES_NOT_EXIST;
                 case ESCAPER:
-                    return MTM_CLIENT_EMAIL_DOES_NOT_EXIST;
+                    return ESCAPE_CLIENT_EMAIL_DOES_NOT_EXIST;
                 default:
-                    return MTM_INVALID_PARAMETER;
+                    return ESCAPE_INVALID_PARAMETER;
             }
         default:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
     }
 }
 
 
-MtmErrorCode memoryFaultHandel(int sender_ID, void* ADT){
+EscapeTechnionError memoryFaultHandel(int sender_ID, void* ADT){
     switch (sender_ID){
         case ROOM:
-            resetRoom(*(Room*)ADT);
+            destroyRoom(ADT);
             break;
-        /*case ESCAPER:
-            resetEscaper(*(Escaper*)ADT);
+        case ESCAPER:
+            destroyEscaper(ADT);
             break;
         case COMPANY:
-            resetCompany(*(Company*)ADT);
+            destroyCompany(ADT);
             break;
         case ESCAPE_TECHNION:
             resetSystem(*(EscapeTechnion*)ADT);
-            break;*/
+            break;
         default:
-            return MTM_OUT_OF_MEMORY;
+            return ESCAPE_OUT_OF_MEMORY;
     }
-    return MTM_OUT_OF_MEMORY;
+    return ESCAPE_OUT_OF_MEMORY;
 }
 
 
-MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT){
+EscapeTechnionError errorHandel(int GdtId, void* result, int sender_ID, void* ADT){
     switch (GdtId){
         case HANDEL_SET:
             return setErrorHandel((SetResult)result, sender_ID, ADT);
@@ -83,7 +83,7 @@ MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT){
         case HANDEL_ESCAPER:
             return escaperErrorHandel((EscaperError)result, sender_ID, ADT);
         default:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
     }
 }
 
@@ -121,71 +121,71 @@ bool translateHours(char* working_hours, int *time, bool order){
 }
 
 
-MtmErrorCode listErrorHandel(ListResult result, int sender_ID, void* ADT){
+EscapeTechnionError listErrorHandel(ListResult result, int sender_ID, void* ADT){
     switch (result){
         case LIST_OUT_OF_MEMORY :
             return memoryFaultHandel(sender_ID, ADT);
         case LIST_NULL_ARGUMENT:
-            return MTM_NULL_PARAMETER;
+            return ESCAPE_NULL_PARAMETER;
         case LIST_INVALID_CURRENT:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
         default:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
     }
 }
 
-MtmErrorCode orderErrorHandel(OrderError result, int sender_ID, void* ADT){
+EscapeTechnionError orderErrorHandel(OrderError result, int sender_ID, void* ADT){
     switch (result){
         case ORDER_OUT_OF_MEMORY :
             return memoryFaultHandel(sender_ID, ADT);
         case ORDER_NULL_PARAMETER:
-            return MTM_NULL_PARAMETER;
+            return ESCAPE_NULL_PARAMETER;
         case ORDER_INVALID_PARAMETER:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
         default:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
     }
 }
 
-MtmErrorCode roomErrorHandel(RoomError result, int sender_ID, void* ADT){
+EscapeTechnionError roomErrorHandel(RoomError result, int sender_ID, void* ADT){
     switch (result){
         case ROOM_OUT_OF_MEMORY :
             return memoryFaultHandel(sender_ID, ADT);
         case ROOM_NULL_PARAMETER:
-            return MTM_NULL_PARAMETER;
+            return ESCAPE_NULL_PARAMETER;
         case ROOM_INVALID_PARAMETER:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
         default:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
     }
 }
 
-MtmErrorCode companyErrorHandel(CompanyError result, int sender_ID, void* ADT){
+EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID, void* ADT){
     switch (result){
         case COMPANY_OUT_OF_MEMORY:
             return memoryFaultHandel(sender_ID, ADT);
         case COMPANY_NULL_ARGUMENT:
-            return MTM_NULL_PARAMETER;
+            return ESCAPE_NULL_PARAMETER;
         case COMPANY_INVALID_ARGUMENT:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
         case COMPANY_ID_ALREADY_EXIST:
-            return MTM_ID_ALREADY_EXIST;
+            return ESCAPE_ID_ALREADY_EXIST;
         case COMPANY_ID_DOES_NOT_EXIST:
-            return MTM_ID_DOES_NOT_EXIST;
+            return ESCAPE_ID_DOES_NOT_EXIST;
         default:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
     }
 }
 
-MtmErrorCode escaperErrorHandel(EscaperError result, int sender_ID, void* ADT){
+EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID, void* ADT){
     switch (result){
         case ESCAPER_OUT_OF_MEMORY :
             return memoryFaultHandel(sender_ID, ADT);
         case ESCAPER_NULL_PARAMETER:
-            return MTM_NULL_PARAMETER;
+            return ESCAPE_ID_DOES_NOT_EXIST;
         case ESCAPER_INVALID_PARAMETER:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
         default:
-            return MTM_INVALID_PARAMETER;
+            return ESCAPE_INVALID_PARAMETER;
     }
 }

@@ -55,7 +55,7 @@ bool emailCheck(const char* email);
  * @param ADT points to the ADT to handel
  * @return the correct error massege after handeling the fault.
  */
-MtmErrorCode setErrorHandel(SetResult result, int sender_ID, void* ADT);
+EscapeTechnionError setErrorHandel(SetResult result, int sender_ID, void* ADT);
 
 /* * This Function handels cases in which a list action fails according to the
  * error masseges
@@ -64,15 +64,15 @@ MtmErrorCode setErrorHandel(SetResult result, int sender_ID, void* ADT);
  * @param ADT points to the ADT to handel
  * @return the correct error massege after handeling the fault.
  */
-MtmErrorCode listErrorHandel(ListResult result, int sender_ID, void* ADT);
+EscapeTechnionError listErrorHandel(ListResult result, int sender_ID, void* ADT);
 
-MtmErrorCode orderErrorHandel(OrderError result, int sender_ID, void* ADT);
+EscapeTechnionError orderErrorHandel(OrderError result, int sender_ID, void* ADT);
 
-MtmErrorCode escaperErrorHandel(EscaperError result, int sender_ID, void* ADT);
+EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID, void* ADT);
 
-MtmErrorCode roomErrorHandel(RoomError result, int sender_ID, void* ADT);
+EscapeTechnionError roomErrorHandel(RoomError result, int sender_ID, void* ADT);
 
-MtmErrorCode companyErrorHandel(CompanyError result, int sender_ID, void* ADT);
+EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID, void* ADT);
 
 /* * This Function handels a memory fault in allocation. frees all priviously
  * allocated space
@@ -80,7 +80,7 @@ MtmErrorCode companyErrorHandel(CompanyError result, int sender_ID, void* ADT);
  * @param ADT points to the ADT to free
  * @return MTM_OUT_OF_MEMORY after freeing
  */
-MtmErrorCode memoryFaultHandel(int sender_ID, void* ADT);
+EscapeTechnionError memoryFaultHandel(int sender_ID, void* ADT);
 
 /* * This Function handels cases in which a set action fails according to the
  * error masseges
@@ -90,7 +90,7 @@ MtmErrorCode memoryFaultHandel(int sender_ID, void* ADT);
  * @param ADT points to the ADT to handel
  * @return the correct error massege after handeling the fault.
  */
-MtmErrorCode errorHandel(int GdtId, void* result, int sender_ID, void* ADT);
+EscapeTechnionError errorHandel(int GdtId, void* result, int sender_ID, void* ADT);
 
 /*  * This function translate the hours string to int array while checking the
  * validity of the string.
