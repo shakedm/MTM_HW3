@@ -5,13 +5,13 @@
 static bool testInitRoom(){
     Room room= createRoom();
     ASSERT_TEST(initRoom(NULL,NULL,0,0,NULL,0,0)
-                == MTM_INVALID_PARAMETER);
-    ASSERT_TEST(initRoom(&room,"asd",22,23,"10-23",3,40)==MTM_INVALID_PARAMETER);
+                == ROOM_INVALID_PARAMETER);
+    ASSERT_TEST(initRoom(&room,"asd",22,23,"10-23",3,40)==ROOM_INVALID_PARAMETER);
     ASSERT_TEST(initRoom(&room,"sha@s",23,2 ,"100-20",2,20)
-                ==MTM_INVALID_PARAMETER);
+                ==ROOM_INVALID_PARAMETER);
     ASSERT_TEST(initRoom(&room,"sha@s",23,2 ,"20-10",2,20)
-                ==MTM_INVALID_PARAMETER);
-    ASSERT_TEST(initRoom(&room,"sha@s",23,2 ,"10-20",2,20)==MTM_SUCCESS);
+                ==ROOM_INVALID_PARAMETER);
+    ASSERT_TEST(initRoom(&room,"sha@s",23,2 ,"10-20",2,20)==ROOM_SUCCESS);
     resetRoom(room);
     destroyRoom(room);
     return true;
@@ -20,7 +20,7 @@ static bool testInitRoom(){
 static bool testResetRoom(){
     return true;
 }
-/*
+
 static bool testGetId(){
     Room room= createRoom();
     initRoom(&room,"sha@s",23,2 ,"10-20",2,20);
@@ -149,17 +149,17 @@ static bool testCopyRoom(){
     return true;
 
 }
-*/
+
 int main(int argv, char **argc){
-   RUN_TEST(testResetRoom);
+    RUN_TEST(testResetRoom);
     RUN_TEST(testInitRoom);
-   // RUN_TEST(testGetWorkingHours);
-  //  RUN_TEST(testGetPrice);
-  //  RUN_TEST(testGetNumPpl);
-  //  RUN_TEST(testGetId);
- //  RUN_TEST(testGetEmail);
-  //  RUN_TEST(testGetDiffucalty);
-  //  RUN_TEST(testCopyRoom);
-  //  RUN_TEST(testCompareRoom);
+    RUN_TEST(testGetWorkingHours);
+    RUN_TEST(testGetPrice);
+    RUN_TEST(testGetNumPpl);
+    RUN_TEST(testGetId);
+    RUN_TEST(testGetEmail);
+    RUN_TEST(testGetDiffucalty);
+    RUN_TEST(testCopyRoom);
+    RUN_TEST(testCompareRoom);
     return 0;
 }
