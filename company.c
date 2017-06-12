@@ -153,11 +153,6 @@ void addCompanyRevenue(Company company, int revenue){
     company->revenue += revenue;
 }
 
-/*!
- * This function translate the general error the ADT specific error
- * @param result - the general error code
- * @return the specific error code
- */
 static CompanyError reverse(EscapeTechnionError result){
     switch (result){
         case ESCAPE_OUT_OF_MEMORY :
