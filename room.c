@@ -10,7 +10,6 @@ struct room_t{
     int num_ppl;
     int difficulty;
     int price;
-    //Order current_orders;
 };
 Room createRoom(){
     Room new_room = malloc(sizeof(*new_room));
@@ -51,7 +50,6 @@ RoomError initRoom(Room room, char* Email , int id , int num_ppl ,
     room->working_hours[CLOSE_HOUR] = time[CLOSE_HOUR];
     room->price = price;
     room->email = new_email;
-    //(*room)->current_orders = NULL;
     return ROOM_SUCCESS;
 }
 
