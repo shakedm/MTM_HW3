@@ -1,5 +1,3 @@
-#include "mtm_ex3.h"
-
 
 #ifndef HW3WET_COMPANY_H
 #define HW3WET_COMPANY_H
@@ -7,6 +5,7 @@
 #include <stdbool.h>
 #include "room.h"
 #include "set.h"
+#include "mtm_ex3.h"
 /* type to define the company struct */
 typedef struct company_t* Company;
 

@@ -1,3 +1,8 @@
+
+
+
+#ifndef HW3WET_USEFULLFUNCTIONS_H
+#define HW3WET_USEFULLFUNCTIONS_H
 #include "mtm_ex3.h"
 #include "room.h"
 #include "set.h"
@@ -6,11 +11,6 @@
 #include "escaper.h"
 #include "company.h"
 #include "EscapeTechnion.h"
-
-
-#ifndef HW3WET_USEFULLFUNCTIONS_H
-#define HW3WET_USEFULLFUNCTIONS_H
-
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>

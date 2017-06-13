@@ -2,10 +2,12 @@
 
 
 #include "usefullFunctions.h"
-#include "mtm_ex3.h"
 
 
-#define FREE_CLOSE{}
+#define FREE_CLOSE {if (output!=stdout)\
+                fclose(output);\
+            if (input!=stdin)\
+                fclose(input);}
 
 /* in case of one flag use this function determine the flag and returns the
  * input and output channels accordingly after opening file*/
@@ -67,10 +69,7 @@ int main(int argc, char** argv) {
     result = reverse(result2);
     if (result!=MTM_SUCCESS){
         mtmPrintErrorMessage(output,result);
-        if (output!=stdout)
-            fclose(output);
-        if (input!=stdin)
-            fclose(input);
+        FREE_CLOSE;
         return 0;
     }
     char buffer[MAX_LEN];
@@ -81,10 +80,7 @@ int main(int argc, char** argv) {
         if(result!=MTM_SUCCESS){
             if (result==MTM_OUT_OF_MEMORY){
                 mtmPrintErrorMessage(output,MTM_OUT_OF_MEMORY);
-                if(output!=stdout)
-                    fclose(output);
-                if (input!=stdin)
-                    fclose(input);
+                FREE_CLOSE;
                 resetSystem(system);
                 return 0;
             }
@@ -93,10 +89,7 @@ int main(int argc, char** argv) {
         }
 
     }
-    if(output!= stdout)
-        fclose(output);
-    if(input!= stdin)
-        fclose(input);
+    FREE_CLOSE;
     resetSystem(system);
     return 0;
 }
@@ -176,7 +169,7 @@ static MtmErrorCode readBuffer(EscapeTechnion sys,char* buffer, char* first_word
 }
 
 static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
-    char* current = buffer;
+    char* current;
     current=strtok(buffer, " \t");
     if(!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
@@ -209,7 +202,7 @@ static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
 }
 
 static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
-    char* current =buffer;
+    char* current;
     current=strtok(NULL," \t");
     if (!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
@@ -245,7 +238,7 @@ static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output){
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
 static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
-    char* current = buffer;
+    char* current;
     current=strtok(NULL, " \t");
     if (!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
@@ -319,4 +312,5 @@ static MtmErrorCode reverse(EscapeTechnionError result){
         case ESCAPE_SUCCESS:
             return MTM_SUCCESS;
     }
+    return MTM_SUCCESS;
 }
