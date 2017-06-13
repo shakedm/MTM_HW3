@@ -173,7 +173,7 @@ static MtmErrorCode readBuffer(EscapeTechnion sys,char* buffer, char* first_word
 
 static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
     char* current;
-    current=strtok(buffer, " \t");
+    current=strtok(NULL, " \t");
     if(!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if (!strcmp(current,"remove")){
