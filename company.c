@@ -103,8 +103,8 @@ char* getCompanyEmail(Company company){
 }
 
 int compareCompany(void* company1, void* company2){
-    return strcmp(getCompanyEmail((*(Company*)company1)),
-                  getCompanyEmail((*(Company*)company2)));
+    return strcmp(getCompanyEmail(((Company)company1)),
+                  getCompanyEmail(((Company)company2)));
 }
 
 void* copyCompany(void* company){

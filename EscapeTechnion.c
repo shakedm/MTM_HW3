@@ -159,6 +159,9 @@ static EscapeTechnionError roomErrorHandel(RoomError result, int sender_ID,
 static EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID,
                                        void* ADT);
 
+static EscapeTechnionError facultyErrorHandel(FacultyError result, int sender_ID,
+                                              void* ADT);
+
 /* * This Function handels a memory fault in allocation. frees all priviously
  * allocated space
  * @param sender_ID to ID the ADT to handel
@@ -810,8 +813,11 @@ static EscapeTechnionError memoryFaultHandel(int sender_ID, void* ADT){
         case COMPANY:
             destroyCompany(ADT);
             break;
+        case FACULTY:
+            destroyFaculty(ADT);
+            break;
         case ESCAPE_TECHNION:
-            resetSystem(*(EscapeTechnion*)ADT);
+            resetSystem((EscapeTechnion)ADT);
             break;
         default:
             return ESCAPE_OUT_OF_MEMORY;
@@ -835,6 +841,8 @@ static EscapeTechnionError errorHandel(int GdtId, void* result, int sender_ID,
             return companyErrorHandel((CompanyError)result, sender_ID, ADT);
         case HANDEL_ESCAPER:
             return escaperErrorHandel((EscaperError)result, sender_ID, ADT);
+        case HANDEL_FACULTY:
+            return facultyErrorHandel((FacultyError)result, sender_ID, ADT);
         default:
             return ESCAPE_INVALID_PARAMETER;
     }
@@ -851,6 +859,30 @@ static EscapeTechnionError listErrorHandel(ListResult result, int sender_ID,
             return ESCAPE_NULL_PARAMETER;
         case LIST_INVALID_CURRENT:
             return ESCAPE_INVALID_PARAMETER;
+        default:
+            return ESCAPE_INVALID_PARAMETER;
+    }
+}
+
+static EscapeTechnionError facultyErrorHandel(FacultyError result, int sender_ID,
+                                           void* ADT){
+    switch (result){
+        case FACULTY_OUT_OF_MEMORY :
+            return memoryFaultHandel(sender_ID, ADT);
+        case FACULTY_NULL_PARAMETER:
+            return ESCAPE_NULL_PARAMETER;
+        case FACULTY_INVALID_PARAMETER:
+            return ESCAPE_INVALID_PARAMETER;
+        case FACULTY_EMAIL_ALREADY_EXISTS:
+            return ESCAPE_EMAIL_ALREADY_EXISTS;
+        case FACULTY_COMPANY_EMAIL_DOES_NOT_EXIST:
+            return ESCAPE_COMPANY_EMAIL_DOES_NOT_EXIST;
+        case FACULTY_ID_DOES_NOT_EXIST:
+            return ESCAPE_ID_DOES_NOT_EXIST;
+        case FACULTY_ID_ALREADY_EXIST:
+            return ESCAPE_ID_ALREADY_EXIST;
+        case FACULTY_SUCCESS:
+            return ESCAPE_SUCCESS;
         default:
             return ESCAPE_INVALID_PARAMETER;
     }
@@ -884,7 +916,7 @@ static EscapeTechnionError roomErrorHandel(RoomError result, int sender_ID,
     }
 }
 
-EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID,
+static EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID,
                                        void* ADT){
     switch (result){
         case COMPANY_OUT_OF_MEMORY:
@@ -902,7 +934,7 @@ EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID,
     }
 }
 
-EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID,
+static EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID,
                                        void* ADT){
     switch (result){
         case ESCAPER_OUT_OF_MEMORY :
