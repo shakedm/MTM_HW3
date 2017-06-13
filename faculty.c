@@ -49,10 +49,6 @@ FacultyError initFaculty(Faculty faculty, TechnionFaculty faculty_ID){
     if (faculty_ID == UNKNOWN){
         return FACULTY_INVALID_PARAMETER;
     }
-    faculty = createFaculty();
-    if(faculty == NULL){
-        return FACULTY_OUT_OF_MEMORY;
-    }
     Set rooms = setCreate(copyRoom, destroyRoom, compareRoom);
     if (!rooms){
         free(faculty);
@@ -89,16 +85,34 @@ void resetFaculty(void* faculty){
 Room findRoomInFaculty(Faculty faculty, int id){
     int set_size = setGetSize(faculty->rooms);
     bool found = false;
-    Room *curr_room = setGetFirst(faculty->rooms);
+    Room curr_room = setGetFirst(faculty->rooms);
     for (int i = 0; i < set_size ; ++i) {
-        if(roomGetId(*curr_room) == id){
+        if(roomGetId(curr_room) == id){
             found = true;
             break;
         }
         curr_room = setGetNext(faculty->rooms);
     }
     if(found){
-        return *curr_room;
+        return curr_room;
+    }
+    return NULL;
+}
+
+Company findWhereRoom(Faculty faculty, int id){
+    int set_size = setGetSize(faculty->companies);
+    bool found = false;
+    Company curr_company = setGetFirst(faculty->companies);
+    for (int i = 0; i < set_size ; ++i) {
+        int temp_id = roomGetId(findRoomInCompany(curr_company, id));
+        if(temp_id == id){
+            found = true;
+            break;
+        }
+        curr_company = setGetNext(faculty->rooms);
+    }
+    if(found){
+        return curr_company;
     }
     return NULL;
 }
@@ -106,32 +120,32 @@ Room findRoomInFaculty(Faculty faculty, int id){
 
 Company findCompanyInFaculty(Faculty faculty, char* email){
     int set_size = setGetSize(faculty->companies);
-    Company *curr_company = setGetFirst(faculty->companies);
+    Company curr_company = setGetFirst(faculty->companies);
     bool found = false;
     for (int i = 0; i < set_size ; ++i) {
-        if(strcmp(getCompanyEmail(*curr_company), email) == 0){
+        if(strcmp(getCompanyEmail(curr_company), email) == 0){
             found = true;
             break;
         }
-        *curr_company = setGetNext(faculty->companies);
+        curr_company = setGetNext(faculty->companies);
     }
     if(found){
-        return *curr_company;
+        return curr_company;
     }
     return NULL;
 }
 
 
-FacultyError addFacultyCompany(Faculty faculty, Company *company){
+FacultyError addFacultyCompany(Faculty faculty, Company company){
     assert(faculty != NULL);
-    SetResult result = setAdd(faculty->rooms, (void*)company);
+    SetResult result = setAdd(faculty->companies, company);
     if(result != SET_SUCCESS){
         return setErrorHandel(result, COMPANY, company);
     }
     return FACULTY_SUCCESS;
 }
 
-FacultyError removeFacultyCompany(Faculty faculty, Company *company){
+FacultyError removeFacultyCompany(Faculty faculty, Company company){
     if(faculty == NULL || company == NULL){
         return FACULTY_NULL_PARAMETER;
     }
@@ -142,7 +156,7 @@ FacultyError removeFacultyCompany(Faculty faculty, Company *company){
     return FACULTY_SUCCESS;
 }
 
-FacultyError addFacultyRoom(Faculty faculty, Room *room){
+FacultyError addFacultyRoom(Faculty faculty, Room room){
     assert(faculty != NULL);
     SetResult result = setAdd(faculty->rooms, (void*)room);
     if(result != SET_SUCCESS){
@@ -151,7 +165,7 @@ FacultyError addFacultyRoom(Faculty faculty, Room *room){
     return FACULTY_SUCCESS;
 }
 
-FacultyError removeFacultyRoom(Faculty faculty, Room *room){
+FacultyError removeFacultyRoom(Faculty faculty, Room room){
     if(faculty == NULL || room == NULL){
         return FACULTY_NULL_PARAMETER;
     }
@@ -187,7 +201,7 @@ void* copyFaculty(void* faculty){
         return NULL;
     }
     faculty_copy->companies = setCopy(((Faculty)faculty)->companies);
-    if(faculty_copy->companies){
+    if(faculty_copy->companies == NULL){
         setClear(faculty_copy->rooms);
         setDestroy(faculty_copy->rooms);
         destroyFaculty(faculty_copy);

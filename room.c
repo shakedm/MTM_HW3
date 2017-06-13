@@ -74,7 +74,9 @@ void resetRoom(Room room){
 }
 
 int roomGetId(Room room){
-    assert(room != NULL);
+    if(!room){
+        return -1;
+    }
     return  room->id;
 }
 

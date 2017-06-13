@@ -55,7 +55,7 @@ Order createOrder(){
 
 void destroyOrder(void* order){
     resetOrder(order);
-    free(*(Order*)order);
+    free((Order)order);
 }
 
 void* copyOrder(void* order){

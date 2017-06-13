@@ -252,11 +252,17 @@ EscapeTechnionError companyAdd(EscapeTechnion sys, char* email,
         destroyFaculty(new_faculty);
         return errorHandel(HANDEL_SET, (void*)setResult, COMPANY, new_company);
     }
+    FacultyError facultyResult = initFaculty(new_faculty, faculty);
+    if(facultyResult != FACULTY_SUCCESS){
+        destroyFaculty(new_faculty);
+        return errorHandel(HANDEL_FACULTY, (void*)facultyResult, FACULTY,
+                           new_faculty);
+    }
+    facultyResult = addFacultyCompany(new_faculty, new_company);
     setResult = setAdd(sys->faculties, (void*)new_faculty);
     if(setResult != SET_SUCCESS){
         return errorHandel(HANDEL_SET, (void*)setResult, FACULTY, new_faculty);
     }
-    FacultyError facultyResult = addFacultyCompany(new_faculty, &new_company);
     if(facultyResult != FACULTY_SUCCESS){
         setRemove(sys->faculties, new_faculty);
         destroyFaculty(new_faculty);
@@ -341,7 +347,7 @@ EscapeTechnionError companyRemove(EscapeTechnion sys, char* email){
     if(company != NULL){
         removeFacultyCompany(findFacultyById(sys->faculties,
                                              getCompanyFaculty(company)),
-                             &company);
+                             company);
         setRemove(sys->companies, company);
         return ESCAPE_SUCCESS;
     }
@@ -367,7 +373,7 @@ EscapeTechnionError roomAdd(EscapeTechnion sys, char* email, int id, int price,
     }
     Faculty faculty = findFacultyById(sys->faculties, getCompanyFaculty(company));
     assert(faculty != NULL);
-    FacultyError facultyResult = addFacultyRoom(faculty, &new_room);
+    FacultyError facultyResult = addFacultyRoom(faculty, new_room);
     if(facultyResult != FACULTY_SUCCESS){
         setRemove(sys->companies, new_room);
         destroyRoom(new_room);
@@ -391,7 +397,7 @@ EscapeTechnionError roomRemove(EscapeTechnion sys, TechnionFaculty faculty,
         return ESCAPE_RESERVATION_EXISTS;
     }
     Faculty faculty_ptr = findFacultyById(sys->faculties, faculty);
-    FacultyError f_result = removeFacultyRoom(faculty_ptr, &room);
+    FacultyError f_result = removeFacultyRoom(faculty_ptr, room);
     if(f_result != FACULTY_SUCCESS){
         return errorHandel(HANDEL_FACULTY, (void*)f_result, FACULTY,
                            faculty_ptr);
@@ -519,6 +525,7 @@ static EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty f
     if (!(room)){
         return ESCAPE_ID_DOES_NOT_EXIST;
     }
+    *company = findWhereRoom(*faculty_ptr, id);
     List faculty_order_list = listCreate(copyOrder, destroyOrder);
     if(!faculty_order_list){
         return ESCAPE_OUT_OF_MEMORY;
@@ -529,8 +536,6 @@ static EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty f
          curr_order = listGetNext(faculty_order_list)) {
         if(getOrderRoomId(curr_order) == id &&
                 getOrderFaculty(curr_order) == faculty){
-            *company = findCompanyByEmail(sys->companies,
-                                          getOrderCompanyEmail(curr_order));
             if(getDaysOrder(curr_order) == due_in[DAYS] &&
                getHoursOrder(curr_order) == due_in[HOURS]){
                 return ESCAPE_ROOM_NOT_AVAILABLE;
