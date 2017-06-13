@@ -1,7 +1,6 @@
 #ifndef HW3WET_ESCAPETECHNION_H
 #define HW3WET_ESCAPETECHNION_H
 
-#include "mtm_ex3.h"
 #include "escaper.h"
 #include "room.h"
 #include "company.h"

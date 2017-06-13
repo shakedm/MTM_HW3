@@ -1,9 +1,10 @@
 #include "company.h"
 
-#include <assert.h>
+//#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include "usefullFunctions.h"
+#include <assert.h>
+//#include "usefullFunctions.h"
 
 
 struct company_t {
@@ -18,7 +19,7 @@ struct company_t {
  * @param result - the general error code
  * @return the specific error code
  */
-static CompanyError reverse(EscapeTechnionError result);
+static CompanyError setErrorHandel(SetResult result, Room room);
 
 Company createCompany(){
     return malloc(sizeof(Company));
@@ -82,9 +83,7 @@ CompanyError addRoomCompany(Company company, Room room){
     assert(company != NULL);
     SetResult result = setAdd(company->rooms, (void*)room);
     if(result != SET_SUCCESS){
-        EscapeTechnionError code = errorHandel(HANDEL_SET, (void*)result, ROOM,
-                                        (void*)room);
-        return reverse(code);
+        return setErrorHandel(result, room);
     }
     return COMPANY_SUCCESS;
 }
@@ -93,9 +92,7 @@ CompanyError removeRoomCompany(Company company, Room room){
     assert(company != NULL);
     SetResult result = setRemove(company->rooms, room);
     if(result != SET_SUCCESS){
-        EscapeTechnionError code =  errorHandel(HANDEL_SET, (void*)result, ROOM,
-                                         (void*)room);
-        return reverse(code);
+        return setErrorHandel(result, room);
     }
     return COMPANY_SUCCESS;
 }
@@ -118,7 +115,7 @@ void* copyCompany(void* company){
     CompanyError result = initCompany(new_company,
                                       getCompanyEmail(*(Company*)company),
                                       getCompanyFaculty((*(Company*)company)));
-    if (result != MTM_SUCCESS){
+    if (result != COMPANY_SUCCESS){
         return NULL;
     }
     return new_company;
@@ -153,15 +150,17 @@ void addCompanyRevenue(Company company, int revenue){
     company->revenue += revenue;
 }
 
-static CompanyError reverse(EscapeTechnionError result){
+
+static CompanyError setErrorHandel(SetResult result, Room room){
     switch (result){
-        case ESCAPE_OUT_OF_MEMORY :
+        case SET_OUT_OF_MEMORY :
+            resetRoom((void*)room);
             return COMPANY_OUT_OF_MEMORY;
-        case ESCAPE_NULL_PARAMETER:
+        case SET_NULL_ARGUMENT:
             return COMPANY_NULL_ARGUMENT;
-        case ESCAPE_ID_ALREADY_EXIST:
+        case SET_ITEM_ALREADY_EXISTS:
             return COMPANY_ID_ALREADY_EXIST;
-        case ESCAPE_ID_DOES_NOT_EXIST:
+        case SET_ITEM_DOES_NOT_EXIST:
             return COMPANY_ID_DOES_NOT_EXIST;
         default:
             return COMPANY_INVALID_ARGUMENT;

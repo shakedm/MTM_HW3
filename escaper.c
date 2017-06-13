@@ -1,8 +1,8 @@
 #include "escaper.h"
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include "usefullFunctions.h"
+//#include "usefullFunctions.h"
 
 struct escaper_t {
     char *email;

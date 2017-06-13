@@ -1,6 +1,9 @@
-#include "mtm_ex3.h"
+//#include "mtm_ex3.h"
 #ifndef HW3WET_ESCAPER_H
 #define HW3WET_ESCAPER_H
+
+
+#include "usefullFunctions.h"
 
 /* type to define the escaper struct*/
 typedef struct escaper_t* Escaper;

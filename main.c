@@ -8,6 +8,7 @@
                 fclose(output);\
             if (input!=stdin)\
                 fclose(input);}
+#include "EscapeTechnion.h"
 
 /* in case of one flag use this function determine the flag and returns the
  * input and output channels accordingly after opening file*/
@@ -18,6 +19,7 @@ static MtmErrorCode passArgument(int argc , char** argv, FILE** F_input ,
  * output files and update the pointer to them*/
 static MtmErrorCode passTwoArguments(char** argv, FILE** F_input,
                                      FILE** F_output);
+
 /*function reads from the input channels and calles functions according to the
  * first word in the caommand*/
 static MtmErrorCode readBuffer(EscapeTechnion sys,char * buffer, char* first_word,

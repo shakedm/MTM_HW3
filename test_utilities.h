@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 /**
  * These macros are here to help you create tests more easily and keep them
@@ -21,6 +22,7 @@
  * If b is false, ends the test by returning false and prints a detailed
  * message about the failure.
  */
+
 #define ASSERT_TEST(b) do { \
         if (!(b)) { \
                 printf("\nAssertion failed at %s:%d %s\n",__FILE__,__LINE__,#b); \
