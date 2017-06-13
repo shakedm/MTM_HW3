@@ -81,7 +81,7 @@ Company findCompanyInFaculty(Faculty faculty, char* email);
  */
 FacultyError addFacultyCompany(Faculty faculty, Company *company);
 
-void removeFacultyCompany(Faculty faculty, Company *company);
+FacultyError removeFacultyCompany(Faculty faculty, Company *company);
 
 /*!
  *function addes room to the faculty
@@ -93,7 +93,7 @@ void removeFacultyCompany(Faculty faculty, Company *company);
  */
 FacultyError addFacultyRoom(Faculty faculty, Room *room);
 
-void removeFacultyRoom(Faculty faculty, Room *company);
+FacultyError removeFacultyRoom(Faculty faculty, Room *room);
 
 /*!
  * function to comapare two visitors

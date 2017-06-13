@@ -127,6 +127,8 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* list);
 //function checks if there is a standing order for given room at given time
 static bool orderExistForRoom(List orders, int room_id);
 
+static Faculty findFacultyById(Set faculties, TechnionFaculty id);
+
 
 /* * This Function handels cases in which a set action fails according to the
  * error masseges
@@ -267,6 +269,22 @@ EscapeTechnionError companyAdd(EscapeTechnion sys, char* email,
     return ESCAPE_SUCCESS;
 }
 
+static Faculty findFacultyById(Set faculties, TechnionFaculty id){
+    bool found = false;
+    Faculty curr_faculty = NULL;
+    for(curr_faculty = setGetFirst(faculties); curr_faculty;
+        curr_faculty = setGetNext(faculties)){
+        if(getFacultyID(curr_faculty) == id){
+            found = true;
+            break;
+        }
+    }
+    if(found){
+        return curr_faculty;
+    }
+    return NULL;
+}
+
 static Company findCompanyByEmail(Set companies, const char *email){
     int set_size = setGetSize(companies);
     Company curr_company = setGetFirst(companies);
@@ -322,6 +340,9 @@ static Escaper findEscaperInSet(Set escapers, char *email){
 EscapeTechnionError companyRemove(EscapeTechnion sys, char* email){
     Company company = findCompanyByEmail(sys->companies, email);
     if(company != NULL){
+        removeFacultyCompany(findFacultyById(sys->faculties,
+                                             getCompanyFaculty(company)),
+                             &company);
         setRemove(sys->companies, company);
         return ESCAPE_SUCCESS;
     }

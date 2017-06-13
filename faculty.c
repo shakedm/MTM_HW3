@@ -126,16 +126,37 @@ FacultyError addFacultyCompany(Faculty faculty, Company *company){
     assert(faculty != NULL);
     SetResult result = setAdd(faculty->rooms, (void*)company);
     if(result != SET_SUCCESS){
-        return setErrorHandel(result, ROOM, company);
+        return setErrorHandel(result, COMPANY, company);
     }
     return FACULTY_SUCCESS;
 }
 
+FacultyError removeFacultyCompany(Faculty faculty, Company *company){
+    if(faculty == NULL || company == NULL){
+        return FACULTY_NULL_PARAMETER;
+    }
+    SetResult result = setRemove(faculty->companies, company);
+    if (result != SET_SUCCESS){
+        return setErrorHandel(result, COMPANY, company);
+    }
+    return FACULTY_SUCCESS;
+}
 
 FacultyError addFacultyRoom(Faculty faculty, Room *room){
     assert(faculty != NULL);
     SetResult result = setAdd(faculty->rooms, (void*)room);
     if(result != SET_SUCCESS){
+        return setErrorHandel(result, ROOM, room);
+    }
+    return FACULTY_SUCCESS;
+}
+
+FacultyError removeFacultyRoom(Faculty faculty, Room *room){
+    if(faculty == NULL || room == NULL){
+        return FACULTY_NULL_PARAMETER;
+    }
+    SetResult result = setRemove(faculty->rooms, room);
+    if (result != SET_SUCCESS){
         return setErrorHandel(result, ROOM, room);
     }
     return FACULTY_SUCCESS;
