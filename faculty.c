@@ -85,34 +85,16 @@ void resetFaculty(void* faculty){
 Room findRoomInFaculty(Faculty faculty, int id){
     int set_size = setGetSize(faculty->rooms);
     bool found = false;
-    Room curr_room = setGetFirst(faculty->rooms);
+    Room *curr_room = setGetFirst(faculty->rooms);
     for (int i = 0; i < set_size ; ++i) {
-        if(roomGetId(curr_room) == id){
+        if(roomGetId(*curr_room) == id){
             found = true;
             break;
         }
         curr_room = setGetNext(faculty->rooms);
     }
     if(found){
-        return curr_room;
-    }
-    return NULL;
-}
-
-Company findWhereRoom(Faculty faculty, int id){
-    int set_size = setGetSize(faculty->companies);
-    bool found = false;
-    Company curr_company = setGetFirst(faculty->companies);
-    for (int i = 0; i < set_size ; ++i) {
-        int temp_id = roomGetId(findRoomInCompany(curr_company, id));
-        if(temp_id == id){
-            found = true;
-            break;
-        }
-        curr_company = setGetNext(faculty->rooms);
-    }
-    if(found){
-        return curr_company;
+        return *curr_room;
     }
     return NULL;
 }
@@ -120,17 +102,17 @@ Company findWhereRoom(Faculty faculty, int id){
 
 Company findCompanyInFaculty(Faculty faculty, char* email){
     int set_size = setGetSize(faculty->companies);
-    Company curr_company = setGetFirst(faculty->companies);
+    Company *curr_company = setGetFirst(faculty->companies);
     bool found = false;
     for (int i = 0; i < set_size ; ++i) {
-        if(strcmp(getCompanyEmail(curr_company), email) == 0){
+        if(strcmp(getCompanyEmail(*curr_company), email) == 0){
             found = true;
             break;
         }
-        curr_company = setGetNext(faculty->companies);
+        *curr_company = setGetNext(faculty->companies);
     }
     if(found){
-        return curr_company;
+        return *curr_company;
     }
     return NULL;
 }

@@ -45,6 +45,7 @@ static bool testGetCompanyRevenue(){
 static bool testSetCompanyRooms(){
     Company company=NULL;
     ASSERT_TEST(getCompanyRooms(company)==NULL);
+    company=createCompany();
     initCompany(company,"ass@sa",(TechnionFaculty)13);
     Room room=createRoom();
     initRoom(room,"ass@sa",2,32,"10-23",5,20);
