@@ -1,4 +1,7 @@
 #include "room.h"
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 
 struct room_t{
     char* email;

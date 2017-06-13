@@ -126,6 +126,58 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* list);
 //function checks if there is a standing order for given room at given time
 static bool orderExistForRoom(List orders, int room_id);
 
+
+/* * This Function handels cases in which a set action fails according to the
+ * error masseges
+ * @param result the error result the action returned
+ * @param sender_ID signefies the ADT from which the action was taken.
+ * @param ADT points to the ADT to handel
+ * @return the correct error massege after handeling the fault.
+ */
+static EscapeTechnionError setErrorHandel(SetResult result, int sender_ID,
+                                   void* ADT);
+
+/* * This Function handels cases in which a list action fails according to the
+ * error masseges
+ * @param result the error result the action returned
+ * @param sender_ID signefies the ADT from which the action was taken.
+ * @param ADT points to the ADT to handel
+ * @return the correct error massege after handeling the fault.
+ */
+static EscapeTechnionError listErrorHandel(ListResult result, int sender_ID,
+                                    void* ADT);
+
+static EscapeTechnionError orderErrorHandel(OrderError result, int sender_ID,
+                                     void* ADT);
+
+static EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID,
+                                       void* ADT);
+
+static EscapeTechnionError roomErrorHandel(RoomError result, int sender_ID,
+                                    void* ADT);
+
+static EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID,
+                                       void* ADT);
+
+/* * This Function handels a memory fault in allocation. frees all priviously
+ * allocated space
+ * @param sender_ID to ID the ADT to handel
+ * @param ADT points to the ADT to free
+ * @return MTM_OUT_OF_MEMORY after freeing
+ */
+static EscapeTechnionError memoryFaultHandel(int sender_ID, void* ADT);
+
+/* * This Function handels cases in which a set action fails according to the
+ * error masseges
+ * @param GdtId - to sort for List or Set hadel functions
+ * @param result the error result the action returned
+ * @param sender_ID signefies the ADT from which the action was taken.
+ * @param ADT points to the ADT to handel
+ * @return the correct error massege after handeling the fault.
+ */
+static EscapeTechnionError errorHandel(int GdtId, void* result, int sender_ID,
+                                void* ADT);
+
 /*
  * H-File functions:
  */
@@ -398,7 +450,7 @@ EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty,
                                     (void*)faculty);
     for (Order curr_order = listGetFirst(faculty_order_list); curr_order != NULL;
          curr_order = listGetNext(faculty_order_list)) {
-        if(getOrderRoomID(curr_order) == id){
+        if(getOrderRoomId(curr_order) == id){
             *company = findCompanyByEmail(sys->companies,
                                          getOrderCompanyEmail(curr_order));
             *room = findRoomInCompany((*company), id);
@@ -500,7 +552,7 @@ EscapeTechnionError reportDay(EscapeTechnion sys, FILE* outputChannel){
         return ESCAPE_OUT_OF_MEMORY;
     }
     EscapeTechnionError result = getTodayList(sys, &today_events);
-    if(result != MTM_SUCCESS){
+    if(result != ESCAPE_SUCCESS){
         return result;
     }
     int events = listGetSize(today_events);
@@ -513,12 +565,12 @@ EscapeTechnionError reportDay(EscapeTechnion sys, FILE* outputChannel){
                                          (char*)getOrderEscaperEmail(curr_order));
         order_company = findCompanyByEmail(sys->companies,
                                            (char*)getOrderCompanyEmail(curr_order));
-        order_room = findRoomInCompany(order_company, getOrderRoomID(curr_order));
+        order_room = findRoomInCompany(order_company, getOrderRoomId(curr_order));
         mtmPrintOrder(outputChannel, (char*)getOrderEscaperEmail(curr_order),
                       getEscaperSkillLevel(order_visitor),
                       getEscaperFaculty(order_visitor),
                       (char*)getOrderCompanyEmail(curr_order),
-                      getOrderFaculty(curr_order), getOrderRoomID(curr_order),
+                      getOrderFaculty(curr_order), getOrderRoomId(curr_order),
                       getHoursOrder(curr_order), roomGetDifficulty(order_room),
                       getNumOfVisitors(curr_order), getCost(curr_order));
         addCompanyRevenue(order_company, getCost(curr_order));
@@ -632,7 +684,7 @@ bool orderExistForRoom(List orders, int room_id){
     int size = listGetSize(orders);
     Order curr_order = listGetFirst(orders);
     for (int i = 0; i < size; ++i) {
-        if(getOrderRoomID(curr_order) == room_id){
+        if(getOrderRoomId(curr_order) == room_id){
             return true;
         }
         curr_order = listGetNext(orders);
@@ -653,7 +705,7 @@ void resetSystem(EscapeTechnion sys){
 static int score_calc(Room room, Escaper visitor, int num_ppl){
     int people = roomGetNumPpl(room) - num_ppl;
     int level = roomGetDifficulty(room) - getEscaperSkillLevel(visitor);
-    return (people)^2 + (level)^2;
+    return ((people)^2) + ((level)^2);
 }
 
 static int compareFaculties(EscapeTechnion sys, Company company, Room room,
@@ -709,5 +761,157 @@ static void chainReaction(Company *top_companies, int *top_revenue,
     for (int j = iterator + 1; j < TOP; ++j) {
         top_companies[j] = temp_top[j - 1];
         top_revenue[j] = temp_revenue[j - 1];
+    }
+}
+
+static EscapeTechnionError setErrorHandel(SetResult result, int sender_ID,
+                                          void* ADT){
+    switch (result){
+        case SET_OUT_OF_MEMORY :
+            return memoryFaultHandel(sender_ID, ADT);
+        case SET_NULL_ARGUMENT:
+            return ESCAPE_NULL_PARAMETER;
+        case SET_ITEM_ALREADY_EXISTS:
+            switch (sender_ID){
+                case COMPANY:
+                    return ESCAPE_EMAIL_ALREADY_EXISTS;
+                case ROOM:
+                    return ESCAPE_ID_ALREADY_EXIST;
+                case ESCAPER:
+                    return ESCAPE_EMAIL_ALREADY_EXISTS;
+                default:
+                    return ESCAPE_INVALID_PARAMETER;
+            }
+        case SET_ITEM_DOES_NOT_EXIST:
+            switch (sender_ID){
+                case COMPANY:
+                    return ESCAPE_COMPANY_EMAIL_DOES_NOT_EXIST;
+                case ROOM:
+                    return ESCAPE_ID_DOES_NOT_EXIST;
+                case ESCAPER:
+                    return ESCAPE_CLIENT_EMAIL_DOES_NOT_EXIST;
+                default:
+                    return ESCAPE_INVALID_PARAMETER;
+            }
+        default:
+            return ESCAPE_INVALID_PARAMETER;
+    }
+}
+
+
+static EscapeTechnionError memoryFaultHandel(int sender_ID, void* ADT){
+    switch (sender_ID){
+        case ROOM:
+            destroyRoom(ADT);
+            break;
+        case ESCAPER:
+            destroyEscaper(ADT);
+            break;
+        case COMPANY:
+            destroyCompany(ADT);
+            break;
+        case ESCAPE_TECHNION:
+            resetSystem(*(EscapeTechnion*)ADT);
+            break;
+        default:
+            return ESCAPE_OUT_OF_MEMORY;
+    }
+    return ESCAPE_OUT_OF_MEMORY;
+}
+
+
+static EscapeTechnionError errorHandel(int GdtId, void* result, int sender_ID,
+                                void* ADT){
+    switch (GdtId){
+        case HANDEL_SET:
+            return setErrorHandel((SetResult)result, sender_ID, ADT);
+        case HANDEL_LIST:
+            return listErrorHandel((ListResult)result, sender_ID, ADT);
+        case HANDEL_ORDER:
+            return orderErrorHandel((OrderError)result, sender_ID, ADT);
+        case HANDEL_ROOM:
+            return roomErrorHandel((RoomError)result, sender_ID, ADT);
+        case HANDEL_COMPANY:
+            return companyErrorHandel((CompanyError)result, sender_ID, ADT);
+        case HANDEL_ESCAPER:
+            return escaperErrorHandel((EscaperError)result, sender_ID, ADT);
+        default:
+            return ESCAPE_INVALID_PARAMETER;
+    }
+}
+
+
+
+static EscapeTechnionError listErrorHandel(ListResult result, int sender_ID,
+                                    void* ADT){
+    switch (result){
+        case LIST_OUT_OF_MEMORY :
+            return memoryFaultHandel(sender_ID, ADT);
+        case LIST_NULL_ARGUMENT:
+            return ESCAPE_NULL_PARAMETER;
+        case LIST_INVALID_CURRENT:
+            return ESCAPE_INVALID_PARAMETER;
+        default:
+            return ESCAPE_INVALID_PARAMETER;
+    }
+}
+
+static EscapeTechnionError orderErrorHandel(OrderError result, int sender_ID,
+                                     void* ADT){
+    switch (result){
+        case ORDER_OUT_OF_MEMORY :
+            return memoryFaultHandel(sender_ID, ADT);
+        case ORDER_NULL_PARAMETER:
+            return ESCAPE_NULL_PARAMETER;
+        case ORDER_INVALID_PARAMETER:
+            return ESCAPE_INVALID_PARAMETER;
+        default:
+            return ESCAPE_INVALID_PARAMETER;
+    }
+}
+
+static EscapeTechnionError roomErrorHandel(RoomError result, int sender_ID,
+                                           void* ADT){
+    switch (result){
+        case ROOM_OUT_OF_MEMORY :
+            return memoryFaultHandel(sender_ID, ADT);
+        case ROOM_NULL_PARAMETER:
+            return ESCAPE_NULL_PARAMETER;
+        case ROOM_INVALID_PARAMETER:
+            return ESCAPE_INVALID_PARAMETER;
+        default:
+            return ESCAPE_INVALID_PARAMETER;
+    }
+}
+
+EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID,
+                                       void* ADT){
+    switch (result){
+        case COMPANY_OUT_OF_MEMORY:
+            return memoryFaultHandel(sender_ID, ADT);
+        case COMPANY_NULL_ARGUMENT:
+            return ESCAPE_NULL_PARAMETER;
+        case COMPANY_INVALID_ARGUMENT:
+            return ESCAPE_INVALID_PARAMETER;
+        case COMPANY_ID_ALREADY_EXIST:
+            return ESCAPE_ID_ALREADY_EXIST;
+        case COMPANY_ID_DOES_NOT_EXIST:
+            return ESCAPE_ID_DOES_NOT_EXIST;
+        default:
+            return ESCAPE_INVALID_PARAMETER;
+    }
+}
+
+EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID,
+                                       void* ADT){
+    switch (result){
+        case ESCAPER_OUT_OF_MEMORY :
+            return memoryFaultHandel(sender_ID, ADT);
+        case ESCAPER_NULL_PARAMETER:
+            return ESCAPE_ID_DOES_NOT_EXIST;
+        case ESCAPER_INVALID_PARAMETER:
+            return ESCAPE_INVALID_PARAMETER;
+        default:
+            return ESCAPE_INVALID_PARAMETER;
     }
 }

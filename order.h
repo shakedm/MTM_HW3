@@ -1,13 +1,16 @@
-
+//#include "usefullFunctions.h"
 #ifndef HW3WET_ORDER_H
 #define HW3WET_ORDER_H
 
-#include "mtm_ex3.h"
+#include "usefullFunctions.h"
 #include "room.h"
 #include "escaper.h"
-#include "usefullFunctions.h"
+
 
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 
 #define DAYS 0
 #define HOURS 1
@@ -42,7 +45,7 @@ typedef enum {
  * @return MTM_SUCCESS if all went well
  */
 OrderError initOrder(Order order , int room_id, const char* company_email,
-                     const char* escaper_email, int time[HOURS_FORMAT],
+                     const char* escaper_email, int *time,
                      int num_of_visitors, int room_price,
                      TechnionFaculty faculty);
 
@@ -111,7 +114,7 @@ void decreaseDay(Order order);
  * @param order - points to the room ADT
  * @return room ID
  */
-int getOrderRoomID(Order order);
+int getOrderRoomId(Order order);
 
 /*!
  * Function returns the email of the escaper that made the oder

@@ -1,7 +1,6 @@
 #include "order.h"
 
-
-typedef struct order_t {
+struct order_t {
     int room_id;
     TechnionFaculty faculty;
     char* company_email;
@@ -12,7 +11,7 @@ typedef struct order_t {
 };
 
 OrderError initOrder(Order order , int room_id, const char* company_email,
-                       const char* escaper_email, int time[HOURS_FORMAT],
+                       const char* escaper_email, int *time,
                        int num_of_visitors, int room_price,
                      TechnionFaculty faculty){
     assert(Order != NULL);
@@ -66,15 +65,17 @@ void* copyOrder(void* order){
     if(!copy_order){
         return NULL;
     }
-    int time_copy[HOURS_FORMAT] = {{0}};
+    int time_copy[HOURS_FORMAT] = {0};
     time_copy[DAYS] = getDaysOrder(order);
     time_copy[HOURS] = getHoursOrder(order);
     int room_price = getCost(order) / getNumOfVisitors(order);
-    if(initOrder(copy_order, getOrderRoomID(order), getOrderCompanyEmail(order),
-                 getEscaperEmail(order), time_copy,
-                 getNumOfVisitors(order), room_price, getOderFaculty(order))
-                != ORDER_SUCCESS){
-        errorHandel(HANDEL_ORDER, (void*)ORDER_OUT_OF_MEMORY, ORDER, copy_order);
+    OrderError result = initOrder(copy_order, getOrderRoomId(order),
+                                  getOrderCompanyEmail(order),
+                                  getEscaperEmail(order), time_copy,
+                                  getNumOfVisitors(order), room_price,
+                                  getOrderFaculty(order));
+    if(result != ORDER_SUCCESS){
+        destroyOrder(copy_order);
         return NULL;
     }
     return copy_order;
@@ -121,6 +122,16 @@ int getOrderRoomId(Order order){
     return (order->room_id);
 }
 
+const char* getOrderEscaperEmail(Order order){
+    assert(order != NULL);
+    return (order->escaper_email);
+}
+
+const char* getOrderCompanyEmail(Order order){
+    assert(order != NULL);
+    return (order->company_email);
+}
+
 TechnionFaculty getOrderFaculty(Order order){
     if(order == NULL){
         return UNKNOWN;
@@ -145,7 +156,7 @@ int compareOrderByFaculty(void* order1, void* order2){
 }
 
 int compareOrderByRoomId(void* order1, void* order2){
-    return (getOrderRoomID((Order)order1) - getOrderRoomID((Order)order2));
+    return (getOrderRoomId((Order)order1) - getOrderRoomId((Order)order2));
 }
 
 bool orderForEscaper(void* order, void* visitor_email){
@@ -158,7 +169,7 @@ bool orderForEscaper(void* order, void* visitor_email){
 }
 
 bool orderAtDay(void* order, void* day){
-    return (getDaysOrder((Order)order) == (int)day);
+    return (getDaysOrder((Order)order) == *(int*)day);
 }
 
 bool orderForFaculty(void* order, void* faculty){

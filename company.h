@@ -1,15 +1,16 @@
-#include "mtm_ex3.h"
-
+//#include "mtm_ex3.h"
+//#include "types_and_defines.h"
 
 #ifndef HW3WET_COMPANY_H
 #define HW3WET_COMPANY_H
 
-#include <stdbool.h>
+#include "usefullFunctions.h"
 #include "room.h"
 #include "set.h"
+
 /* type to define the company struct */
 typedef struct company_t* Company;
-
+//Company Errors
 typedef enum  {
     COMPANY_SUCCESS,
     COMPANY_NULL_ARGUMENT,
