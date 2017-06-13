@@ -4,6 +4,8 @@ project(hw3wet)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Werror -pedantic-errors -DNDEBUG")
 link_directories(libmtm/win64)
-set(SOURCE_FILES main.c list.h mtm_ex3.h set.h company.h company_tets.c room.h EscapeTechnion.h)
+set(SOURCE_FILES list.h mtm_ex3.h set.h company.h test_company.c company.h company.c escaper.c
+        escaper.h
+        room.c room.h usefullFunctions.h usefullFunctions.c types_and_defines.h test_escaper.c)
 add_executable(hw3wet ${SOURCE_FILES})
 target_link_libraries(hw3wet ${CMAKE_SOURCE_DIR}/libmtm.a)
