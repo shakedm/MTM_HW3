@@ -79,9 +79,9 @@ Company findCompanyInFaculty(Faculty faculty, char* email);
  *          FACULTY_NULL_ARGUMENT - if company / faculty is NULL
  *          COMPANY_OUT_OF_MEMORY - if allocation failed.
  */
-FacultyError addFacultyCompany(Faculty faculty, Company *company);
+FacultyError addFacultyCompany(Faculty faculty, Company company);
 
-FacultyError removeFacultyCompany(Faculty faculty, Company *company);
+FacultyError removeFacultyCompany(Faculty faculty, Company company);
 
 /*!
  *function addes room to the faculty
@@ -91,9 +91,9 @@ FacultyError removeFacultyCompany(Faculty faculty, Company *company);
  *          FACULTY_NULL_ARGUMENT - if faculty / room is NULL
  *          FACULTY_OUT_OF_MEMORY - if allocation failed.
  */
-FacultyError addFacultyRoom(Faculty faculty, Room *room);
+FacultyError addFacultyRoom(Faculty faculty, Room room);
 
-FacultyError removeFacultyRoom(Faculty faculty, Room *room);
+FacultyError removeFacultyRoom(Faculty faculty, Room room);
 
 /*!
  * function to comapare two visitors

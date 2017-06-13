@@ -122,7 +122,7 @@ Company findCompanyInFaculty(Faculty faculty, char* email){
 }
 
 
-FacultyError addFacultyCompany(Faculty faculty, Company *company){
+FacultyError addFacultyCompany(Faculty faculty, Company company){
     assert(faculty != NULL);
     SetResult result = setAdd(faculty->rooms, (void*)company);
     if(result != SET_SUCCESS){
@@ -131,7 +131,7 @@ FacultyError addFacultyCompany(Faculty faculty, Company *company){
     return FACULTY_SUCCESS;
 }
 
-FacultyError removeFacultyCompany(Faculty faculty, Company *company){
+FacultyError removeFacultyCompany(Faculty faculty, Company company){
     if(faculty == NULL || company == NULL){
         return FACULTY_NULL_PARAMETER;
     }
@@ -142,7 +142,7 @@ FacultyError removeFacultyCompany(Faculty faculty, Company *company){
     return FACULTY_SUCCESS;
 }
 
-FacultyError addFacultyRoom(Faculty faculty, Room *room){
+FacultyError addFacultyRoom(Faculty faculty, Room room){
     assert(faculty != NULL);
     SetResult result = setAdd(faculty->rooms, (void*)room);
     if(result != SET_SUCCESS){
@@ -151,7 +151,7 @@ FacultyError addFacultyRoom(Faculty faculty, Room *room){
     return FACULTY_SUCCESS;
 }
 
-FacultyError removeFacultyRoom(Faculty faculty, Room *room){
+FacultyError removeFacultyRoom(Faculty faculty, Room room){
     if(faculty == NULL || room == NULL){
         return FACULTY_NULL_PARAMETER;
     }
