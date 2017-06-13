@@ -60,7 +60,8 @@ CompanyError initCompany(Company company, const char* email, TechnionFaculty fac
 }
 
 void resetCompany(void* company){
-    assert(company != NULL);
+    if(company == NULL)
+        return;
     if ((*(Company*)company)->email != NULL){
         free((*(Company*)company)->email);
         (*(Company*)company)->email = NULL;

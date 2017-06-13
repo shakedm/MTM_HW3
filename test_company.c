@@ -12,3 +12,12 @@ static bool testInitCompny(){
     destroyCompany(company);
     return true;
 }
+
+static bool testDestoryCompany(){
+    Company  company =createCompany();
+    Company company1=NULL;
+    destroyCompany(company1);
+    initCompany(company, "asd@a", (TechnionFaculty) 3);
+    destroyCompany(company);
+    return true;
+};

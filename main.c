@@ -8,6 +8,7 @@
                 fclose(output);\
             if (input!=stdin)\
                 fclose(input);}
+
 #include "EscapeTechnion.h"
 
 /* in case of one flag use this function determine the flag and returns the
@@ -180,7 +181,7 @@ static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
         int faculty = atoi(current);
         current= strtok(NULL," \t");
         int id= atoi(current);
-        EscapeTechnionError result = roomRemove(sys,faculty,id);
+        EscapeTechnionError result = roomRemove(sys,(TechnionFaculty)faculty,id);
         return reverse(result);
     }
     else if(!strcmp(current,"add")){
@@ -219,7 +220,7 @@ static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
         char* email=current;
         current=strtok(NULL," \t");
         int faculty= atoi(current);
-        EscapeTechnionError result = companyAdd(sys, email,faculty);
+        EscapeTechnionError result = companyAdd(sys, email,(TechnionFaculty)faculty);
         return reverse(result);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
@@ -251,7 +252,8 @@ static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
         int faculty= atoi(current);
         current=strtok(NULL," \t");
         int skill=atoi(current);
-        EscapeTechnionError result = escaperAdd(sys,email,faculty,skill);
+        EscapeTechnionError result = escaperAdd(sys,email,(TechnionFaculty)
+                faculty,skill);
         return reverse(result);
     }
     else if(!strcmp(current,"remove")){
@@ -270,8 +272,8 @@ static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
         char* time=current;
         current=strtok(NULL," \t");
         int num_ppl=atoi(current);
-        EscapeTechnionError result = escaperOrder(sys,email,faculty,id,time,
-                                                  num_ppl);
+        EscapeTechnionError result = escaperOrder(sys,email,(TechnionFaculty)
+                                                  faculty,id,time, num_ppl);
         return reverse(result);
     }
     else if(!strcmp(current,"recommend")){
