@@ -114,6 +114,8 @@ int getHoursOrder(Order order){
 
 void decreaseDay(Order order){
     assert(order!= NULL);
+    if(order->time_until_order[DAYS]==0)
+        return;
     (order->time_until_order[DAYS])--;
 }
 
@@ -160,7 +162,7 @@ int compareOrderByRoomId(void* order1, void* order2){
 }
 
 bool orderForEscaper(void* order, void* visitor_email){
-    assert( order != NULL && visitor != NULL);
+    assert( order != NULL && visitor_email != NULL);
     int compare = strcmp((char*)visitor_email, ((Order)order)->escaper_email);
     if (compare == 0){
         return true;
