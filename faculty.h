@@ -84,6 +84,7 @@ FacultyError addFacultyCompany(Faculty faculty, Company company);
 FacultyError removeFacultyCompany(Faculty faculty, Company company);
 
 Company findWhereRoom(Faculty faculty, int id);
+FacultyError removeFacultyCompany(Faculty faculty, Company company);
 
 /*!
  *function addes room to the faculty
