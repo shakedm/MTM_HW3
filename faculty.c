@@ -124,7 +124,7 @@ Company findCompanyInFaculty(Faculty faculty, char* email){
 
 FacultyError addFacultyCompany(Faculty faculty, Company company){
     assert(faculty != NULL);
-    SetResult result = setAdd(faculty->rooms, (void*)company);
+    SetResult result = setAdd(faculty->companies, (void*)company);
     if(result != SET_SUCCESS){
         return setErrorHandel(result, COMPANY, company);
     }

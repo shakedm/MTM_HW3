@@ -52,5 +52,14 @@ static bool testFindCompanyInFaculty(){
     return true;
 }
 static bool testAddFacultyCompany(){
-
+    Faculty faculty=createFaculty();
+    Company company=createCompany();
+    initCompany(company,"as@a",(TechnionFaculty)13);
+    initFaculty(faculty,(TechnionFaculty)13);
+    ASSERT_TEST(addFacultyCompany(faculty,company)==FACULTY_SUCCESS);
+    ASSERT_TEST(addFacultyCompany(faculty,company)==FACULTY_EMAIL_ALREADY_EXISTS);
+    destroyCompany(company);
+    destroyFaculty(faculty);
+    return true;
 }
+static bool test
