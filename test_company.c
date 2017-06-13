@@ -20,7 +20,7 @@ static bool testDestoryCompany(){
     initCompany(company, "asd@a", (TechnionFaculty) 3);
     destroyCompany(company);
     return true;
-};
+}
 
 static bool testGetTechnionFaculty(){
     Company company=createCompany();
