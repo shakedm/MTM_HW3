@@ -11,7 +11,8 @@ struct escaper_t {
 };
 
 Escaper createEscaper(){
-    return malloc(sizeof(Escaper));
+    Escaper new_escaper = malloc(sizeof(*new_escaper));
+    return new_escaper;
 }
 
 void destroyEscaper(void* escaper){

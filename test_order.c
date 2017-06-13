@@ -4,7 +4,7 @@
 static bool testInitOrder(){
     Order order=createOrder();
     int time[2]= {1,234};
-    ASSERT_TEST(initOrder(order,2,"sdf@a",NULL,time,NULL,0,UNKNOWN)==ORDER_NULL_PARAMETER);
+    ASSERT_TEST(initOrder(order,2,"sdf@a",NULL,time,0,0,UNKNOWN)==ORDER_NULL_PARAMETER);
     ASSERT_TEST(initOrder(order,2,NULL,"as@sa",time,3,23,(TechnionFaculty)2)
                 ==ORDER_NULL_PARAMETER);
     ASSERT_TEST(initOrder(order,2,"asd@we","as@sa",time,3,23,(TechnionFaculty)2)

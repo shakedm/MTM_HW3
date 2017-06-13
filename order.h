@@ -59,7 +59,7 @@ Order createOrder();
  * release all memory allocated for this ADT
  * @param order - the ADT to realse
  */
-void destroyOrder(void* order);
+void destroyOrder(Order order);
 
 /*!
  * function to copy all the order ADT
@@ -72,7 +72,7 @@ void* copyOrder(void* order);
  * function to resert all fields and free the allocated memory
  * @param order- what we want to free
  */
-void resetOrder(void* order);
+void resetOrder(Order order);
 
 /*!
  * function to reach the cost field

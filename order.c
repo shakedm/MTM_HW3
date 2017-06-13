@@ -50,12 +50,13 @@ OrderError initOrder(Order order , int room_id, char* company_email,
 }
 
 Order createOrder(){
-    return malloc(sizeof(Order));
+    Order order = malloc(sizeof(*order));
+    return order;
 }
 
-void destroyOrder(void* order){
+void destroyOrder(Order order){
     resetOrder(order);
-    free((Order)order);
+    free(order);
 }
 
 void* copyOrder(void* order){
@@ -81,14 +82,19 @@ void* copyOrder(void* order){
     return copy_order;
 }
 
-void resetOrder(void* order){
-    if (order == NULL)
+void resetOrder(Order order){
+    if (!order)
         return;
-    if (((Order)order)->escaper_email != NULL ){ //fail-safe
-        free(((Order)order)->escaper_email);
+    if (order->escaper_email != NULL ){ //fail-safe
+        free(order->escaper_email);
+        order->escaper_email = NULL;
     }
-    if (((Order)order)->company_email != NULL ){ //fail-safe
-        free(((Order)order)->company_email);
+    if (order->company_email != NULL ){ //fail-safe
+        free(order->company_email);
+        order->company_email = NULL;
+    }
+    for (int i = 0; i < HOURS_FORMAT ; ++i) {
+        order->time_until_order[i] = 0;
     }
 }
 

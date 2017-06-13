@@ -22,7 +22,8 @@ struct company_t {
 static CompanyError setErrorHandel(SetResult result, Room room);
 
 Company createCompany(){
-    return malloc(sizeof(Company));
+    Company new_company = malloc(sizeof(*new_company));
+    return new_company;
 }
 
 void destroyCompany(void* company){
@@ -34,7 +35,9 @@ void destroyCompany(void* company){
 }
 
 CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
-    assert(company != NULL);
+    if(company == NULL){
+        return COMPANY_NULL_ARGUMENT;
+    }
     if (email == NULL){
         return COMPANY_NULL_ARGUMENT;
     }
@@ -59,17 +62,18 @@ CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
     return COMPANY_SUCCESS;
 }
 
-void resetCompany(void* company){
+void resetCompany(Company company){
     if(company == NULL)
         return;
-    if ((*(Company*)company)->email != NULL){
-        free((*(Company*)company)->email);
-        (*(Company*)company)->email = NULL;
+    if (company->email != NULL){
+        free(((Company)company)->email);
+        ((Company)company)->email = NULL;
     }
-    (*(Company*)company)->revenue = 0;
-    setClear((*(Company*)company)->rooms);
-    setDestroy((*(Company*)company)->rooms);
-    (*(Company*)company)->faculty = UNKNOWN;
+    company->revenue = 0;
+    setClear(company->rooms);
+    setDestroy(company->rooms);
+    company->rooms = NULL;
+    company->faculty = UNKNOWN;
 }
 
 TechnionFaculty getCompanyFaculty(Company company){
@@ -81,7 +85,9 @@ int getCompanyRevenue(Company company){
 }
 
 CompanyError addRoomCompany(Company company, Room room){
-    assert(company != NULL);
+    if(company == NULL){
+        return COMPANY_NULL_ARGUMENT;
+    }
     SetResult result = setAdd(company->rooms, (void*)room);
     if(result != SET_SUCCESS){
         return setErrorHandel(result, room);

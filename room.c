@@ -13,7 +13,7 @@ struct room_t{
     //Order current_orders;
 };
 Room createRoom(){
-    Room new_room = malloc(sizeof(new_room));
+    Room new_room = malloc(sizeof(*new_room));
     return new_room; //if malloc failed it returns NULL
 }
 
@@ -70,7 +70,6 @@ void resetRoom(Room room){
         free(email_ptr);
     }
     room->email = NULL;
-    //(*(Room*)room)->current_orders = NULL;
 }
 
 int roomGetId(Room room){

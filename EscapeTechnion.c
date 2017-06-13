@@ -188,7 +188,7 @@ static EscapeTechnionError errorHandel(int GdtId, void* result, int sender_ID,
  */
 
 EscapeTechnionError createEscapeTechnion(EscapeTechnion *sys){
-    EscapeTechnion new_system = malloc(sizeof(EscapeTechnion));
+    EscapeTechnion new_system = malloc(sizeof(*new_system));
     if(!new_system ){
         return ESCAPE_OUT_OF_MEMORY;
     }

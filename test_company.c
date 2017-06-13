@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "company.h"
 #include "test_utilities.h"
 
@@ -5,7 +6,7 @@ static bool testInitCompny(){
     Company company=createCompany();
     ASSERT_TEST(company!=NULL);
     ASSERT_TEST(initCompany(NULL,NULL,UNKNOWN)==COMPANY_NULL_ARGUMENT);
-    ASSERT_TEST(initCompany(company,NULL,UNKNOWN)==COMPANY_INVALID_ARGUMENT);
+    ASSERT_TEST(initCompany(company,NULL,UNKNOWN)==COMPANY_NULL_ARGUMENT);
     ASSERT_TEST(initCompany(company,"asd",MATHEMATICS)==COMPANY_INVALID_ARGUMENT);
     ASSERT_TEST(initCompany(company,"a@b",PHYSICS)==COMPANY_SUCCESS);
     resetCompany(company);
@@ -53,6 +54,8 @@ static bool testSetCompanyRooms(){
     ASSERT_TEST(addRoomCompany(company,room)==COMPANY_ID_ALREADY_EXIST);
     Room  room1=createRoom();
     initRoom(room1,"ass@sa",4,34,"00-00",3,16);
+    free(room1);
+    room1 = NULL;
     ASSERT_TEST(addRoomCompany(company,room1)!=COMPANY_SUCCESS);
     ASSERT_TEST(removeRoomCompany(company,room1)!=COMPANY_ID_DOES_NOT_EXIST);
     ASSERT_TEST(removeRoomCompany(company,room)==COMPANY_SUCCESS);
@@ -108,9 +111,9 @@ static bool testFindRoomInCompany(){
     addRoomCompany(company1,room);
     addRoomCompany(company1,room1);
     addRoomCompany(company1,room2);
-    ASSERT_TEST(findRoomInCompany(company1,2)==room);
-    ASSERT_TEST(findRoomInCompany(company1,3)==room1);
-    ASSERT_TEST(findRoomInCompany(company1,4)==room2);
+    ASSERT_TEST(roomGetId(findRoomInCompany(company1,2))==roomGetId(room));
+    ASSERT_TEST(roomGetId(findRoomInCompany(company1,3))==roomGetId(room1));
+    ASSERT_TEST(roomGetId(findRoomInCompany(company1,4))==roomGetId(room2));
     ASSERT_TEST(findRoomInCompany(company,5)==NULL);
     removeRoomCompany(company1,room);
     removeRoomCompany(company1,room1);

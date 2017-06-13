@@ -30,7 +30,8 @@ static FacultyError memoryFaultHandel(int sender_ID, void* ADT);
 
 
 Faculty createFaculty(){
-    return malloc(sizeof(Faculty));
+    Faculty new_faculty = malloc(sizeof(*new_faculty));
+    return new_faculty;
 }
 
 void destroyFaculty(void* faculty){

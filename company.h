@@ -39,7 +39,7 @@ CompanyError initCompany(Company company, char* email,
  * this function reset and free all the ADT fields and the ADT itself
  * @param company void pointer to the ADT for generic use in set and list
  */
-void resetCompany(void* company);
+void resetCompany(Company company);
 
 /*!
  * allocates the needed memory space for an Company ADT
