@@ -4,7 +4,7 @@
 #include <assert.h>
 
 
-bool emailCheck(const char* email){
+bool emailCheck(char* email){
     int counter = 0;
     int index = 0;
     while (email[index] != '\0'){

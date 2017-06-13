@@ -22,7 +22,7 @@ void destroyEscaper(void* escaper){
     free(*(Escaper*)escaper);
 }
 
-EscaperError initEscaper(Escaper visitor, const char* email, TechnionFaculty faculty,
+EscaperError initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,
                          int skill_level){
     assert( visitor != NULL );
     if (email == NULL){
@@ -53,7 +53,7 @@ void resetEscaper(void* visitor){
     (*(Escaper*)visitor)->skill_level = 0;
 }
 
-const char* getEscaperEmail(Escaper visitor){
+char* getEscaperEmail(Escaper visitor){
     assert(visitor != NULL);
     return visitor->email;
 }

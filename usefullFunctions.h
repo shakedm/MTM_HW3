@@ -36,7 +36,7 @@
  * @return false if the email address has more than one @ or none at all
  * true if the email address is valid
  */
-bool emailCheck(const char* email);
+bool emailCheck(char* email);
 
 /*  * This function translate the hours string to int array while checking the
  * validity of the string.

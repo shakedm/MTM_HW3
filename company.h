@@ -32,7 +32,7 @@ typedef enum  {
  * @return COMPANY_OUT_OF_MEMORY if one of the mallocs failed
  * @return COMPANY_SUCCESS if all went well
  */
-CompanyError initCompany(Company company, const char* email,
+CompanyError initCompany(Company company, char* email,
                          TechnionFaculty faculty);
 
 /*!
@@ -121,7 +121,7 @@ void* copyCompany(void* company);
  * @param company the ADT
  * @return the string that is the company email
  */
-const char* getCompanyEmail(Company company);
+char* getCompanyEmail(Company company);
 
 /*!
  * function fins room in company set, and returns a pointer to it.

@@ -46,7 +46,7 @@ void destroyRoom(void* room);
  * MTM_NULL_PARAMETER - id email points to NULL
  * MTM_OUT_OF_MEMORY - if unable to allocate memory
  */
-RoomError initRoom(Room room, const char* Email , int id , int num_ppl ,
+RoomError initRoom(Room room, char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price);
 
 /*!

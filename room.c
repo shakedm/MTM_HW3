@@ -24,7 +24,7 @@ void destroyRoom(void* room){
     free(*(Room*)room);
 }
 
-RoomError initRoom(Room room, const char* Email , int id , int num_ppl ,
+RoomError initRoom(Room room, char* Email , int id , int num_ppl ,
                       char* working_hours, int difficulty, int price){
     assert(room != NULL);
     if ( id <= 0 || num_ppl <= 0 || price <= 0 || price %4 != 0 ||

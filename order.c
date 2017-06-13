@@ -10,8 +10,8 @@ struct order_t {
     int cost;
 };
 
-OrderError initOrder(Order order , int room_id, const char* company_email,
-                       const char* escaper_email, int *time,
+OrderError initOrder(Order order , int room_id, char* company_email,
+                       char* escaper_email, int *time,
                        int num_of_visitors, int room_price,
                      TechnionFaculty faculty){
     assert(Order != NULL);
@@ -127,7 +127,7 @@ const char* getOrderEscaperEmail(Order order){
     return (order->escaper_email);
 }
 
-const char* getOrderCompanyEmail(Order order){
+char* getOrderCompanyEmail(Order order){
     assert(order != NULL);
     return (order->company_email);
 }

@@ -44,8 +44,8 @@ typedef enum {
  * @return MTM_NULL_PARAMETER if order is null
  * @return MTM_SUCCESS if all went well
  */
-OrderError initOrder(Order order , int room_id, const char* company_email,
-                     const char* escaper_email, int *time,
+OrderError initOrder(Order order , int room_id, char* company_email,
+                     char* escaper_email, int *time,
                      int num_of_visitors, int room_price,
                      TechnionFaculty faculty);
 
@@ -128,7 +128,7 @@ const char* getOrderEscaperEmail(Order order);
  * @param order - points to the order ADT
  * @return email string
  */
-const char* getOrderCompanyEmail(Order order);
+char* getOrderCompanyEmail(Order order);
 
 /*!
  * Function returns the faculty of the desired order

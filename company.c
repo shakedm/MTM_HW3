@@ -33,7 +33,7 @@ void destroyCompany(void* company){
     free(*(Company*)company);
 }
 
-CompanyError initCompany(Company company, const char* email, TechnionFaculty faculty){
+CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
     assert(company != NULL);
     if (email == NULL){
         return COMPANY_NULL_ARGUMENT;
@@ -97,7 +97,7 @@ CompanyError removeRoomCompany(Company company, Room room){
     return COMPANY_SUCCESS;
 }
 
-const char* getCompanyEmail(Company company){
+char* getCompanyEmail(Company company){
     return company->email;
 }
 
@@ -113,8 +113,8 @@ void* copyCompany(void* company){
         return NULL;
     }
     CompanyError result = initCompany(new_company,
-                                      getCompanyEmail(*(Company*)company),
-                                      getCompanyFaculty((*(Company*)company)));
+                                      getCompanyEmail((Company)company),
+                                      getCompanyFaculty(((Company)company)));
     if (result != COMPANY_SUCCESS){
         return NULL;
     }

@@ -369,7 +369,7 @@ EscapeTechnionError escaperRemove(EscapeTechnion sys, char* email){
 EscapeTechnionError escaperOrder(EscapeTechnion sys, char* email,
                           TechnionFaculty faculty, int id, char* time,
                           int num_ppl) {
-    int due_in[HOURS_FORMAT];
+    int due_in[HOURS_FORMAT] = {0};
     bool good_time = translateHours(time, due_in, true);
     if (!good_time) {
         return ESCAPE_INVALID_PARAMETER;
@@ -441,7 +441,14 @@ EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
 EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty,
                                     int id, int due_in[HOURS_FORMAT], Room *room,
                                     Company *company){
-    bool found = false;
+    *company = findCompanyByFaculty(sys->companies, faculty);
+    if (!(*company)){
+        return ESCAPE_ID_DOES_NOT_EXIST;
+    }
+    *room = findRoomInCompany((*company), id);
+    if(!(*room)){
+        return ESCAPE_ID_DOES_NOT_EXIST;
+    }
     List faculty_order_list = listCreate(copyOrder, destroyOrder);
     if(!faculty_order_list){
         return ESCAPE_OUT_OF_MEMORY;
@@ -451,18 +458,11 @@ EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty,
     for (Order curr_order = listGetFirst(faculty_order_list); curr_order != NULL;
          curr_order = listGetNext(faculty_order_list)) {
         if(getOrderRoomId(curr_order) == id){
-            *company = findCompanyByEmail(sys->companies,
-                                         getOrderCompanyEmail(curr_order));
-            *room = findRoomInCompany((*company), id);
-            found = true;
             if(getDaysOrder(curr_order) == due_in[DAYS] &&
                getHoursOrder(curr_order) == due_in[HOURS]){
                 return ESCAPE_ROOM_NOT_AVAILABLE;
             }
         }
-    }
-    if(!found){
-        return ESCAPE_ID_DOES_NOT_EXIST;
     }
     listClear(faculty_order_list);
     listDestroy(faculty_order_list);

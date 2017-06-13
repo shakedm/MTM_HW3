@@ -42,7 +42,7 @@ void destroyEscaper(void* escaper);
  * @return ESCAPER_OUT_OF_MEMORY if one of the allocations failed
  * @return ESCAPER_SUCCESS if all went well
  */
-EscaperError initEscaper(Escaper visitor, const char* email, TechnionFaculty faculty,
+EscaperError initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,
                             int skill_level);
 
 
@@ -58,7 +58,7 @@ void resetEscaper(void* visitor);
  * @param visitor - a pointer to an escaper
  * @return the const string of the email
  */
-const char* getEscaperEmail(Escaper visitor);
+char* getEscaperEmail(Escaper visitor);
 
 /*!
  * function to get the field
