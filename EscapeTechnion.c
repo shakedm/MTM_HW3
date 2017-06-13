@@ -4,6 +4,7 @@
 struct escape_technion_t {
     Set companies;
     Set escapers;
+    Set faculties;
     List orderList;
     int time_log; // counts days
     int total_revenue;
@@ -203,10 +204,19 @@ EscapeTechnionError createEscapeTechnion(EscapeTechnion *sys){
         free(new_system);
         return ESCAPE_OUT_OF_MEMORY;
     }
+    new_system->faculties = setCreate(copyFaculty, destroyFaculty,
+                                      compareFaculty);
+    if(new_system->faculties == NULL){
+        setDestroy(new_system->companies);
+        setDestroy(new_system->escapers);
+        free(new_system);
+        return ESCAPE_OUT_OF_MEMORY;
+    }
     new_system->orderList = listCreate(copyOrder, destroyOrder);
     if(new_system->orderList == NULL){
         setDestroy(new_system->escapers);
         setDestroy(new_system->companies);
+        setDestroy(new_system->faculties);
         free(new_system);
         return ESCAPE_OUT_OF_MEMORY;
     }
@@ -231,14 +241,33 @@ EscapeTechnionError companyAdd(EscapeTechnion sys, char* email,
     if(result != COMPANY_SUCCESS){
         return errorHandel(HANDEL_COMPANY, (void*)result, COMPANY, new_company);
     }
+    Faculty new_faculty = createFaculty();
+    if(!new_faculty){
+        destroyCompany(new_company);
+        return ESCAPE_OUT_OF_MEMORY;
+    }
     SetResult setResult = setAdd(sys->companies, (void*)new_company);
     if(setResult != SET_SUCCESS){
+        destroyFaculty(new_faculty);
         return errorHandel(HANDEL_SET, (void*)setResult, COMPANY, new_company);
+    }
+    setResult = setAdd(sys->faculties, (void*)new_faculty);
+    if(setResult != SET_SUCCESS){
+        return errorHandel(HANDEL_SET, (void*)setResult, FACULTY, new_faculty);
+    }
+    FacultyError facultyResult = addFacultyCompany(new_faculty, &new_company);
+    if(facultyResult != FACULTY_SUCCESS){
+        setRemove(sys->faculties, new_faculty);
+        destroyFaculty(new_faculty);
+        setRemove(sys->companies, new_company);
+        destroyCompany(new_company);
+        return errorHandel(HANDEL_FACULTY, (void*)facultyResult, FACULTY,
+                           new_faculty);
     }
     return ESCAPE_SUCCESS;
 }
 
-Company findCompanyByEmail(Set companies, const char *email){
+static Company findCompanyByEmail(Set companies, const char *email){
     int set_size = setGetSize(companies);
     Company curr_company = setGetFirst(companies);
     bool found = false;
@@ -255,7 +284,7 @@ Company findCompanyByEmail(Set companies, const char *email){
     return NULL;
 }
 
-Company findCompanyByFaculty(Set companies, TechnionFaculty faculty){
+static Company findCompanyByFaculty(Set companies, TechnionFaculty faculty){
     int set_size = setGetSize(companies);
     Company curr_company = setGetFirst(companies);
     bool found = false;
@@ -272,7 +301,7 @@ Company findCompanyByFaculty(Set companies, TechnionFaculty faculty){
     return NULL;
 }
 
-Escaper findEscaperInSet(Set escapers, char *email){
+static Escaper findEscaperInSet(Set escapers, char *email){
     int set_size = setGetSize(escapers);
     Escaper curr_escaper = setGetFirst(escapers);
     bool found = false;

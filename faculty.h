@@ -81,6 +81,8 @@ Company findCompanyInFaculty(Faculty faculty, char* email);
  */
 FacultyError addFacultyCompany(Faculty faculty, Company *company);
 
+void removeFacultyCompany(Faculty faculty, Company *company);
+
 /*!
  *function addes room to the faculty
  * @param faculty - points to the faculty ADT
@@ -90,6 +92,8 @@ FacultyError addFacultyCompany(Faculty faculty, Company *company);
  *          FACULTY_OUT_OF_MEMORY - if allocation failed.
  */
 FacultyError addFacultyRoom(Faculty faculty, Room *room);
+
+void removeFacultyRoom(Faculty faculty, Room *company);
 
 /*!
  * function to comapare two visitors
