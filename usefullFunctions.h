@@ -13,14 +13,12 @@
 #define ROOM 30
 #define ESCAPE_TECHNION 40
 #define ORDER 50
-#define FACULTY 60
 #define HANDEL_SET 100
 #define HANDEL_LIST 110
 #define HANDEL_ORDER 120
 #define HANDEL_ESCAPER 130
 #define HANDEL_ROOM 140
 #define HANDEL_COMPANY 150
-#define HANDEL_FACULTY 160
 #define MAX_SKILL 10
 #define MIN_SKILL 1
 #define HOURS_FORMAT 2

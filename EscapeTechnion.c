@@ -388,7 +388,7 @@ EscapeTechnionError escaperOrder(EscapeTechnion sys, char* email,
     return escaperOrderAux(sys, email, faculty, id, due_in, num_ppl);
 }
 
-EscapeTechnionError escaperOrderAux(EscapeTechnion sys, char* email,
+static EscapeTechnionError escaperOrderAux(EscapeTechnion sys, char* email,
                              TechnionFaculty faculty, int id,
                              int due_in[HOURS_FORMAT], int num_ppl){
     Order new_order = createOrder();
@@ -643,7 +643,7 @@ EscapeTechnionError reportBest(EscapeTechnion sys, FILE* outputChannel){
     return ESCAPE_SUCCESS;
 }
 
-EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
+static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
     List list = listCreate(copyOrder, destroyOrder);
     if(!list){
         return ESCAPE_OUT_OF_MEMORY;

@@ -63,5 +63,71 @@ static bool testEscaperRemove(){
     resetSystem(system);
     return true;
 }
-static bool test
-
+static bool testEscaperOrder(){
+    EscapeTechnion system;
+    createEscapeTechnion(&system);
+    escaperAdd(system,"as@sa",PHYSICS,4);
+    companyAdd(system,"asd@s",PHYSICS);
+    roomAdd(system,"asd@s",3,12,4,"00-23",4);
+    ASSERT_TEST(escaperOrder(system,"as@sa",PHYSICS,3,"0-10",3)==ESCAPE_SUCCESS);
+    ASSERT_TEST(escaperOrder(system,"as",MATHEMATICS,2,"1-12",4)==ESCAPE_CLIENT_EMAIL_DOES_NOT_EXIST);
+    resetSystem(system);
+    return true;
+}
+static bool testEscaperReccomend(){
+    EscapeTechnion sys;
+    createEscapeTechnion(&sys);
+    escaperAdd(sys,"as@sa",PHYSICS,4);
+    companyAdd(sys,"asd@s",PHYSICS);
+    roomAdd(sys,"asd@s",3,12,4,"00-23",4);
+    companyAdd(sys,"asda@asa",COMPUTER_SCIENCE);
+    roomAdd(sys,"asda@asa",4,4,6,"00-20",5);
+    ASSERT_TEST(escaperRecommend(sys,"as@sa",5)==ESCAPE_SUCCESS);
+    ASSERT_TEST(escaperRecommend(sys,"adsas",12)==ESCAPE_CLIENT_EMAIL_DOES_NOT_EXIST);
+    resetSystem(sys);
+    return true;
+}
+static bool testReportDay(){
+    EscapeTechnion sys;
+    createEscapeTechnion(&sys);
+    escaperAdd(sys,"as@sa",PHYSICS,4);
+    companyAdd(sys,"asd@s",PHYSICS);
+    roomAdd(sys,"asd@s",3,12,4,"00-23",4);
+    companyAdd(sys,"asda@asa",COMPUTER_SCIENCE);
+    roomAdd(sys,"asda@asa",4,4,6,"00-20",5);
+    escaperOrder(sys,"as@sa",PHYSICS,3,"0-10",3);
+    escaperOrder(sys,"as@sa",PHYSICS,3,"1-10",3);
+    ASSERT_TEST(reportDay(sys,stdout)==ESCAPE_SUCCESS);
+    resetSystem(sys);
+    return true;
+}
+static bool testReportBest(){
+    EscapeTechnion sys;
+    createEscapeTechnion(&sys);
+    escaperAdd(sys,"as@sa",PHYSICS,4);
+    companyAdd(sys,"asd@s",PHYSICS);
+    roomAdd(sys,"asd@s",3,12,4,"00-23",4);
+    companyAdd(sys,"asda@asa",COMPUTER_SCIENCE);
+    roomAdd(sys,"asda@asa",4,4,6,"00-20",5);
+    escaperOrder(sys,"as@sa",PHYSICS,3,"0-10",3);
+    escaperOrder(sys,"as@sa",PHYSICS,3,"1-10",3);
+    reportDay(sys,stdout);
+    reportDay(sys,stdout);
+    reportBest(sys,stdout);
+    resetSystem(sys);
+    return true;
+}
+int main(){
+    RUN_TEST(testCompanyAdd);
+    RUN_TEST(testCompanyRemove);
+    RUN_TEST(testCreateEscapeTechnion);
+    RUN_TEST(testEscaperAdd);
+    RUN_TEST(testEscaperOrder);
+    RUN_TEST(testEscaperReccomend);
+    RUN_TEST(testEscaperRemove);
+    RUN_TEST(testReportBest);
+    RUN_TEST(testReportDay);
+    RUN_TEST(testRoomAdd);
+    RUN_TEST(testRoomRemove);
+    return 0;
+}
