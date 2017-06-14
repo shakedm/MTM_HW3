@@ -166,13 +166,30 @@ EscapeTechnionError reportDay(EscapeTechnion sys, FILE* outputChannel);
  * @param outputChannel - where to print.
  * @return
  */
-EscapeTechnionError reportBest(EscapeTechnion sys, FILE* outputChannel);
+EscapeTechnionError reportBest(EscapeTechnion sys, TechnionFaculty* top_faculties,
+                               int* top_revenue, int* faculties_revenue);
 
 /*!
  * function reserts system. frees all allocated space.
  * @param sys - points to the system ADT.
  */
 void resetSystem(EscapeTechnion sys);
+
+/*!
+ * functions returns the total revenue filed
+ * @param sys pints to system ADT
+ * @return int revenue
+ *          -1 if system is NULL
+ */
+int getSystemRevenue(EscapeTechnion sys);
+
+/*!
+ * functions returns the time_log filed
+ * @param sys pints to system ADT
+ * @return int time-log
+ *          -1 if system is NULL
+ */
+int getSystemTimeLog(EscapeTechnion sys);
 
 
 #endif //HW3WET_ESCAPETECHNION_H

@@ -28,19 +28,19 @@ FILE* output_channel);
 
 /* in case of the first command being "room" this function continue to read
  * from the input and calls the functions of the ADT*/
-static MtmErrorCode readRoom(EscapeTechnion sys);
+static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer);
 
 /* in case of the first command being "company" this function continue to read
  * from the input and calls the functions of the ADT*/
-static MtmErrorCode readCompany(EscapeTechnion sys);
+static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer);
 
 /* in case of the first command being "escaper" this function continue to read
  * from the input and calls the functions of the ADT*/
-static MtmErrorCode readEscaper(EscapeTechnion sys);
+static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer);
 
 /* in case of the first command being "report" this function continue to read
  * from the input and calls the functions of the ADT*/
-static MtmErrorCode readReport(EscapeTechnion sys, FILE* output);
+static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output);
 
 //function translate the escapeTechnion enum of erorcode to those of MTM
 static MtmErrorCode reverse(EscapeTechnionError result);
@@ -55,23 +55,23 @@ int main(int argc, char** argv) {
         case(3):
                 result = passArgument(argc,argv,&input, &output);
                 if(result!=MTM_SUCCESS){
-                    mtmPrintErrorMessage(stdout,result);
+                    mtmPrintErrorMessage(stderr,result);
                     return 0;
                 }
         case(5):
                 result = passTwoArguments(argv,&input, &output);
                 if(result!=MTM_SUCCESS){
-                    mtmPrintErrorMessage(stdout,result);
+                    mtmPrintErrorMessage(stderr,result);
                     return 0;
                 }
         default:
-            mtmPrintErrorMessage(stdout,MTM_INVALID_COMMAND_LINE_PARAMETERS);
+            mtmPrintErrorMessage(stderr,MTM_INVALID_COMMAND_LINE_PARAMETERS);
         }
     EscapeTechnion system;
     EscapeTechnionError result2=createEscapeTechnion(&system);
     result = reverse(result2);
     if (result!=MTM_SUCCESS){
-        mtmPrintErrorMessage(output,result);
+        mtmPrintErrorMessage(stderr,result);
         FREE_CLOSE;
         return 0;
     }
@@ -85,12 +85,12 @@ int main(int argc, char** argv) {
         result = readBuffer(system,buffer, first_word,output);
         if(result!=MTM_SUCCESS){
             if (result==MTM_OUT_OF_MEMORY){
-                mtmPrintErrorMessage(output,MTM_OUT_OF_MEMORY);
+                mtmPrintErrorMessage(stderr,MTM_OUT_OF_MEMORY);
                 FREE_CLOSE;
                 resetSystem(system);
                 return 0;
             }
-            mtmPrintErrorMessage(output,result);
+            mtmPrintErrorMessage(stderr,result);
             continue;
         }
 
@@ -159,30 +159,30 @@ static MtmErrorCode readBuffer(EscapeTechnion sys,char* buffer, char* first_word
     if(first_word[0]=='#')
         return MTM_SUCCESS; //just continue to the next line
     if (!strcmp(first_word,"room")){
-        return readRoom(sys);
+        return readRoom(sys,buffer);
     }
     if(!strcmp(first_word,"company")){
-        return readCompany(sys);
+        return readCompany(sys,buffer);
     }
     if(!strcmp(first_word,"escaper")){
-        return readEscaper(sys);
+        return readEscaper(sys,buffer);
     }
     if(!strcmp(first_word,"report")){
-        return readReport(sys,output_channel);
+        return readReport(sys,buffer,output_channel);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 
 }
 
-static MtmErrorCode readRoom(EscapeTechnion sys){
-    char* current;
+static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
+    char* current = buffer;
     current=strtok(NULL, " \t");
     if(!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if (!strcmp(current,"remove")){
         current=strtok(NULL," \t");
         int faculty = atoi(current);
-        current= strtok(NULL," \t");
+        current= strtok(NULL," \t\n");
         int id= atoi(current);
         EscapeTechnionError result = roomRemove(sys,(TechnionFaculty)faculty,id);
         return reverse(result);
@@ -207,7 +207,7 @@ static MtmErrorCode readRoom(EscapeTechnion sys){
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
 
-static MtmErrorCode readCompany(EscapeTechnion sys){
+static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
     char* current;
     current=strtok(NULL," \t\n");
     if (!current)
@@ -228,8 +228,8 @@ static MtmErrorCode readCompany(EscapeTechnion sys){
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
-static MtmErrorCode readReport(EscapeTechnion sys, FILE* output){
-    char* current;
+static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output){
+    char* current = buffer;
     current=strtok(NULL," \t\n");
     if(!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
@@ -238,12 +238,26 @@ static MtmErrorCode readReport(EscapeTechnion sys, FILE* output){
         return reverse(result);
     }
     else if(!strcmp(current, "best")){
-        EscapeTechnionError result = reportBest(sys,output);
+        TechnionFaculty top_faculties[TOP] = {(TechnionFaculty)0};
+        int top_revenue[TOP] = {0};
+        int faculties_revenue[(int)UNKNOWN] = {0};
+        mtmPrintFacultiesHeader(output, (int)UNKNOWN,
+                                getSystemTimeLog(sys), getSystemRevenue(sys));
+        EscapeTechnionError result = reportBest(sys, top_faculties, top_revenue,
+                                                faculties_revenue);
+        if (result == ESCAPE_SUCCESS){
+
+            for (int i = 0; i < TOP; i++){
+                mtmPrintFaculty(output, top_faculties[i],
+                                top_revenue[i]);
+            }
+            mtmPrintFacultiesFooter(output);
+        }
         return reverse(result);
     }
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
-static MtmErrorCode readEscaper(EscapeTechnion sys){
+static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
     char* current;
     current=strtok(NULL, " \t\n");
     if (!current)

@@ -601,45 +601,54 @@ void endDayProtocol(EscapeTechnion sys){
     }
     sys->time_log = (sys->time_log + 1);
 }
+int getSystemRevenue(EscapeTechnion sys){
+    if(sys == NULL){
+        return -1;
+    }
+    return sys->total_revenue;
+}
 
-EscapeTechnionError reportBest(EscapeTechnion sys, FILE* outputChannel){
-    mtmPrintFacultiesHeader(outputChannel, NUM_FACULTIES,
-                            sys->time_log, sys->total_revenue);
-    TechnionFaculty top_faculties[TOP] = {(TechnionFaculty)0};
-    int top_revenue[TOP] = {0};
-    int faculties_counted = 0;
-    int faculties_revenue[(int)UNKNOWN] = {0};
+int getSystemTimeLog(EscapeTechnion sys){
+    if(sys == NULL){
+        return -1;
+    }
+    return sys->time_log;
+}
+
+EscapeTechnionError reportBest(EscapeTechnion sys, TechnionFaculty* top_faculties,
+                               int* top_revenue, int* faculties_revenue){
     SET_FOREACH(Company, curr_company, sys->companies){
         faculties_revenue[(int)getCompanyFaculty(curr_company)] +=
                 getCompanyRevenue(curr_company);
     }
+    for (int k = 0; k < TOP; ++k) {
+        top_faculties[k] = (TechnionFaculty)k;
+    }
+    int counted = 0;
     for (int i=0; i<(int)UNKNOWN; i++) {
-        for (int j = 0; j < TOP; j++){
-            if(faculties_revenue[i] >= top_revenue[j]){
-                if(faculties_revenue[i] > top_revenue[j]){
-                    chainReaction(top_faculties, top_revenue, (TechnionFaculty)i,
+        for (int j = 0; j < TOP; j++) {
+            if (faculties_revenue[i] >= top_revenue[j]) {
+                if (faculties_revenue[i] > top_revenue[j]) {
+                    chainReaction(top_faculties, top_revenue,
+                                  (TechnionFaculty) i,
                                   j, faculties_revenue);
-                    faculties_counted++;
-                } else if (top_faculties[i] != 0){
-                    if(faculties_revenue[i] < top_faculties[j]){
+                    counted++;
+                    break;
+                } else if (top_faculties[j] != (TechnionFaculty)0 ){
+                    if((TechnionFaculty)i < top_faculties[j]) {
                         chainReaction(top_faculties, top_revenue,
-                                      (TechnionFaculty)i, j, faculties_revenue);
-                        faculties_counted++;
+                                      (TechnionFaculty) i, j,
+                                      faculties_revenue);
                     }
-                } else {
-                    chainReaction(top_faculties, top_revenue, (TechnionFaculty)i,
-                                  i, faculties_revenue);
-                    faculties_counted++;
+                    break;
+                }else{
+                    break;
                 }
-                break;
+            } else {
+                continue;
             }
         }
     }
-    for (int i = 0; i < TOP; i++){
-            mtmPrintFaculty(outputChannel, top_faculties[i],
-                            top_revenue[i]);
-    }
-    mtmPrintFacultiesFooter(outputChannel);
     return ESCAPE_SUCCESS;
 }
 
