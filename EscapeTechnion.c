@@ -11,7 +11,7 @@ struct escape_technion_t {
 };
 
 /*!
- * This function caculate the recomand score for a specific room
+ * This function calculate the reccomend score for a specific room
  * @param room - points to a room ADT
  * @param visitor - points to a Escaper ADT
  * @param num_ppl - the amount of people that requier the room
