@@ -226,8 +226,8 @@ static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
     return MTM_INVALID_COMMAND_LINE_PARAMETERS;
 }
 static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output){
-    char * current = buffer;
-    current=strtok(NULL," \t");
+    char* current;
+    current=strtok(NULL," \t \n");
     if(!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if(!strcmp(current,"day")){

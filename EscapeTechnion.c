@@ -84,9 +84,11 @@ static EscapeTechnionError searchRecommended(EscapeTechnion sys, int num_ppl,
  *          ESCAPE_ROOM_NOT_AVAILABLE - if there is an exiting order for the
  *          room at the time
  */
-static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
-                                TechnionFaculty faculty, int id,
-                                int due_in[HOURS_FORMAT]);
+static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys,
+                                       char* email,
+                                       TechnionFaculty faculty, int id,
+                                       int due_in[HOURS_FORMAT],
+                                       Company *company);
 
 /*!
  * Function checks if the given room doesnt have an existing order at the time
@@ -96,7 +98,8 @@ static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char*
  *          room at the time
  */
 static EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty,
-                                           int id, int due_in[HOURS_FORMAT]);
+                                           int id, int due_in[HOURS_FORMAT],
+                                           Company *company);
 
 /*!
  * Function checks if the given room doesnt have an existing order at the time
@@ -125,7 +128,8 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* list);
 //function checks if there is a standing order for given room at given time
 static bool orderExistForRoom(List orders, int room_id);
 
-static Room findRoomByFaculty(EscapeTechnion sys, TechnionFaculty faculty, int id);
+static Room findRoomByFaculty(EscapeTechnion sys, TechnionFaculty faculty,
+                              int id,Company* company);
 
 
 /* * This Function handels cases in which a set action fails according to the
@@ -394,7 +398,7 @@ EscapeTechnionError escaperOrderAux(EscapeTechnion sys, char* email,
     Company company = NULL;
     bool discount = false;
     EscapeTechnionError result = isGoodOrder(&discount, sys, email, faculty, id,
-                                             due_in);
+                                             due_in, &company);
     if(result != ESCAPE_SUCCESS){
         destroyOrder(new_order);
         return result;
@@ -404,13 +408,8 @@ EscapeTechnionError escaperOrderAux(EscapeTechnion sys, char* email,
                                         getCompanyEmail(company),
                                         email, due_in, num_ppl,
                                         roomGetPrice(
-                                                findRoomByFaculty(sys, faculty,
-                                                                  id)), faculty);
-    if (order_result != ORDER_SUCCESS) {
-        return errorHandel(HANDEL_ORDER, (void *) order_result, ORDER,
-                           new_order);
-    }
-    order_result = setDiscountOrder(new_order);
+                                        findRoomByFaculty(sys, faculty, id,&company))
+                                                , faculty, discount);
     if (order_result != ORDER_SUCCESS) {
         return errorHandel(HANDEL_ORDER, (void *) order_result, ORDER,
                            new_order);
@@ -425,7 +424,7 @@ EscapeTechnionError escaperOrderAux(EscapeTechnion sys, char* email,
 
 static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char* email,
                          TechnionFaculty faculty, int id,
-                         int due_in[HOURS_FORMAT]){
+                         int due_in[HOURS_FORMAT], Company *company){
     Escaper visitor = findEscaperInSet(sys->escapers, email);
     if (visitor == NULL) {
         return ESCAPE_CLIENT_EMAIL_DOES_NOT_EXIST;
@@ -434,7 +433,8 @@ static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char*
     if (faculty == getEscaperFaculty(visitor)) {
         *discount = true;
     }
-    EscapeTechnionError room_result = isRoomAvailable(sys, faculty, id, due_in);
+    EscapeTechnionError room_result = isRoomAvailable(sys, faculty, id, due_in,
+                                                      company);
     if(room_result != ESCAPE_SUCCESS){
         return room_result;
     }
@@ -446,9 +446,9 @@ static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char*
 }
 
 static EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty faculty,
-                                    int id, int due_in[HOURS_FORMAT]){
-
-    Room room = findRoomByFaculty(sys, faculty, id);
+                                           int id, int due_in[HOURS_FORMAT],
+                                           Company *company){
+    Room room = findRoomByFaculty(sys, faculty, id,company);
     if (!(room)){
         return ESCAPE_ID_DOES_NOT_EXIST;
     }
@@ -570,6 +570,9 @@ EscapeTechnionError reportDay(EscapeTechnion sys, FILE* outputChannel){
         order_company = findCompanyByEmail(sys->companies,
                                            getOrderCompanyEmail(curr_order));
         order_room = findRoomInCompany(order_company, getOrderRoomId(curr_order));
+        if(sameFacultyDiscount(curr_order)){
+            setDiscountOrder(curr_order);
+        }
         mtmPrintOrder(outputChannel, getOrderEscaperEmail(curr_order),
                       getEscaperSkillLevel(order_visitor),
                       getEscaperFaculty(order_visitor),
@@ -601,7 +604,7 @@ void endDayProtocol(EscapeTechnion sys){
 EscapeTechnionError reportBest(EscapeTechnion sys, FILE* outputChannel){
     mtmPrintFacultiesHeader(outputChannel, setGetSize(sys->companies),
                             sys->time_log, sys->total_revenue);
-    TechnionFaculty top_faculties[TOP] = {NULL};
+    TechnionFaculty top_faculties[TOP] = {(TechnionFaculty)0};
     int top_revenue[TOP] = {0};
     int faculties_counted = 0;
     int faculties_revenue[(int)UNKNOWN] = {0};
@@ -616,7 +619,7 @@ EscapeTechnionError reportBest(EscapeTechnion sys, FILE* outputChannel){
                     chainReaction(top_faculties, top_revenue, (TechnionFaculty)i,
                                   j, faculties_revenue);
                     faculties_counted++;
-                } else if (top_faculties[i] != NULL){
+                } else if (top_faculties[i] != 0){
                     if(faculties_revenue[i] < top_faculties[j]){
                         chainReaction(top_faculties, top_revenue,
                                       (TechnionFaculty)i, j, faculties_revenue);
@@ -650,7 +653,9 @@ EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
     List list = listCreate(copyOrder, destroyOrder);
     if(!list){
         return ESCAPE_OUT_OF_MEMORY;
-    }
+    }/*
+    int size = listGetSize(sys->orderList);
+    printf("%d\n", size);*/
     list = listFilter(sys->orderList, orderAtDay, TODAY);
     ListResult result = listSort(list, compareOrderByTime);
     if(result != LIST_SUCCESS){
@@ -762,7 +767,7 @@ static void chainReaction(TechnionFaculty *top_faculties, int *top_revenue,
                           TechnionFaculty curr_faculty, int iterator,
                           int *revenues){
     int temp_revenue[TOP] = {0};
-    TechnionFaculty temp_top[TOP] = {NULL};
+    TechnionFaculty temp_top[TOP] = {(TechnionFaculty)0};
     for (int i = iterator; i < TOP; ++i) {
         temp_top[i] = top_faculties[i];
         temp_revenue[i] = top_revenue[i];
@@ -928,16 +933,19 @@ static EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID
     }
 }
 
-static Room findRoomByFaculty(EscapeTechnion sys, TechnionFaculty faculty, int id){
+static Room findRoomByFaculty(EscapeTechnion sys, TechnionFaculty faculty, int id,
+                                Company* company){
     Room room = NULL;
     SET_FOREACH(Company, curr_company, sys->companies){
         if(getCompanyFaculty(curr_company) == faculty){
             room = findRoomInCompany(curr_company, id);
             if(room != NULL){
+                *company=curr_company;
                 return room;
             }
         }
 
     }
+    *company=NULL;
     return NULL;
 }

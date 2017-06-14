@@ -47,7 +47,7 @@ typedef enum {
 OrderError initOrder(Order order , int room_id, char* company_email,
                      char* escaper_email, int *time,
                      int num_of_visitors, int room_price,
-                     TechnionFaculty faculty);
+                     TechnionFaculty faculty, bool dicount);
 
 /*!
  * allocates the needed memory space for an Order ADT
@@ -205,5 +205,10 @@ bool orderAtDay(void* order, void* day);
  *          FALSE otherwise
  */
 bool orderForFaculty(void* order, void* faculty);
+
+/*
+ * function checks if a discount action is neede
+ */
+bool sameFacultyDiscount(Order order);
 
 #endif //HW3WET_ORDER_H

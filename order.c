@@ -7,20 +7,24 @@ struct order_t {
     char* escaper_email;
     int time_until_order [HOURS_FORMAT];
     int num_of_people;
+    bool dicount;
     int cost;
 };
 
 OrderError initOrder(Order order , int room_id, char* company_email,
                        char* escaper_email, int *time,
                        int num_of_visitors, int room_price,
-                     TechnionFaculty faculty){
+                     TechnionFaculty faculty, bool dicount){
     assert(Order != NULL);
     if( escaper_email == NULL || company_email == NULL){
         return ORDER_NULL_PARAMETER;
     }
-    if(time[DAYS] <= OPEN_HOUR || time[HOURS] < OPEN_HOUR ||
+    if(time[DAYS] < OPEN_HOUR || time[HOURS] < OPEN_HOUR ||
             time[HOURS]> HOURS_PER_DAY || room_id < 0 || num_of_visitors < 1 ||
-            room_price < 0 || room_price %4 != 0 || faculty == UNKNOWN){
+            room_price < 0  || faculty == UNKNOWN){
+        return ORDER_INVALID_PARAMETER;
+    }
+    if(room_price % 4 != 0 ){
         return ORDER_INVALID_PARAMETER;
     }
     if (!emailCheck(company_email) || !emailCheck(escaper_email)){
@@ -45,6 +49,7 @@ OrderError initOrder(Order order , int room_id, char* company_email,
     for (int i = 0; i < HOURS_FORMAT ; ++i) {
         order->time_until_order[i] = time[i];
     }
+    order->dicount = dicount;
     order->faculty = faculty;
     return ORDER_SUCCESS;
 }
@@ -74,7 +79,8 @@ void* copyOrder(void* order){
                                   getOrderCompanyEmail(order),
                                   getOrderEscaperEmail(order), time_copy,
                                   getNumOfVisitors(order), room_price,
-                                  getOrderFaculty(order));
+                                  getOrderFaculty(order),
+                                  sameFacultyDiscount(order));
     if(result != ORDER_SUCCESS){
         destroyOrder(copy_order);
         return NULL;
@@ -177,9 +183,16 @@ bool orderForEscaper(void* order, void* visitor_email){
 }
 
 bool orderAtDay(void* order, void* day){
-    return (getDaysOrder(((Order)order)) == *(int*)day);
+    Order orderPtr = order;
+    int daycp = *(int*)day;
+    return (getDaysOrder(orderPtr) == daycp);
 }
 
 bool orderForFaculty(void* order, void* faculty){
     return (((Order)order)->faculty == *(TechnionFaculty*)faculty);
+}
+
+bool sameFacultyDiscount(Order order){
+    assert(order != NULL);
+    return order->dicount;
 }
