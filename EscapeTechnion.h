@@ -13,6 +13,7 @@
 #define BIGGER 3
 #define TODAY 0
 #define TOP 3
+#define NUM_FACULTIES 18
 
 /* type to define the EscapeTechnion struct*/
 typedef struct escape_technion_t* EscapeTechnion;

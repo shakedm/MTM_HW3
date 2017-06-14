@@ -603,7 +603,7 @@ void endDayProtocol(EscapeTechnion sys){
 }
 
 EscapeTechnionError reportBest(EscapeTechnion sys, FILE* outputChannel){
-    mtmPrintFacultiesHeader(outputChannel, setGetSize(sys->companies),
+    mtmPrintFacultiesHeader(outputChannel, NUM_FACULTIES,
                             sys->time_log, sys->total_revenue);
     TechnionFaculty top_faculties[TOP] = {(TechnionFaculty)0};
     int top_revenue[TOP] = {0};
