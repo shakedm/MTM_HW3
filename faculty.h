@@ -51,7 +51,7 @@ FacultyError initFaculty(Faculty faculty, TechnionFaculty faculty_ID);
  * functions reset and free all allocated fields.
  * @param faculty the ADT that need to be freed
  */
-void resetFaculty(void* faculty);
+void resetFaculty(Faculty faculty);
 
 /*!
  * Function find a room ADT int the faculty
@@ -84,7 +84,7 @@ FacultyError addFacultyCompany(Faculty faculty, Company company);
 FacultyError removeFacultyCompany(Faculty faculty, Company company);
 
 Company findWhereRoom(Faculty faculty, int id);
-FacultyError removeFacultyCompany(Faculty faculty, Company company);
+
 
 /*!
  *function addes room to the faculty
@@ -94,9 +94,9 @@ FacultyError removeFacultyCompany(Faculty faculty, Company company);
  *          FACULTY_NULL_ARGUMENT - if faculty / room is NULL
  *          FACULTY_OUT_OF_MEMORY - if allocation failed.
  */
-FacultyError addFacultyRoom(Faculty faculty, Room room);
+//FacultyError addFacultyRoom(Faculty faculty, Room *room);
 
-FacultyError removeFacultyRoom(Faculty faculty, Room room);
+//FacultyError removeFacultyRoom(Faculty faculty, Room *room);
 
 /*!
  * function to comapare two visitors
@@ -135,5 +135,17 @@ void* copyFaculty(void* faculty);
  * @param faculty - points to Faculty ADT
  */
 void collectRevenue(Faculty faculty);
+
+//void* copyRoomPtr(void* room);
+
+void* copyCompanyPtr(void* company);
+
+//void destroyRoomPtr(void* room);
+
+void destroyCompanyPtr(void* company);
+
+//int compareRoomPtr(void* room1, void* room2);
+
+int compareCompanyPtr(void* company1, void* company2);
 
 #endif //HW3WET_FACULTY_H

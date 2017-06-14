@@ -54,7 +54,7 @@ Order createOrder(){
     return order;
 }
 
-void destroyOrder(Order order){
+void destroyOrder(void* order){
     resetOrder(order);
     free(order);
 }
@@ -72,7 +72,7 @@ void* copyOrder(void* order){
     int room_price = getCost(order) / getNumOfVisitors(order);
     OrderError result = initOrder(copy_order, getOrderRoomId(order),
                                   getOrderCompanyEmail(order),
-                                  getEscaperEmail(order), time_copy,
+                                  getOrderEscaperEmail(order), time_copy,
                                   getNumOfVisitors(order), room_price,
                                   getOrderFaculty(order));
     if(result != ORDER_SUCCESS){
@@ -130,7 +130,7 @@ int getOrderRoomId(Order order){
     return (order->room_id);
 }
 
-const char* getOrderEscaperEmail(Order order){
+char* getOrderEscaperEmail(Order order){
     assert(order != NULL);
     return (order->escaper_email);
 }
@@ -156,15 +156,15 @@ OrderError setDiscountOrder(Order order){
 }
 
 int compareOrderByTime(void* order1, void* order2){
-    return (getHoursOrder((Order)order2) - getHoursOrder((Order)order1));
+    return (getHoursOrder((*(Order*)order1)) - getHoursOrder((*(Order*)order2)));
 }
 
 int compareOrderByFaculty(void* order1, void* order2){
-    return (getOrderFaculty((Order)order1) - getOrderFaculty((Order)order2));
+    return (getOrderFaculty((*(Order*)order1)) - getOrderFaculty((*(Order*)order2)));
 }
 
 int compareOrderByRoomId(void* order1, void* order2){
-    return (getOrderRoomId((Order)order1) - getOrderRoomId((Order)order2));
+    return (getOrderRoomId(*(Order*)order1) - getOrderRoomId(*(Order*)order2));
 }
 
 bool orderForEscaper(void* order, void* visitor_email){
@@ -177,9 +177,9 @@ bool orderForEscaper(void* order, void* visitor_email){
 }
 
 bool orderAtDay(void* order, void* day){
-    return (getDaysOrder((Order)order) == *(int*)day);
+    return (getDaysOrder(((Order)order)) == *(int*)day);
 }
 
 bool orderForFaculty(void* order, void* faculty){
-    return (((Order)order)->faculty == (TechnionFaculty)faculty);
+    return (((Order)order)->faculty == *(TechnionFaculty*)faculty);
 }

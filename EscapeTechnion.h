@@ -6,7 +6,7 @@
 #include "company.h"
 #include "usefullFunctions.h"
 #include "order.h"
-#include "faculty.h"
+//#include "faculty.h"
 
 #define SMALLER 1
 #define EQUAL 2

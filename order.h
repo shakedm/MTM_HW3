@@ -59,7 +59,7 @@ Order createOrder();
  * release all memory allocated for this ADT
  * @param order - the ADT to realse
  */
-void destroyOrder(Order order);
+void destroyOrder(void* order);
 
 /*!
  * function to copy all the order ADT
@@ -121,7 +121,7 @@ int getOrderRoomId(Order order);
  * @param order - points to the order ADT
  * @return email string
  */
-const char* getOrderEscaperEmail(Order order);
+char* getOrderEscaperEmail(Order order);
 
 /*!
  * Function returns the email of the company that owns the ordered room

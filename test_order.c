@@ -35,10 +35,10 @@ static bool testGetCost(){
     Order order=createOrder();
     int time[2]={1,20};
     Order order1=createOrder();
-    initOrder(order,23,"asd","asds",time,23,20,PHYSICS);
-    initOrder(order1,22,"asd","ds",time,2,100,(TechnionFaculty)13);
-    ASSERT_TEST(getCost(order)==20);
-    ASSERT_TEST(getCost(order1)==100);
+    initOrder(order,23,"as@d","a@sds",time,2,20,PHYSICS);
+    initOrder(order1,22,"a@sd","d@s",time,2,100,(TechnionFaculty)13);
+    ASSERT_TEST(getCost(order)==40);
+    ASSERT_TEST(getCost(order1)==200);
     destroyOrder(order);
     destroyOrder(order1);
     return true;
@@ -46,7 +46,7 @@ static bool testGetCost(){
 static bool testGetNmOfVisitors(){
     Order order=createOrder();
     int time[2]={1,20};
-    initOrder(order,23,"asd","asds",time,23,20,PHYSICS);
+    initOrder(order,23,"as@d","as@ds",time,23,20,PHYSICS);
     ASSERT_TEST(getNumOfVisitors(order)==23);
     destroyOrder(order);
     return true;
@@ -54,7 +54,7 @@ static bool testGetNmOfVisitors(){
 static bool testGetDaysOrder(){
     Order order=createOrder();
     int time[2]={1,20};
-    initOrder(order,23,"asd","asds",time,23,20,PHYSICS);
+    initOrder(order,23,"as@d","as@ds",time,23,20,PHYSICS);
     ASSERT_TEST(getDaysOrder(order)==1);
     destroyOrder(order);
     return true;
@@ -62,7 +62,7 @@ static bool testGetDaysOrder(){
 static bool testGetHoursOrder(){
     Order order=createOrder();
     int time[2]={1,20};
-    initOrder(order,23,"asd","asds",time,23,20,(TechnionFaculty)13);
+    initOrder(order,23,"as@d","asd@s",time,23,20,(TechnionFaculty)13);
     ASSERT_TEST(getHoursOrder(order)==20);
     destroyOrder(order);
     return true;
@@ -70,7 +70,7 @@ static bool testGetHoursOrder(){
 static bool testDeacreseDay(){
     Order order=createOrder();
     int time[2]={1,20};
-    initOrder(order,23,"asd","asds",time,23,20,PHYSICS);
+    initOrder(order,23,"as@d","as@ds",time,23,20,PHYSICS);
     decreaseDay(order);
     ASSERT_TEST(getDaysOrder(order)==0);
     decreaseDay(order);
@@ -81,7 +81,7 @@ static bool testDeacreseDay(){
 static bool testGetOrderRoomId(){
     Order order=createOrder();
     int time[2]={1,20};
-    initOrder(order,23,"asd","asds",time,3,20,PHYSICS);
+    initOrder(order,23,"as@d","as@ds",time,3,20,PHYSICS);
     ASSERT_TEST(getOrderRoomId(order)==23);
     destroyOrder(order);
     return true;
@@ -91,10 +91,10 @@ static bool testGetOrderEscapeEmail(){
     Order order1=createOrder();
     int time[2]={1,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,20,PHYSICS);
+    initOrder(order1,2,"as@d","as@ds",time,2,20,PHYSICS);
     ASSERT_TEST(strcmp(getOrderEscaperEmail(order),getOrderEscaperEmail(order1))!=0);
     ASSERT_TEST(strcmp(getOrderEscaperEmail(order),"a@sds")==0);
-    ASSERT_TEST(strcmp(getOrderEscaperEmail(order1),"asds")==0);
+    ASSERT_TEST(strcmp(getOrderEscaperEmail(order1),"as@ds")==0);
     destroyOrder(order);
     destroyOrder(order1);
     return true;
@@ -104,10 +104,10 @@ static bool testGetOrderCompanyEmail(){
     Order order1=createOrder();
     int time[2]={1,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,20,PHYSICS);
-    ASSERT_TEST(strcmp(getOrderEscaperEmail(order),getOrderEscaperEmail(order1))!=0);
-    ASSERT_TEST(strcmp(getOrderEscaperEmail(order),"as@d")==0);
-    ASSERT_TEST(strcmp(getOrderEscaperEmail(order1),"asd")==0);
+    initOrder(order1,2,"a@sd","@asds",time,2,20,PHYSICS);
+    ASSERT_TEST(strcmp(getOrderCompanyEmail(order),getOrderCompanyEmail(order1))!=0);
+    ASSERT_TEST(strcmp(getOrderCompanyEmail(order),"as@d")==0);
+    ASSERT_TEST(strcmp(getOrderCompanyEmail(order1),"a@sd")==0);
     destroyOrder(order);
     destroyOrder(order1);
     return true;
@@ -117,7 +117,7 @@ static bool testGetOrderFaculty(){
     Order order1=createOrder();
     int time[2]={1,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,20,(TechnionFaculty)13);
+    initOrder(order1,2,"@asd","asd@s",time,2,20,(TechnionFaculty)13);
     ASSERT_TEST(getOrderFaculty(order)==PHYSICS);
     ASSERT_TEST(getOrderFaculty(order1)==13);
     destroyOrder(order);
@@ -128,12 +128,12 @@ static bool testSetDiscountOrder(){
     Order order=createOrder();
     Order order1=createOrder();
     int time[2]={1,20};
-    initOrder(order,23,"as@d","a@sds",time,23,24,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,100,PHYSICS);
+    initOrder(order,23,"as@d","a@sds",time,1,24,PHYSICS);
+    initOrder(order1,2,"a@sd","asd@s",time,2,100,PHYSICS);
     setDiscountOrder(order);
     setDiscountOrder(order1);
-    ASSERT_TEST(getCost(order)==((24*0.75)+0.5));
-    ASSERT_TEST(getCost(order1)==75);
+    ASSERT_TEST(getCost(order)==18);
+    ASSERT_TEST(getCost(order1)==150);
     destroyOrder(order);
     destroyOrder(order1);
     return true;
@@ -144,9 +144,9 @@ static bool testCompareOrderByTime(){
     Order order2=createOrder();
     int time[2]={1,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,20,PHYSICS);
+    initOrder(order1,2,"as@d","as@ds",time,2,20,PHYSICS);
     time[1]=10;
-    initOrder(order2,34,"hf","hfy",time,4,40,(TechnionFaculty)13);
+    initOrder(order2,34,"@hf","hf@y",time,4,40,(TechnionFaculty)13);
     ASSERT_TEST(compareOrderByTime(order,order1)==0);
     ASSERT_TEST(compareOrderByTime(order,order)==0);
     ASSERT_TEST(compareOrderByTime(order,order2)>0);
@@ -161,8 +161,8 @@ static bool testCompareOrderByFaculty(){
     Order order2=createOrder();
     int time[2]={1,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,20,PHYSICS);
-    initOrder(order2,3,"a","as",time,2,20,(TechnionFaculty)13);
+    initOrder(order1,2,"@asd","asd@s",time,2,20,PHYSICS);
+    initOrder(order2,3,"@a","as@",time,2,20,(TechnionFaculty)13);
     ASSERT_TEST(compareOrderByFaculty(order,order1)==0);
     ASSERT_TEST(compareOrderByFaculty(order,order2)!=0);
     destroyOrder(order);
@@ -176,8 +176,8 @@ static bool testCompareOrderByRoomId(){
     Order order2=createOrder();
     int time[2]={1,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,23,"asd","asds",time,2,20,PHYSICS);
-    initOrder(order2,3,"a","as",time,2,20,(TechnionFaculty)13);
+    initOrder(order1,23,"as@d","as@ds",time,2,20,PHYSICS);
+    initOrder(order2,3,"@a","a@s",time,2,20,(TechnionFaculty)13);
     ASSERT_TEST(compareOrderByRoomId(order,order1)==0);
     ASSERT_TEST(compareOrderByRoomId(order,order2)!=0);
     destroyOrder(order);
@@ -191,11 +191,11 @@ static bool testOrderForEscaper(){
     Order order2=createOrder();
     int time[2]={1,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,20,PHYSICS);
-    initOrder(order2,3,"a","as",time,2,20,(TechnionFaculty)13);
+    initOrder(order1,23,"as@d","as@ds",time,2,20,PHYSICS);
+    initOrder(order2,3,"@a","a@s",time,2,20,(TechnionFaculty)13);
     ASSERT_TEST(orderForEscaper(order,"a@sds")==true);
-    ASSERT_TEST(orderForEscaper(order1,"asds")==true);
-    ASSERT_TEST(orderForEscaper(order2,"a")==false);
+    ASSERT_TEST(orderForEscaper(order1,"as@ds")==true);
+    ASSERT_TEST(orderForEscaper(order2,"@a")==false);
     destroyOrder(order);
     destroyOrder(order1);
     destroyOrder(order2);
@@ -207,14 +207,14 @@ static bool testOrderAtDay(){
     Order order2=createOrder();
     int time[2]={5,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,20,PHYSICS);
-    initOrder(order2,3,"a","as",time,2,20,(TechnionFaculty)13);
+    initOrder(order1,23,"as@d","as@ds",time,2,20,PHYSICS);
+    initOrder(order2,3,"@a","a@s",time,2,20,(TechnionFaculty)13);
     int day=5;
-    ASSERT_TEST(orderAtDay(order,&day)==0);
+    ASSERT_TEST(orderAtDay(order,day)==true);
     decreaseDay(order1);
-    ASSERT_TEST(orderAtDay(order1,&day)!=0);
+    ASSERT_TEST(orderAtDay(order1,day)==false);
     day--;
-    ASSERT_TEST(orderAtDay(order2,&day)!=0);
+    ASSERT_TEST(orderAtDay(order2,day)==false);
     destroyOrder(order);
     destroyOrder(order1);
     destroyOrder(order2);
@@ -226,12 +226,12 @@ static bool testOrderForFaculty(){
     Order order2=createOrder();
     int time[2]={1,20};
     initOrder(order,23,"as@d","a@sds",time,23,20,PHYSICS);
-    initOrder(order1,2,"asd","asds",time,2,20,PHYSICS);
-    initOrder(order2,3,"a","as",time,2,20,(TechnionFaculty)13);
+    initOrder(order1,23,"as@d","as@ds",time,2,20,PHYSICS);
+    initOrder(order2,3,"@a","a@s",time,2,20,(TechnionFaculty)13);
     TechnionFaculty faculty=PHYSICS;
-    ASSERT_TEST(orderForFaculty(order,&faculty)==0);
-    ASSERT_TEST(orderForFaculty(order1,&faculty)==0);
-    ASSERT_TEST(orderForFaculty(order2,&faculty)!=0);
+    ASSERT_TEST(orderForFaculty(order,faculty)==true);
+    ASSERT_TEST(orderForFaculty(order1,faculty)==true);
+    ASSERT_TEST(orderForFaculty(order2,faculty)==false);
     destroyOrder(order);
     destroyOrder(order1);
     destroyOrder(order2);
