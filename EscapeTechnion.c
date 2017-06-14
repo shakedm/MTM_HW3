@@ -4,7 +4,6 @@
 struct escape_technion_t {
     Set companies;
     Set escapers;
-//    Set faculties;
     List orderList;
     int time_log; // counts days
     int total_revenue;
@@ -152,15 +151,43 @@ static EscapeTechnionError setErrorHandel(SetResult result, int sender_ID,
 static EscapeTechnionError listErrorHandel(ListResult result, int sender_ID,
                                     void* ADT);
 
+/* * This Function handels cases in which a order action fails according to the
+ * error masseges
+ * @param result the error result the action returned
+ * @param sender_ID signefies the ADT from which the action was taken.
+ * @param ADT points to the ADT to handel
+ * @return the correct error massege after handeling the fault.
+ */
 static EscapeTechnionError orderErrorHandel(OrderError result, int sender_ID,
                                      void* ADT);
 
+/* * This Function handels cases in which a escaper action fails according to
+ * error masseges
+ * @param result the error result the action returned
+ * @param sender_ID signefies the ADT from which the action was taken.
+ * @param ADT points to the ADT to handel
+ * @return the correct error massege after handeling the fault.
+ */
 static EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID,
                                        void* ADT);
 
+/* * This Function handels cases in which a room action fails according to the
+ * error masseges
+ * @param result the error result the action returned
+ * @param sender_ID signefies the ADT from which the action was taken.
+ * @param ADT points to the ADT to handel
+ * @return the correct error massege after handeling the fault.
+ */
 static EscapeTechnionError roomErrorHandel(RoomError result, int sender_ID,
                                     void* ADT);
 
+/* * This Function handels cases in which a company action fails according to
+ * error masseges
+ * @param result the error result the action returned
+ * @param sender_ID signefies the ADT from which the action was taken.
+ * @param ADT points to the ADT to handel
+ * @return the correct error massege after handeling the fault.
+ */
 static EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID,
                                        void* ADT);
 

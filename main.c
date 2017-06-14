@@ -58,12 +58,14 @@ int main(int argc, char** argv) {
                     mtmPrintErrorMessage(stderr,result);
                     return 0;
                 }
+                break;
         case(5):
                 result = passTwoArguments(argv,&input, &output);
                 if(result!=MTM_SUCCESS){
                     mtmPrintErrorMessage(stderr,result);
                     return 0;
                 }
+                 break;
         default:
             mtmPrintErrorMessage(stderr,MTM_INVALID_COMMAND_LINE_PARAMETERS);
         }
