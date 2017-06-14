@@ -184,7 +184,12 @@ bool orderForEscaper(void* order, void* visitor_email){
 
 bool orderAtDay(void* order, void* day){
     Order orderPtr = order;
-    int daycp = *(int*)day;
+    int daycp;
+    if(day == NULL){
+        daycp = 0;
+    } else{
+        daycp = *(int*)day;
+    }
     return (getDaysOrder(orderPtr) == daycp);
 }
 

@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     char buffer[MAX_LEN];
     char* first_word;
     while(fgets(buffer,MAX_LEN-1,input) !=NULL){
-        first_word = strtok(buffer," \t");
+        first_word = strtok(buffer," \t\n");
         result = readBuffer(system,buffer, first_word,output);
         if(result!=MTM_SUCCESS){
             if (result==MTM_OUT_OF_MEMORY){
@@ -195,7 +195,7 @@ static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
         int num_ppl=atoi(current);
         current=strtok(NULL," \t");
         char* working_hours=current;
-        current=strtok(NULL," \t");
+        current=strtok(NULL," \t\n");
         int difficulty= atoi(current);
         EscapeTechnionError result = roomAdd(sys,email,id,price,num_ppl,
                                              working_hours, difficulty);
@@ -206,11 +206,11 @@ static MtmErrorCode readRoom(EscapeTechnion sys,char* buffer){
 
 static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
     char* current;
-    current=strtok(NULL," \t");
+    current=strtok(NULL," \t\n");
     if (!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if(!strcmp(current,"remove")){
-        current=strtok(NULL," \t");
+        current=strtok(NULL," \t\n");
         EscapeTechnionError result = companyRemove(sys,current);
         return reverse(result);
 
@@ -218,7 +218,7 @@ static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
     else if(!strcmp(current,"add")){
         current=strtok(NULL," \t");
         char* email=current;
-        current=strtok(NULL," \t");
+        current=strtok(NULL," \t\n");
         int faculty= atoi(current);
         EscapeTechnionError result = companyAdd(sys, email,(TechnionFaculty)faculty);
         return reverse(result);
@@ -227,7 +227,7 @@ static MtmErrorCode readCompany(EscapeTechnion sys,char* buffer){
 }
 static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output){
     char* current;
-    current=strtok(NULL," \t \n");
+    current=strtok(NULL," \t\n");
     if(!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if(!strcmp(current,"day")){
@@ -242,7 +242,7 @@ static MtmErrorCode readReport(EscapeTechnion sys, char* buffer, FILE* output){
 }
 static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
     char* current;
-    current=strtok(NULL, " \t");
+    current=strtok(NULL, " \t\n");
     if (!current)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     if(!strcmp(current,"add")){
@@ -250,14 +250,14 @@ static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
         char* email= current;
         current=strtok(NULL," \t");
         int faculty= atoi(current);
-        current=strtok(NULL," \t");
+        current=strtok(NULL," \t\n");
         int skill=atoi(current);
         EscapeTechnionError result = escaperAdd(sys,email,(TechnionFaculty)
                 faculty,skill);
         return reverse(result);
     }
     else if(!strcmp(current,"remove")){
-        current=strtok(NULL," \t");
+        current=strtok(NULL," \t\n");
         EscapeTechnionError result = escaperRemove(sys,current);
         return reverse(result);
     }
@@ -270,7 +270,7 @@ static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
         int id=atoi(current);
         current=strtok(NULL," \t");
         char* time=current;
-        current=strtok(NULL," \t");
+        current=strtok(NULL," \t\n");
         int num_ppl=atoi(current);
         EscapeTechnionError result = escaperOrder(sys,email,(TechnionFaculty)
                                                   faculty,id,time, num_ppl);
@@ -279,7 +279,7 @@ static MtmErrorCode readEscaper(EscapeTechnion sys, char* buffer){
     else if(!strcmp(current,"recommend")){
         current=strtok(NULL," \t");
         char* email=current;
-        current=strtok(NULL," \t");
+        current=strtok(NULL," \t\n");
         int num_ppl=atoi(current);
         EscapeTechnionError result = escaperRecommend(sys,email,num_ppl);
         return reverse(result);

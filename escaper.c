@@ -46,12 +46,13 @@ EscaperError initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,
 void resetEscaper(void* visitor){
     if(visitor == NULL )
         return;
-    if((*(Escaper*)visitor)->email != NULL){
-        free((*(Escaper*)visitor)->email);
-        (*(Escaper*)visitor)->email = NULL;
+    Escaper escaper = visitor;
+    if(escaper->email != NULL){
+        free(escaper->email);
+        escaper->email = NULL;
     }
-    (*(Escaper*)visitor)->faculty = UNKNOWN;
-    (*(Escaper*)visitor)->skill_level = 0;
+    escaper->faculty = UNKNOWN;
+    escaper->skill_level = 0;
 }
 
 char* getEscaperEmail(Escaper visitor){
@@ -71,7 +72,9 @@ int getEscaperSkillLevel(Escaper visitor){
 int compareEscaper(void* visitor1, void* visitor2){
     if (visitor1 == NULL || visitor2 == NULL)
         return false;
-    return  (strcmp((*(Escaper*)visitor1)->email, (*(Escaper*)visitor2)->email));
+    Escaper first = visitor1;
+    Escaper second = visitor2;
+    return  (strcmp(first->email, second->email));
 }
 
 void* copyEscaper(void* escaper){
