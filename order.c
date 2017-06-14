@@ -194,7 +194,18 @@ bool orderAtDay(void* order, void* day){
 }
 
 bool orderForFaculty(void* order, void* faculty){
-    return (((Order)order)->faculty == *(TechnionFaculty*)faculty);
+    Order orderPtr = order;
+    TechnionFaculty same = (TechnionFaculty)faculty;
+    return (orderPtr->faculty == same);
+}
+
+bool orderForCompany(void* order, void* company_emil){
+    Order orderPtr = order;
+    char* emailPtr = company_emil;
+    if(strcmp(getOrderCompanyEmail(orderPtr), emailPtr) == 0){
+        return true;
+    }
+    return false;
 }
 
 bool sameFacultyDiscount(Order order){

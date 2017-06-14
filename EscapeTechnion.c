@@ -221,6 +221,10 @@ EscapeTechnionError createEscapeTechnion(EscapeTechnion *sys){
 EscapeTechnionError companyAdd(EscapeTechnion sys, char* email,
                         TechnionFaculty faculty){
     Company new_company = createCompany();
+    CompanyError result = initCompany(new_company, email, faculty);
+    if(result != COMPANY_SUCCESS){
+        return errorHandel(HANDEL_COMPANY, (void*)result, COMPANY, new_company);
+    }
     if(!new_company){
         return ESCAPE_OUT_OF_MEMORY;
     }
@@ -229,14 +233,11 @@ EscapeTechnionError companyAdd(EscapeTechnion sys, char* email,
     if(companyHasEmail || visitorHasTheMail){
         return ESCAPE_EMAIL_ALREADY_EXISTS;
     }
-    CompanyError result = initCompany(new_company, email, faculty);
-    if(result != COMPANY_SUCCESS){
-        return errorHandel(HANDEL_COMPANY, (void*)result, COMPANY, new_company);
-    }
     SetResult setResult = setAdd(sys->companies, new_company);
     if(setResult != SET_SUCCESS){
         return errorHandel(HANDEL_SET, (void*)setResult, COMPANY, new_company);
     }
+    destroyCompany(new_company);
     return ESCAPE_SUCCESS;
 }
 
@@ -294,36 +295,52 @@ static Escaper findEscaperInSet(Set escapers, char *email){
 
 
 EscapeTechnionError companyRemove(EscapeTechnion sys, char* email){
-    Company company = findCompanyByEmail(sys->companies, email);
-    if(company != NULL){
-        setRemove(sys->companies, company);
-        return ESCAPE_SUCCESS;
+    if(!email || !sys){
+        return ESCAPE_NULL_PARAMETER;
     }
-    return ESCAPE_COMPANY_EMAIL_DOES_NOT_EXIST;
+    if(!emailCheck(email)){
+        return ESCAPE_INVALID_PARAMETER;
+    }
+    Company company = findCompanyByEmail(sys->companies, email);
+    if(company == NULL){
+        return ESCAPE_COMPANY_EMAIL_DOES_NOT_EXIST;
+
+    }
+    List orders_for_company = listFilter(sys->orderList, orderForCompany, email);
+    int size = listGetSize(orders_for_company);
+    if(orders_for_company != NULL && size > 0){
+        listClear(orders_for_company);
+        listDestroy(orders_for_company);
+        return ESCAPE_RESERVATION_EXISTS;
+    }
+    listClear(orders_for_company);
+    listDestroy(orders_for_company);
+    setRemove(sys->companies, company);
+    return ESCAPE_SUCCESS;
 }
 
 EscapeTechnionError roomAdd(EscapeTechnion sys, char* email, int id, int price,
                      int num_ppl, char* working_hrs, int difficulty){
+    Room new_room = createRoom();
+    RoomError result = initRoom(new_room, email, id,
+                                num_ppl, working_hrs, difficulty, price);
+    if(result != ROOM_SUCCESS){
+        return errorHandel(HANDEL_ROOM, (void*)result, ROOM, new_room);
+    }
     Company company = findCompanyByEmail(sys->companies, email);
     if(company == NULL){
         return ESCAPE_COMPANY_EMAIL_DOES_NOT_EXIST;
     }
-    Room new_room = createRoom();
-    RoomError result = initRoom(new_room, getCompanyEmail(company), id,
-                                   num_ppl, working_hrs, difficulty, price);
-    if(result != ROOM_SUCCESS){
-        return errorHandel(HANDEL_ROOM, (void*)result, ROOM, new_room);
-    }
     CompanyError company_result = addRoomCompany(company, new_room);
     if(company_result != COMPANY_SUCCESS){
         return errorHandel(HANDEL_COMPANY, (void*)company_result,
-                           ESCAPE_TECHNION, sys);
+                           ROOM, new_room);
     }
-    assert(faculty != NULL);
-    Room sysRoom =  findRoomInCompany(company, id);
+    destroyRoom(new_room);
+    /*Room sysRoom =  findRoomInCompany(company, id);
     if(!sysRoom){
         return ESCAPE_ID_DOES_NOT_EXIST;
-    }
+    }*/
     return ESCAPE_SUCCESS;
 }
 
@@ -365,6 +382,7 @@ EscapeTechnionError escaperAdd(EscapeTechnion sys, char* email,
     if(setResult != SET_SUCCESS){
         return errorHandel(HANDEL_SET, (void*)setResult, ESCAPER, visitor);
     }
+    destroyEscaper(visitor);
     return ESCAPE_SUCCESS;
 }
 
@@ -419,6 +437,7 @@ static EscapeTechnionError escaperOrderAux(EscapeTechnion sys, char* email,
         return errorHandel(HANDEL_LIST, (void *) list_result, ESCAPE_TECHNION,
                            sys->orderList);
     }
+    destroyOrder(new_order);
     return ESCAPE_SUCCESS;
 }
 
@@ -452,18 +471,19 @@ static EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty f
     if (!(room)){
         return ESCAPE_ID_DOES_NOT_EXIST;
     }
-    List faculty_order_list = listCreate(copyOrder, destroyOrder);
+    List faculty_order_list = listFilter(sys->orderList, orderForFaculty,
+                                         (void*)faculty);
     if(!faculty_order_list){
         return ESCAPE_OUT_OF_MEMORY;
     }
-    faculty_order_list = listFilter(sys->orderList, orderForFaculty,
-                                    (void*)faculty);
     for (Order curr_order = listGetFirst(faculty_order_list); curr_order != NULL;
          curr_order = listGetNext(faculty_order_list)) {
         if(getOrderRoomId(curr_order) == id &&
                 getOrderFaculty(curr_order) == faculty){
             if(getDaysOrder(curr_order) == due_in[DAYS] &&
                getHoursOrder(curr_order) == due_in[HOURS]){
+                listClear(faculty_order_list);
+                listDestroy(faculty_order_list);
                 return ESCAPE_ROOM_NOT_AVAILABLE;
             }
         }
@@ -475,16 +495,17 @@ static EscapeTechnionError isRoomAvailable(EscapeTechnion sys, TechnionFaculty f
 
 static EscapeTechnionError isClientAvailable(EscapeTechnion sys, Escaper visitor,
                                int due_in[HOURS_FORMAT]){
-    List client_order_list = listCreate(copyOrder, destroyOrder);
+    List client_order_list = listFilter(sys->orderList, orderForEscaper,
+                                        (void*)getEscaperEmail(visitor));
     if(!client_order_list){
         return ESCAPE_OUT_OF_MEMORY;
     }
-    client_order_list = listFilter(sys->orderList, orderForEscaper,
-                                    (void*)getEscaperEmail(visitor));
     for (Order curr_order = listGetFirst(client_order_list); curr_order != NULL;
          curr_order = listGetNext(client_order_list)) {
         if(getDaysOrder(curr_order) == due_in[DAYS] &&
            getHoursOrder(curr_order) == due_in[HOURS]){
+            listClear(client_order_list);
+            listDestroy(client_order_list);
             return ESCAPE_CLIENT_IN_ROOM;
         }
     }
@@ -653,21 +674,15 @@ EscapeTechnionError reportBest(EscapeTechnion sys, TechnionFaculty* top_facultie
 }
 
 static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
-    List list = listCreate(copyOrder, destroyOrder);
+    List list = listFilter(sys->orderList, orderAtDay, TODAY);
     if(!list){
         return ESCAPE_OUT_OF_MEMORY;
     }
-
-    Order curr_order = listGetFirst(sys->orderList);
-    if(curr_order == NULL){
-        printf("goddamnit\n");
-    }
-    list = listFilter(sys->orderList, orderAtDay, TODAY);
     ListResult result = listSort(list, compareOrderByTime);
     if(result != LIST_SUCCESS){
         return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION, list);
     }
-    curr_order = listGetFirst(list);
+    Order curr_order = listGetFirst(list);
     int list_size = listGetSize(list);
     for (int i = 0; i < list_size; ++i) {
         result = listInsertLast(*sorted, curr_order);
@@ -893,10 +908,14 @@ static EscapeTechnionError orderErrorHandel(OrderError result, int sender_ID,
     switch (result){
         case ORDER_OUT_OF_MEMORY :
             return memoryFaultHandel(sender_ID, ADT);
-        case ORDER_NULL_PARAMETER:
+        case ORDER_NULL_PARAMETER:{
+            free(ADT);
             return ESCAPE_NULL_PARAMETER;
-        case ORDER_INVALID_PARAMETER:
+        }
+        case ORDER_INVALID_PARAMETER:{
+            free(ADT);
             return ESCAPE_INVALID_PARAMETER;
+        }
         default:
             return ESCAPE_INVALID_PARAMETER;
     }
@@ -907,10 +926,14 @@ static EscapeTechnionError roomErrorHandel(RoomError result, int sender_ID,
     switch (result){
         case ROOM_OUT_OF_MEMORY :
             return memoryFaultHandel(sender_ID, ADT);
-        case ROOM_NULL_PARAMETER:
+        case ROOM_NULL_PARAMETER:{
+            free(ADT);
             return ESCAPE_NULL_PARAMETER;
-        case ROOM_INVALID_PARAMETER:
+        }
+        case ROOM_INVALID_PARAMETER:{
+            free(ADT);
             return ESCAPE_INVALID_PARAMETER;
+        }
         default:
             return ESCAPE_INVALID_PARAMETER;
     }
@@ -921,12 +944,18 @@ static EscapeTechnionError companyErrorHandel(CompanyError result, int sender_ID
     switch (result){
         case COMPANY_OUT_OF_MEMORY:
             return memoryFaultHandel(sender_ID, ADT);
-        case COMPANY_NULL_ARGUMENT:
+        case COMPANY_NULL_ARGUMENT:{
+            free(ADT);
             return ESCAPE_NULL_PARAMETER;
-        case COMPANY_INVALID_ARGUMENT:
+        }
+        case COMPANY_INVALID_ARGUMENT:{
+            free(ADT);
             return ESCAPE_INVALID_PARAMETER;
-        case COMPANY_ID_ALREADY_EXIST:
+        }
+        case COMPANY_ID_ALREADY_EXIST:{
+            free(ADT);
             return ESCAPE_ID_ALREADY_EXIST;
+        }
         case COMPANY_ID_DOES_NOT_EXIST:
             return ESCAPE_ID_DOES_NOT_EXIST;
         default:
@@ -939,10 +968,14 @@ static EscapeTechnionError escaperErrorHandel(EscaperError result, int sender_ID
     switch (result){
         case ESCAPER_OUT_OF_MEMORY :
             return memoryFaultHandel(sender_ID, ADT);
-        case ESCAPER_NULL_PARAMETER:
+        case ESCAPER_NULL_PARAMETER:{
+            free(ADT);
             return ESCAPE_ID_DOES_NOT_EXIST;
-        case ESCAPER_INVALID_PARAMETER:
+        }
+        case ESCAPER_INVALID_PARAMETER:{
+            free(ADT);
             return ESCAPE_INVALID_PARAMETER;
+        }
         default:
             return ESCAPE_INVALID_PARAMETER;
     }

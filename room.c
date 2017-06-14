@@ -19,8 +19,8 @@ Room createRoom(){
 void destroyRoom(void* room){
     if(!room)
         return;
-    resetRoom((Room)room);
-    free(*(Room*)room);
+    resetRoom(room);
+    free(room);
 }
 
 RoomError initRoom(Room room, char* Email , int id , int num_ppl ,

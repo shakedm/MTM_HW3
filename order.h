@@ -206,6 +206,15 @@ bool orderAtDay(void* order, void* day);
  */
 bool orderForFaculty(void* order, void* faculty);
 
+/*!
+ * function checks if an order is for a specific comapny
+ * @param order - points to the Order to check
+ * @param company_email - the company ID to compare to
+ * @return TRUE if the order is for the company
+ *          FALSE otherwise
+ */
+bool orderForCompany(void* order, void* company_emil);
+
 /*
  * function checks if a discount action is neede
  */

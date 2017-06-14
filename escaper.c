@@ -20,7 +20,7 @@ void destroyEscaper(void* escaper){
         return;
     }
     resetEscaper(escaper);
-    free(*(Escaper*)escaper);
+    free(escaper);
 }
 
 EscaperError initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,

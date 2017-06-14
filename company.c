@@ -31,7 +31,7 @@ void destroyCompany(void* company){
         return;
     }
     resetCompany(company);
-    free(*(Company*)company);
+    free(company);
 }
 
 CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
@@ -41,7 +41,8 @@ CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
     if (email == NULL){
         return COMPANY_NULL_ARGUMENT;
     }
-    if (!(emailCheck(email))){
+    if (!(emailCheck(email)) || faculty > UNKNOWN ||
+            faculty < (TechnionFaculty)0){
         return COMPANY_INVALID_ARGUMENT;
     }
     char* email_copy = malloc(strlen(email) + 1);
