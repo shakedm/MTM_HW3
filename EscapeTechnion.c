@@ -32,7 +32,7 @@ static int score_calc(Room room, Escaper visitor, int num_ppl);
  *                  smaller than the first room's faculty
  */
 static int compareFaculties(EscapeTechnion sys, Company company, Room room,
-                            Escaper visitor);
+                            Escaper visitor, int *best_diff);
 
 /*!
  * This function chaecks if the best score for a room reservation needs to be
@@ -40,7 +40,7 @@ static int compareFaculties(EscapeTechnion sys, Company company, Room room,
  */
 static void update(EscapeTechnion sys, Company company, Room room,
                    Room *recommanded_room, Escaper visitor, int num_ppl,
-                   int *best_score);
+                   int *best_score, int *best_diff);
 
 /*!
  * This function updates the best companies of the day
@@ -591,18 +591,21 @@ EscapeTechnionError escaperRecommend(EscapeTechnion sys, char* email, int num_pp
     int time[HOURS_FORMAT] = {0};
     time[HOURS] = roomGetOpenTime(recommended_room);
     int days = 0, hour = roomGetOpenTime(recommended_room);
-    result = escaperOrderAux(sys, email, getEscaperFaculty(visitor),
+    Company recommanded_company = findCompanyByEmail(sys->companies,
+                                                     roomGetEmail(recommended_room));
+    result = escaperOrderAux(sys, email, getCompanyFaculty(recommanded_company),
                                           roomGetId(recommended_room), time,
                                           num_ppl);
     assert(result == ESCAPE_SUCCESS || result == ESCAPE_ROOM_NOT_AVAILABLE);
-    while (result == ESCAPE_ROOM_NOT_AVAILABLE) {
+    while (result != ESCAPE_SUCCESS && result != ESCAPE_NO_ROOMS_AVAILABLE) {
         time[HOURS] = ++hour;
         if (hour >= roomGetCloseTime(recommended_room)) {
             time[DAYS] = ++days;
             hour = roomGetOpenTime(recommended_room);
             time[HOURS] = hour;
         }
-        result = escaperOrderAux(sys, email, getEscaperFaculty(visitor),
+        result = escaperOrderAux(sys, email,
+                                 getCompanyFaculty(recommanded_company),
                                  roomGetId(recommended_room), time, num_ppl);
     }
     return result;
@@ -615,6 +618,8 @@ static EscapeTechnionError searchRecommended(EscapeTechnion sys, int num_ppl,
     Room curr_room = setGetFirst(getCompanyRooms(curr_company));
     *recommended_room = curr_room;
     int room_set_size = setGetSize(getCompanyRooms(curr_company));
+    int best_diff = abs(getEscaperFaculty(visitor) -
+                                getCompanyFaculty(curr_company));
     if(room_set_size == 0){
         while (!room_set_size && company_set_size){
             curr_company = setGetNext(sys->companies);
@@ -633,8 +638,13 @@ static EscapeTechnionError searchRecommended(EscapeTechnion sys, int num_ppl,
             curr_room = setGetFirst(getCompanyRooms(curr_company));
         }
         for (int j = 0; j < room_set_size; ++j) {
-            update(sys, curr_company, curr_room, recommended_room, visitor,
-                   num_ppl, &best_score);
+            curr_score = score_calc(curr_room, visitor, num_ppl);
+            if (curr_score <= best_score){
+                update(sys, curr_company, curr_room, recommended_room, visitor,
+                       num_ppl, &best_score, &best_diff);
+                best_diff = abs(getEscaperFaculty(visitor) -
+                                    getCompanyFaculty(curr_company));
+            }
             curr_room = setGetNext(getCompanyRooms(curr_company));
         }
         curr_company = setGetNext(sys->companies);
@@ -764,13 +774,15 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
     }
     Order curr_order = listGetFirst(list);
     int list_size = listGetSize(list);
-    for (int i = 0; i < list_size; ++i) {
+    for (int i = 0; i <= list_size && list_size; ++i) {
         result = listInsertLast(*sorted, curr_order);
         if(result != LIST_SUCCESS){
             return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION, list);
         }
-        if(list_size - i > 1){
-            if(getHoursOrder(curr_order) == getHoursOrder(listGetNext(list))){
+        if(i < list_size - 1){
+            Order next = listGetNext(list);
+            if(getHoursOrder(curr_order) == getHoursOrder(next)){
+                curr_order = next;
                 int compare = compareOrderByFaculty(curr_order,
                                                     listGetCurrent(list));
                 if(compare >= 0){
@@ -795,7 +807,10 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
                         }
                     }
                 }
+                continue;
             }
+            curr_order = next;
+            continue;
         }
         listGetNext(list);
     }
@@ -830,19 +845,16 @@ void resetSystem(EscapeTechnion sys){
 static int score_calc(Room room, Escaper visitor, int num_ppl){
     int people = roomGetNumPpl(room) - num_ppl;
     int level = roomGetDifficulty(room) - getEscaperSkillLevel(visitor);
-    return ((people)^2) + ((level)^2);
+    return ((people)*(people)) + ((level)*(level));
 }
 
 static int compareFaculties(EscapeTechnion sys, Company company, Room room,
-                            Escaper visitor){
+                            Escaper visitor, int *best_diff){
     int curr_diff = abs(getEscaperFaculty(visitor) - getCompanyFaculty(company));
-    int best_diff = abs(getEscaperFaculty(visitor) -
-                                getCompanyFaculty(findCompanyByEmail(
-                                        sys->companies, roomGetEmail(room))));
-    if(curr_diff < best_diff){
+    if(curr_diff < *best_diff){
         return SMALLER;
     }
-    if(curr_diff == best_diff){
+    if(curr_diff == *best_diff){
         return EQUAL;
     }
     return BIGGER;
@@ -850,7 +862,7 @@ static int compareFaculties(EscapeTechnion sys, Company company, Room room,
 
 static void update(EscapeTechnion sys, Company company, Room room,
                    Room *recommanded_room, Escaper visitor, int num_ppl,
-                   int *best_score){
+                   int *best_score, int *best_diff){
     int curr_score = score_calc(room, visitor, num_ppl);
     if(curr_score <= *best_score){
         if(curr_score < *best_score){
@@ -858,7 +870,7 @@ static void update(EscapeTechnion sys, Company company, Room room,
             *recommanded_room = room;
         }else{
             int result = compareFaculties(sys, company,
-                                          *recommanded_room, visitor);
+                                          *recommanded_room, visitor, best_diff);
             if(result == SMALLER){
                 *best_score = curr_score;
                 *recommanded_room = room;

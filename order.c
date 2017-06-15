@@ -162,15 +162,17 @@ OrderError setDiscountOrder(Order order){
 }
 
 int compareOrderByTime(void* order1, void* order2){
-    return (getHoursOrder((*(Order*)order1)) - getHoursOrder((*(Order*)order2)));
+    Order orderPtr1 = order1;
+    Order orderPtr2 = order2;
+    return (getHoursOrder(orderPtr1)) - getHoursOrder(orderPtr2);
 }
 
 int compareOrderByFaculty(void* order1, void* order2){
-    return (getOrderFaculty((*(Order*)order1)) - getOrderFaculty((*(Order*)order2)));
+    return (getOrderFaculty(order1)) - getOrderFaculty(order2);
 }
 
 int compareOrderByRoomId(void* order1, void* order2){
-    return (getOrderRoomId(*(Order*)order1) - getOrderRoomId(*(Order*)order2));
+    return (getOrderRoomId(order1) - getOrderRoomId(order2));
 }
 
 bool orderForEscaper(void* order, void* visitor_email){
