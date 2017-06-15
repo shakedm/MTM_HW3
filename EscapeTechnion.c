@@ -781,56 +781,33 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
     }
     Order curr_order = listGetFirst(list);
     int list_size = listGetSize(list);
-    for (int i = 0; i <= list_size && list_size; ++i) {
-        result = listInsertLast(*sorted, curr_order);
-        if(result != LIST_SUCCESS){
-            return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION, list);
+    for (int i = 0; i < list_size && list_size; ++i) {
+        int time = getHoursOrder(curr_order);
+        List at_time = listFilter(list, orderAtTime, &time);
+        result = listSort(at_time, compareOrderByFaculty);
+        if (result != LIST_SUCCESS){
+            return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION,
+                               list);
         }
-        if(i < list_size){
-            Order next = listGetNext(list);
-            if(!next){
-                break;
+        int at_time_size = listGetSize(at_time);
+        i += at_time_size -1;
+        LIST_FOREACH(Order, curr2, at_time){
+            TechnionFaculty faculty = getOrderFaculty(curr2);
+            List for_faculty = listFilter(at_time, orderForFaculty,
+                                          (void*)faculty);
+            int faculty_size = listGetSize(for_faculty);
+            listSort(for_faculty, compareOrderByRoomId);
+            i+=faculty_size-1;
+            LIST_FOREACH(Order, curr3, for_faculty){
+                listInsertLast(*sorted, curr3);
+                curr_order = listGetNext(list);
             }
-            int time_curr = getHoursOrder(curr_order);
-            int time_next = getHoursOrder(next);
-            if(time_curr == time_next){
-                TechnionFaculty faculty1 = getOrderFaculty(curr_order);
-                TechnionFaculty faculty2 = getOrderFaculty(next);
-                int compare = faculty1 - faculty2;
-                if(compare >= 0){
-                    if(compare > 0){
-                        Order check = listGetCurrent(*sorted);
-                        if(!check){
-                            break;
-                        }
-                        result = listInsertBeforeCurrent(*sorted,
-                                                         next);
-                        if(result != LIST_SUCCESS){
-                            return errorHandel(HANDEL_LIST, (void*)result,
-                                               ESCAPE_TECHNION, list);
-                        }
-                        listGetNext(list);
-                    } else {
-                        int id1 = getOrderRoomId(curr_order);
-                        int id2 = getOrderRoomId(next);
-                        if ((id1 - id2) > 0){
-                            result = listInsertBeforeCurrent(*sorted,
-                                                             next);
-                            if(result != LIST_SUCCESS){
-                                return errorHandel(HANDEL_LIST, (void*)result,
-                                                   ESCAPE_TECHNION, list);
-                            }
-                            listGetNext(list);
-                        }
-                    }
-                }
-                curr_order = next;
-                continue;
-            }
-            curr_order = next;
-            continue;
+            listClear(for_faculty);
+            listDestroy(for_faculty);
         }
-        listGetNext(list);
+        listClear(at_time);
+        listDestroy(at_time);
+        curr_order = listGetNext(list);
     }
     listGetFirst(*sorted);
     listClear(list);
