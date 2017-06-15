@@ -38,8 +38,13 @@ bool translateHours(char* working_hours, int *time, bool order){
             continue;
         }
         time[hours_index] = (time[hours_index] * 10) + (*working_hours - '0');
-        if(!order || hours_index == HOURS_FORMAT - 1){
+        if(!order && hours_index == HOURS_FORMAT - 1){
             if(time[hours_index] > HOURS_PER_DAY){
+                return false;
+            }
+        }
+        if(order && hours_index == HOURS_FORMAT - 1){
+            if(time[hours_index] >= HOURS_PER_DAY){
                 return false;
             }
         }

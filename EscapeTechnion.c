@@ -414,9 +414,34 @@ EscapeTechnionError escaperAdd(EscapeTechnion sys, char* email,
 }
 
 EscapeTechnionError escaperRemove(EscapeTechnion sys, char* email){
+    if(sys == NULL){
+        return ESCAPE_NULL_PARAMETER;
+    }
+    if(!emailCheck(email)){
+        return ESCAPE_INVALID_PARAMETER;
+    }
     Escaper visitor = findEscaperInSet(sys->escapers, email);
     if(visitor == NULL){
         return ESCAPE_CLIENT_EMAIL_DOES_NOT_EXIST;
+    }
+    int size = listGetSize(sys->orderList);
+    if(size == 0){
+        setRemove(sys->escapers, visitor);
+        return ESCAPE_SUCCESS;
+    }
+    Order curr_order = listGetFirst(sys->orderList);
+    for (int i = 0; i <= size; ++i) {
+        if(orderForEscaper(curr_order, getEscaperEmail(visitor))){
+            ListResult result = listRemoveCurrent(sys->orderList);
+            if (result != LIST_SUCCESS){
+                return ESCAPE_INVALID_PARAMETER;
+            }
+            i = 0;
+            size--;
+            curr_order = listGetFirst(sys->orderList);
+            continue;
+        }
+        curr_order = listGetNext(sys->orderList);
     }
     setRemove(sys->escapers, visitor);
     return ESCAPE_SUCCESS;
@@ -425,6 +450,13 @@ EscapeTechnionError escaperRemove(EscapeTechnion sys, char* email){
 EscapeTechnionError escaperOrder(EscapeTechnion sys, char* email,
                           TechnionFaculty faculty, int id, char* time,
                           int num_ppl) {
+    if(sys == NULL){
+        return ESCAPE_NULL_PARAMETER;
+    }
+    if(!emailCheck(email) || faculty >= UNKNOWN || faculty < (TechnionFaculty)0
+       || id <= 0 || num_ppl < 0){
+        return ESCAPE_INVALID_PARAMETER;
+    }
     int due_in[HOURS_FORMAT] = {0};
     bool good_time = translateHours(time, due_in, true);
     if (!good_time) {
@@ -445,7 +477,7 @@ static EscapeTechnionError escaperOrderAux(EscapeTechnion sys, char* email,
     EscapeTechnionError result = isGoodOrder(&discount, sys, email, faculty, id,
                                              due_in, &company);
     if(result != ESCAPE_SUCCESS){
-        destroyOrder(new_order);
+        free(new_order);//order has now yet been set to parameters.
         return result;
     }
     assert(order_company != NULL && order_room != NULL);
@@ -479,14 +511,14 @@ static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char*
     if (faculty == getEscaperFaculty(visitor)) {
         *discount = true;
     }
+    EscapeTechnionError client_result = isClientAvailable(sys, visitor, due_in);
+    if(client_result != ESCAPE_SUCCESS){
+        return client_result;
+    }
     EscapeTechnionError room_result = isRoomAvailable(sys, faculty, id, due_in,
                                                       company);
     if(room_result != ESCAPE_SUCCESS){
         return room_result;
-    }
-    EscapeTechnionError client_result = isClientAvailable(sys, visitor, due_in);
-    if(client_result != ESCAPE_SUCCESS){
-        return client_result;
     }
     return ESCAPE_SUCCESS;
 }
@@ -582,10 +614,24 @@ static EscapeTechnionError searchRecommended(EscapeTechnion sys, int num_ppl,
     Company curr_company = setGetFirst(sys->companies);
     Room curr_room = setGetFirst(getCompanyRooms(curr_company));
     *recommended_room = curr_room;
+    int room_set_size = setGetSize(getCompanyRooms(curr_company));
+    if(room_set_size == 0){
+        while (!room_set_size && company_set_size){
+            curr_company = setGetNext(sys->companies);
+            room_set_size = setGetSize(getCompanyRooms(curr_company));
+            company_set_size--;
+        }
+        if(!company_set_size){
+            return ESCAPE_NO_ROOMS_AVAILABLE;
+        }
+    }
     int curr_score = score_calc(curr_room, visitor, num_ppl);
     int best_score = curr_score;
     for (int i = 0; i < company_set_size; ++i) {
-        int room_set_size = setGetSize(getCompanyRooms(curr_company));
+        room_set_size = setGetSize(getCompanyRooms(curr_company));
+        if(room_set_size != 0){
+            curr_room = setGetFirst(getCompanyRooms(curr_company));
+        }
         for (int j = 0; j < room_set_size; ++j) {
             update(sys, curr_company, curr_room, recommended_room, visitor,
                    num_ppl, &best_score);
@@ -613,7 +659,7 @@ EscapeTechnionError reportDay(EscapeTechnion sys, FILE* outputChannel){
     Escaper order_visitor = NULL;
     Company order_company = NULL;
     Room order_room = NULL;
-    LIST_FOREACH(Order, curr_order, sys->orderList){
+    LIST_FOREACH(Order, curr_order, today_events){
         order_visitor = findEscaperInSet(sys->escapers,
                                          getOrderEscaperEmail(curr_order));
         order_company = findCompanyByEmail(sys->companies,
@@ -640,12 +686,19 @@ EscapeTechnionError reportDay(EscapeTechnion sys, FILE* outputChannel){
 }
 
 void endDayProtocol(EscapeTechnion sys){
-    LIST_FOREACH(Order, curr_order, sys->orderList){
+    Order curr_order = listGetFirst(sys->orderList);
+    int size = listGetSize(sys->orderList);
+    for (int i = 0; i < size; ++i) {
         if(getDaysOrder(curr_order) != TODAY){
             decreaseDay(curr_order);
         } else {
             listRemoveCurrent(sys->orderList);
+            i = 0;
+            size--;
+            curr_order = listGetFirst(sys->orderList);
+            continue;
         }
+        curr_order = listGetNext(sys->orderList);
     }
     sys->time_log = (sys->time_log + 1);
 }

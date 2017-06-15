@@ -29,7 +29,8 @@ EscaperError initEscaper(Escaper visitor, char* email, TechnionFaculty faculty,
     if (email == NULL){
         return ESCAPER_NULL_PARAMETER;
     }
-    if (skill_level > MAX_SKILL || skill_level < MIN_SKILL || !emailCheck(email)){
+    if (skill_level > MAX_SKILL || skill_level < MIN_SKILL || !emailCheck(email)
+        || faculty >= UNKNOWN || faculty < (TechnionFaculty)0){
         return ESCAPER_INVALID_PARAMETER;
     }
     char* email_copy = malloc(strlen(email) + 1);

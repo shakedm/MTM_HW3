@@ -175,7 +175,9 @@ int compareOrderByRoomId(void* order1, void* order2){
 
 bool orderForEscaper(void* order, void* visitor_email){
     assert( order != NULL && visitor_email != NULL);
-    int compare = strcmp((char*)visitor_email, ((Order)order)->escaper_email);
+    Order orderPtr = order;
+    char* mailPtr = visitor_email;
+    int compare = strcmp(mailPtr, orderPtr->escaper_email);
     if (compare == 0){
         return true;
     }
