@@ -89,6 +89,10 @@ CompanyError addRoomCompany(Company company, Room room){
     if(company == NULL){
         return COMPANY_NULL_ARGUMENT;
     }
+    Room check = findRoomInCompany(company, roomGetId(room));
+    if(check){
+        return COMPANY_ID_ALREADY_EXIST;
+    }
     SetResult result = setAdd(company->rooms, (void*)room);
     if(result != SET_SUCCESS){
         return setErrorHandel(result, room);

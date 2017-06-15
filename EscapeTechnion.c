@@ -373,9 +373,12 @@ EscapeTechnionError roomAdd(EscapeTechnion sys, char* email, int id, int price,
 
 EscapeTechnionError roomRemove(EscapeTechnion sys, TechnionFaculty faculty,
                                int id){
+    if(faculty < (TechnionFaculty)0 || faculty >= UNKNOWN || id < 1){
+        return ESCAPE_INVALID_PARAMETER;
+    }
     Company company = findCompanyByFaculty(sys->companies, faculty);
     if(company == NULL){
-        return ESCAPE_INVALID_PARAMETER;
+        return ESCAPE_ID_DOES_NOT_EXIST;
     }
     Room room = findRoomInCompany(company, id);
     if(room == NULL){
@@ -698,14 +701,18 @@ EscapeTechnionError reportDay(EscapeTechnion sys, FILE* outputChannel){
 void endDayProtocol(EscapeTechnion sys){
     Order curr_order = listGetFirst(sys->orderList);
     int size = listGetSize(sys->orderList);
+    int removed = 0;
     for (int i = 0; i < size; ++i) {
         if(getDaysOrder(curr_order) != TODAY){
             decreaseDay(curr_order);
         } else {
             listRemoveCurrent(sys->orderList);
-            i = 0;
+            removed++;
             size--;
             curr_order = listGetFirst(sys->orderList);
+            for (int j = 0; j <= i - removed; ++j) {
+                curr_order = listGetNext(sys->orderList);
+            }
             continue;
         }
         curr_order = listGetNext(sys->orderList);
@@ -779,8 +786,11 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
         if(result != LIST_SUCCESS){
             return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION, list);
         }
-        if(i < list_size - 1){
+        if(i < list_size){
             Order next = listGetNext(list);
+            if(!next){
+                break;
+            }
             if(getHoursOrder(curr_order) == getHoursOrder(next)){
                 curr_order = next;
                 int compare = compareOrderByFaculty(curr_order,
