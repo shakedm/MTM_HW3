@@ -710,7 +710,7 @@ void endDayProtocol(EscapeTechnion sys){
             removed++;
             size--;
             curr_order = listGetFirst(sys->orderList);
-            for (int j = 0; j <= i - removed; ++j) {
+            for (int j = 0; j < i - removed; ++j) {
                 curr_order = listGetNext(sys->orderList);
             }
             continue;
@@ -791,24 +791,31 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
             if(!next){
                 break;
             }
-            if(getHoursOrder(curr_order) == getHoursOrder(next)){
-                curr_order = next;
-                int compare = compareOrderByFaculty(curr_order,
-                                                    listGetCurrent(list));
+            int time_curr = getHoursOrder(curr_order);
+            int time_next = getHoursOrder(next);
+            if(time_curr == time_next){
+                TechnionFaculty faculty1 = getOrderFaculty(curr_order);
+                TechnionFaculty faculty2 = getOrderFaculty(next);
+                int compare = faculty1 - faculty2;
                 if(compare >= 0){
                     if(compare > 0){
+                        Order check = listGetCurrent(*sorted);
+                        if(!check){
+                            break;
+                        }
                         result = listInsertBeforeCurrent(*sorted,
-                                                         listGetCurrent(list));
+                                                         next);
                         if(result != LIST_SUCCESS){
                             return errorHandel(HANDEL_LIST, (void*)result,
                                                ESCAPE_TECHNION, list);
                         }
                         listGetNext(list);
                     } else {
-                        if (compareOrderByRoomId(curr_order,
-                                                 listGetCurrent(list)) > 0){
+                        int id1 = getOrderRoomId(curr_order);
+                        int id2 = getOrderRoomId(next);
+                        if ((id1 - id2) > 0){
                             result = listInsertBeforeCurrent(*sorted,
-                                                             listGetNext(list));
+                                                             next);
                             if(result != LIST_SUCCESS){
                                 return errorHandel(HANDEL_LIST, (void*)result,
                                                    ESCAPE_TECHNION, list);
@@ -817,6 +824,7 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
                         }
                     }
                 }
+                curr_order = next;
                 continue;
             }
             curr_order = next;
