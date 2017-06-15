@@ -103,17 +103,17 @@ int main(int argc, char** argv) {
 }
 static MtmErrorCode passArgument(int argc , char** argv,FILE** F_input,
                                  FILE** F_output){
-    if(strcmp(argv[argc-1],"-o")!=0 && strcmp(argv[argc-1],"-i")!=0)
+    if(strcmp(argv[1],"-o")!=0 && strcmp(argv[1],"-i")!=0)
         return MTM_INVALID_COMMAND_LINE_PARAMETERS;
     FILE* input = stdin;
     FILE* output = stdout;
-    if (!strcmp(argv[argc-1],"-i")){
+    if (!strcmp(argv[1],"-i")){
         input= fopen(argv[argc-1],"r");
         if (input==NULL)
             return MTM_CANNOT_OPEN_FILE;
     }
     else{
-    assert(strcmp(argv[argc-1],"-o")==0);
+    assert(strcmp(argv[1],"-o")==0);
     output= fopen(argv[argc-1],"w");
     if (output==NULL)
         return MTM_CANNOT_OPEN_FILE;
