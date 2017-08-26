@@ -198,15 +198,6 @@ bool orderForEscaper(void* order, void* visitor_email);
 bool orderAtDay(void* order, void* day);
 
 /*!
- * function checks if an order is for a specific time
- * @param order - points to the Order to check
- * @param time - the time to compare to.
- * @return TRUE if the order is for the day
- *          FALSE otherwise
- */
-bool orderAtTime(void* order, void* time);
-
-/*!
  * function checks if an order is for a specific faculty
  * @param order - points to the Order to check
  * @param faculty - the faculty to compare to

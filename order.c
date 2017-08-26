@@ -168,11 +168,11 @@ int compareOrderByTime(void* order1, void* order2){
 }
 
 int compareOrderByFaculty(void* order1, void* order2){
-    return (getOrderFaculty(order1)) - getOrderFaculty(order2);
+    return (getOrderFaculty(order1) - getOrderFaculty(order2));
 }
 
 int compareOrderByRoomId(void* order1, void* order2){
-    return (getOrderRoomId(order2) - getOrderRoomId(order1));
+    return (getOrderRoomId(order1) - getOrderRoomId(order2));
 }
 
 bool orderForEscaper(void* order, void* visitor_email){
@@ -195,17 +195,6 @@ bool orderAtDay(void* order, void* day){
         daycp = *(int*)day;
     }
     return (getDaysOrder(orderPtr) == daycp);
-}
-
-bool orderAtTime(void* order, void* time){
-    Order orderPtr = order;
-    int daycp;
-    if(time == NULL){
-        daycp = 0;
-    } else{
-        daycp = *(int*)time;
-    }
-    return (getHoursOrder(orderPtr) == daycp);
 }
 
 bool orderForFaculty(void* order, void* faculty){

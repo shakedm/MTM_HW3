@@ -514,14 +514,14 @@ static EscapeTechnionError isGoodOrder(bool* discount, EscapeTechnion sys, char*
     if (faculty == getEscaperFaculty(visitor)) {
         *discount = true;
     }
+    EscapeTechnionError room_result = isRoomAvailable(sys, faculty, id, due_in,
+                                                       company);
+    if(room_result != ESCAPE_SUCCESS){
+        return room_result;
+    }
     EscapeTechnionError client_result = isClientAvailable(sys, visitor, due_in);
     if(client_result != ESCAPE_SUCCESS){
         return client_result;
-    }
-    EscapeTechnionError room_result = isRoomAvailable(sys, faculty, id, due_in,
-                                                      company);
-    if(room_result != ESCAPE_SUCCESS){
-        return room_result;
     }
     return ESCAPE_SUCCESS;
 }
@@ -710,7 +710,7 @@ void endDayProtocol(EscapeTechnion sys){
             removed++;
             size--;
             curr_order = listGetFirst(sys->orderList);
-            for (int j = 0; j < i - removed; ++j) {
+            for (int j = 0; j <= i - removed; ++j) {
                 curr_order = listGetNext(sys->orderList);
             }
             continue;
@@ -781,33 +781,48 @@ static EscapeTechnionError getTodayList(EscapeTechnion sys, List* sorted){
     }
     Order curr_order = listGetFirst(list);
     int list_size = listGetSize(list);
-    for (int i = 0; i < list_size && list_size; ++i) {
-        int time = getHoursOrder(curr_order);
-        List at_time = listFilter(list, orderAtTime, &time);
-        result = listSort(at_time, compareOrderByFaculty);
-        if (result != LIST_SUCCESS){
-            return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION,
-                               list);
+    for (int i = 0; i <= list_size && list_size; ++i) {
+        result = listInsertLast(*sorted, curr_order);
+        if(result != LIST_SUCCESS){
+            return errorHandel(HANDEL_LIST, (void*)result, ESCAPE_TECHNION, list);
         }
-        int at_time_size = listGetSize(at_time);
-        i += at_time_size -1;
-        LIST_FOREACH(Order, curr2, at_time){
-            TechnionFaculty faculty = getOrderFaculty(curr2);
-            List for_faculty = listFilter(at_time, orderForFaculty,
-                                          (void*)faculty);
-            int faculty_size = listGetSize(for_faculty);
-            listSort(for_faculty, compareOrderByRoomId);
-            i+=faculty_size-1;
-            LIST_FOREACH(Order, curr3, for_faculty){
-                listInsertLast(*sorted, curr3);
-                curr_order = listGetNext(list);
+        if(i < list_size){
+            Order next = listGetNext(list);
+            if(!next){
+                break;
             }
-            listClear(for_faculty);
-            listDestroy(for_faculty);
+            if(getHoursOrder(curr_order) == getHoursOrder(next)){
+                curr_order = next;
+                int compare = compareOrderByFaculty(curr_order,
+                                                    listGetCurrent(list));
+                if(compare >= 0){
+                    if(compare > 0){
+                        result = listInsertBeforeCurrent(*sorted,
+                                                         listGetCurrent(list));
+                        if(result != LIST_SUCCESS){
+                            return errorHandel(HANDEL_LIST, (void*)result,
+                                               ESCAPE_TECHNION, list);
+                        }
+                        listGetNext(list);
+                    } else {
+                        if (compareOrderByRoomId(curr_order,
+                                                 listGetCurrent(list)) > 0){
+                            result = listInsertBeforeCurrent(*sorted,
+                                                             listGetNext(list));
+                            if(result != LIST_SUCCESS){
+                                return errorHandel(HANDEL_LIST, (void*)result,
+                                                   ESCAPE_TECHNION, list);
+                            }
+                            listGetNext(list);
+                        }
+                    }
+                }
+                continue;
+            }
+            curr_order = next;
+            continue;
         }
-        listClear(at_time);
-        listDestroy(at_time);
-        curr_order = listGetNext(list);
+        listGetNext(list);
     }
     listGetFirst(*sorted);
     listClear(list);
