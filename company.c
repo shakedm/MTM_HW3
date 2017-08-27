@@ -41,7 +41,7 @@ CompanyError initCompany(Company company, char* email, TechnionFaculty faculty){
     if (email == NULL){
         return COMPANY_NULL_ARGUMENT;
     }
-    if (!(emailCheck(email)) || faculty > UNKNOWN ||
+    if (!(emailCheck(email)) || faculty >= UNKNOWN ||
             faculty < (TechnionFaculty)0){
         return COMPANY_INVALID_ARGUMENT;
     }
